@@ -1,0 +1,11 @@
+{
+  "config": {
+    // Prettier owns line wrapping. Agent instructions also benefit from keeping
+    // tightly related prose together instead of enforcing an arbitrary width.
+    "MD013": false,
+
+    // SKILL.md files begin with required YAML frontmatter and may intentionally
+    // lead directly into procedural instructions rather than a display title.
+    "MD041": false,
+  },
+}
