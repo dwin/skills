@@ -1,0 +1,4 @@
+interface:
+  display_name: "Grilling"
+  short_description: "Resolve every consequential decision"
+  default_prompt: "Use $grilling to stress-test this decision with me."

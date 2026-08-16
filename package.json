@@ -1,0 +1,18 @@
+{
+  "name": "dwin-skills",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Validation toolchain for the dwin/skills marketplace",
+  "scripts": {
+    "audit": "npm audit --audit-level=high",
+    "check": "npm run audit && npm run lint && npm run test:codex-marketplace",
+    "lint": "./scripts/validate.sh",
+    "test:codex-marketplace": "./scripts/smoke-test-codex.sh"
+  },
+  "devDependencies": {
+    "@anthropic-ai/claude-code": "2.1.233",
+    "@openai/codex": "0.147.0",
+    "markdownlint-cli2": "0.23.2",
+    "prettier": "3.9.6"
+  }
+}

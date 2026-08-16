@@ -1,0 +1,87 @@
+---
+name: babysit-pr
+description: Monitor or babysit an open pull request through CI, mergeability changes, and review feedback. Use when the user asks to watch a PR, keep checking it, diagnose checks, address in-scope findings, or stay with it until it is merged, closed, or genuinely needs user input.
+---
+
+# Babysit PR
+
+Keep ownership of the pull request until a stop condition is reached. Treat a
+green, mergeable, review-clean PR as a milestone rather than completion while
+the PR remains open.
+
+## Respect authority
+
+- Treat a request to watch or babysit as permission for read-only monitoring.
+- Make and push fixes only when the user also asked to address feedback, fix
+  failures, keep the PR green, or otherwise modify the branch.
+- Treat permission to change code separately from permission to speak for the
+  user. Do not post replies, submit reviews, or resolve threads unless the user
+  authorized PR communication.
+- Do not merge, close, reopen, force-push, rebase, mark ready, or enable
+  auto-merge without explicit authorization for that action.
+- Follow repository instructions and work only on the PR branch. Preserve
+  unrelated local changes.
+- Keep review-driven work within the PR's stated goal. Report scope-expanding
+  requests instead of silently broadening the change.
+- Never weaken tests, linting, security controls, or intended behavior merely
+  to obtain a green check.
+
+## Establish the baseline
+
+1. Resolve the PR and record its URL, base branch, head branch and SHA, draft
+   state, mergeability, review decision, unresolved actionable threads, checks,
+   and workflow runs.
+2. Read the PR description, repository instructions, changed files, and the
+   source behind each actionable finding.
+3. Record the latest push time. Verify comments made against older commits
+   against the current head before treating them as active.
+4. Check whether the base branch advanced or overlapping work made the PR
+   stale or obsolete. Report this evidence; do not rewrite history or close the
+   PR without authorization.
+
+## Monitor and respond
+
+Repeat at a practical cadence while the PR remains open:
+
+1. Refresh the PR before acting. Review feedback takes priority over retrying a
+   check on a SHA that may soon change.
+2. Inspect new comments, reviews, unresolved threads, checks, workflow runs,
+   mergeability, and head SHA.
+3. Classify each new signal as:
+   - a real issue introduced or exposed by this PR;
+   - stale or already addressed on the current head;
+   - an infrastructure, runner, dependency, or unrelated failure;
+   - ambiguous or outside the PR scope.
+4. When authorized to modify the branch, fix real in-scope issues with the
+   smallest complete change. Run focused validation plus repository-required
+   checks, commit and push, then immediately restart monitoring on the new SHA.
+5. Retry a likely transient failure only when the platform permits a safe rerun
+   and the evidence supports one. Stop retrying the same failure after three
+   unsuccessful attempts and request user help.
+6. Keep a concise evidence-based rationale for stale or false-positive
+   findings. Reply or resolve only when communication was authorized and the
+   repository permits it.
+7. Present unclear, conflicting, scope-expanding, or permission-dependent
+   feedback to the user with the relevant evidence and a proposed next action.
+
+Use the environment's recurring-monitor or wait facility. Keep the watcher
+observable; do not leave an unowned detached process. Report meaningful state
+changes instead of narrating unchanged polls.
+
+## Stop only when
+
+- the PR is merged or closed;
+- the user interrupts or changes the request; or
+- progress requires user action, such as missing permission, sustained
+  infrastructure failure, exhausted retries, unsafe conflict resolution, or
+  ambiguous reviewer direction.
+
+## Hand off
+
+Report the PR URL, final head SHA, terminal or blocking state, check totals and
+remaining failing or pending checks, review decision, actionable unresolved
+thread count, commits pushed, validation run, retries used, and the exact user
+action still required.
+
+When posting an authorized response, identify it as agent-authored according to
+the active environment's convention.

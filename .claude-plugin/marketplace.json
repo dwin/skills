@@ -1,0 +1,25 @@
+{
+  "name": "dwin",
+  "owner": {
+    "name": "Darwin Smith",
+    "url": "https://github.com/dwin"
+  },
+  "description": "Darwin Smith's portable skills for software design and delivery.",
+  "plugins": [
+    {
+      "name": "dwin-skills",
+      "source": "./",
+      "description": "Decision interviews, debugging, research, TDD, architecture, and pull request workflows.",
+      "category": "Development",
+      "tags": [
+        "engineering",
+        "skills",
+        "planning",
+        "debugging",
+        "testing",
+        "pull-request",
+        "code-quality"
+      ]
+    }
+  ]
+}

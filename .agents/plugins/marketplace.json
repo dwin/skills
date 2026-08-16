@@ -1,0 +1,20 @@
+{
+  "name": "dwin",
+  "interface": {
+    "displayName": "Dwin Skills"
+  },
+  "plugins": [
+    {
+      "name": "dwin-skills",
+      "source": {
+        "source": "local",
+        "path": "."
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Development"
+    }
+  ]
+}

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Engineering Principles"
+  short_description: "Keep implementation simple and type-safe"
+  default_prompt: "Use $engineering-principles while implementing this change."

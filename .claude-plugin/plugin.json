@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "dwin-skills",
+  "displayName": "Dwin Skills",
+  "version": "0.1.0",
+  "description": "Darwin Smith's portable skills for software design, delivery, and pull request workflows.",
+  "author": {
+    "name": "Darwin Smith",
+    "url": "https://github.com/dwin"
+  },
+  "homepage": "https://github.com/dwin/skills",
+  "repository": "https://github.com/dwin/skills",
+  "license": "MIT",
+  "keywords": [
+    "engineering",
+    "skills",
+    "pull-request",
+    "code-quality",
+    "planning"
+  ],
+  "skills": [
+    "./skills/babysit-pr",
+    "./skills/code-review",
+    "./skills/codebase-design",
+    "./skills/diagnosing-bugs",
+    "./skills/domain-modeling",
+    "./skills/engineering-principles",
+    "./skills/file-pr",
+    "./skills/grill-me",
+    "./skills/grill-with-docs",
+    "./skills/grilling",
+    "./skills/handoff",
+    "./skills/implement",
+    "./skills/improve-codebase-architecture",
+    "./skills/prototype",
+    "./skills/research",
+    "./skills/resolving-merge-conflicts",
+    "./skills/setup-dwin-skills",
+    "./skills/tdd",
+    "./skills/teach",
+    "./skills/to-questionnaire",
+    "./skills/to-spec",
+    "./skills/to-tickets",
+    "./skills/triage",
+    "./skills/wait-what",
+    "./skills/wayfinder",
+    "./skills/wizard",
+    "./skills/whats-next",
+    "./skills/writing-for-agents"
+  ]
+}

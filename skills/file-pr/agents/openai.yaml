@@ -1,0 +1,4 @@
+interface:
+  display_name: "File PR"
+  short_description: "Create an outcome-focused pull request"
+  default_prompt: "Use $file-pr to create a clear pull request for the work on this branch."
