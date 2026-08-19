@@ -26,18 +26,15 @@ easy to review. Prefer why the change matters over an inventory of edits.
 
 ## Choose a standalone PR or a stack
 
-Use a standalone PR by default. Consider a native GitHub PR stack when the work
-contains two or more independently reviewable changes that form a real
-dependency chain and development on an upper layer should continue before its
-lower layer merges. Do not stack unrelated changes merely to submit them
-together; file independent PRs instead.
+Use a standalone PR by default. Use a native GitHub PR stack only when two or
+more focused review units form a dependency chain and work must continue before
+lower layers merge. File unrelated changes as independent PRs.
 
 Before proposing or filing a stack, read
 [references/github-pr-stacks.md](references/github-pr-stacks.md). Confirm the
-public-preview feature is available, every branch is in the same repository,
-and the repository's review, CI, merge, and automation workflows can handle
-stacks. State the intended bottom-to-top layers and trunk branch before creating
-or linking the stack.
+public preview is available, every branch is in the same repository, and the
+repository's review, CI, merge, and automation workflows support stacks. State
+the trunk and bottom-to-top layers before changing remote state.
 
 ## Write the title
 

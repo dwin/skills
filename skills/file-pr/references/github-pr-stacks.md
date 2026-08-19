@@ -1,28 +1,23 @@
 # GitHub PR stacks
 
-Use this guide for GitHub's native stacked pull requests, which are in public
-preview and subject to change. A stack is an ordered chain of two or more pull
-requests in one repository: the bottom PR targets the trunk branch, and each PR
-above it targets the branch immediately below it. Each PR should expose only
-its layer's focused diff.
+GitHub's native stacked pull requests are in public preview. A stack is a chain
+of two or more PRs in one repository: the bottom PR targets the trunk, and each
+PR above targets the branch below it. Each PR shows only its layer's diff.
 
 ## Decide whether to stack
 
 Use a stack when all of these are true:
 
-- The change naturally decomposes into two or more focused review units.
-- Each upper unit genuinely depends on a lower unit.
+- The work splits into two or more focused review units.
+- Each upper unit depends on a lower unit.
 - Review or development should proceed before the lower units merge.
 - All branches can live in the same repository.
-- The team accepts the operational cost of maintaining and reviewing the whole
-  dependency chain.
+- The team's review, CI, and merge workflows support stacks.
 
-Prefer a standalone PR or independent PRs when the changes do not depend on one
-another, the change is already one reviewable unit, contributors must work from
-forks, the dependency graph branches instead of forming a line, or the
-repository's tools are not ready for native stacks. GitHub Desktop and
-auto-merge do not support stacks. Programmatic merge tooling must use GitHub's
-asynchronous stack-aware merge endpoint rather than the legacy merge endpoint.
+Prefer a standalone PR for one reviewable unit and independent PRs for unrelated
+work. Do not stack fork-based work, branching dependency graphs, or repositories
+that rely on GitHub Desktop, auto-merge, or the legacy merge endpoint.
+Programmatic merges require GitHub's asynchronous stack-aware endpoint.
 
 Keep the stack modest. Every layer runs the base branch's rules and CI, and a
 change low in the stack can rebase and retrigger checks above it. Audit costly
@@ -30,11 +25,9 @@ CI and merge automation before using stacks broadly.
 
 ## Design the layers
 
-Plan from trunk upward. Put foundations such as schemas, shared types, and core
-behavior in lower layers; put code that consumes them in higher layers. A
-dependency must be in the same layer or a lower one. Each layer may contain one
-or more commits, but it must remain a coherent unit that can be reviewed and
-validated on its own.
+Plan from trunk upward. Put foundations such as schemas and shared types below
+the code that consumes them. Dependencies must be in the same or a lower layer.
+Each layer may contain multiple commits but must remain independently reviewable.
 
 Record the plan before changing remote state:
 
@@ -47,9 +40,8 @@ main                                        trunk
 
 ## Create or link the stack
 
-Use GitHub CLI 2.90.0 or later, Git 2.20 or later, and the official
-`github/gh-stack` extension. Do not install or upgrade tools without the user's
-permission when the required versions are not already available.
+Use GitHub CLI 2.90.0+, Git 2.20+, and the official `github/gh-stack` extension.
+Get permission before installing or upgrading tools.
 
 For a new locally tracked stack:
 
@@ -61,29 +53,27 @@ gh stack add <next-branch>
 gh stack submit
 ```
 
-`gh stack submit` pushes the branches, creates or updates a PR for each branch,
-and links them into a native stack. Its interactive editor lets you set each
-title, body, and draft state. In non-interactive `--auto` mode, new PRs default
-to draft unless `--open` is supplied.
+`gh stack submit` pushes the branches, creates or updates their PRs, and links
+the native stack. Its editor sets each title, body, and draft state. With
+non-interactive `--auto`, new PRs are drafts unless `--open` is supplied.
 
-To adopt an existing linear chain, pass all branches in bottom-to-top order to
-`gh stack init`. To link existing branches or PRs without local stack tracking,
-use `gh stack link --base <trunk> <bottom> ... <top>`. Linking may push branches,
-create missing PRs, and correct their base branches, so inspect the chain first.
+Adopt an existing linear chain by passing its branches bottom-to-top to
+`gh stack init`. To link without local tracking, use
+`gh stack link --base <trunk> <bottom> ... <top>`. Inspect first: linking can push
+branches, create PRs, and correct base branches.
 
-Do not create each layer separately with `gh pr create` and stop there. The base
-branches may look stacked, but `gh stack submit` or `gh stack link` is what links
-the PRs into GitHub's native stack.
+Base-linked PRs alone are not a native stack; link them with `gh stack submit`
+or `gh stack link`.
 
-On github.com, create the bottom PR against the trunk first. Create the next PR
-against the previous PR's head branch, then choose **Create stack** instead of
-creating a standalone PR. Add further layers from **Add to stack**; website-added
-layers always go on top.
+On github.com, create the bottom PR against the trunk. Create the next against
+the previous PR's head branch and choose **Create stack**. Add more through
+**Add to stack**; the web UI always adds them at the top.
 
 ## Maintain and verify the stack
 
-Put review fixes in the layer where they logically belong. After changing a
-lower layer, cascade it upward and push the updated branches:
+Put review fixes in their owning layer. Cascading a lower-layer change rebases
+and force-pushes upper branches, so run this only with explicit permission to
+rewrite their history:
 
 ```bash
 gh stack checkout <branch>
@@ -92,29 +82,23 @@ gh stack rebase --upstack
 gh stack push
 ```
 
-After lower PRs merge, synchronize local state with `gh stack sync`; use
-`--prune` only when deleting merged local branches is intended. A stack must be
-linear before merge. Server-side rebases force-push rewritten branches and do
-not create signed commits, so use the CLI rebase path when signed commits are
-required.
+Without permission, report the needed rebase and stop. After lower PRs merge,
+run `gh stack sync`; add `--prune` only when deleting merged local branches is
+intended. Server-side rebases also force-push and create unsigned commits. Use
+the CLI when signed commits are required. The stack must be linear before merge.
 
 Verify all of the following after submit or update:
 
-- The stack map lists every intended PR exactly once and in the right order.
-- The bottom PR targets the intended trunk and each upper PR targets the layer
-  below it.
-- Each PR diff contains only its layer and has an accurate title, body, and
-  draft state.
-- Required reviews, CODEOWNERS, and CI apply to every layer as expected.
-- No branch, PR, or unrelated change was accidentally added to the stack.
+- The stack map contains each intended PR once, in order.
+- The bottom PR targets the trunk; each upper PR targets the layer below.
+- Each diff, title, body, and draft state is correct for its layer.
+- Reviews, CODEOWNERS, and CI apply as expected, with no unrelated changes.
 
-Request review from the bottom upward. Never merge as part of filing or updating
-a stack unless explicitly asked. Merging a selected PR merges it and every
-unmerged PR below it. An unexpected failure can stop a stack merge after lower
-layers have landed, so verify every PR afterward. With a merge queue, selected
-PRs keep their order but may land in separate groups. Upper layers remain open
-and are retargeted when only part of the stack lands. Closing a mid-stack PR
-blocks every PR above it.
+Request review bottom-up. Merge only when explicitly asked: selecting a PR also
+merges every unmerged layer below it. Failures can stop after lower layers land,
+so verify every PR. Merge queues preserve order but may land separate groups.
+Upper layers remain open and retarget after a partial merge. Closing a mid-stack
+PR blocks every layer above it.
 
 ## Primary sources
 
