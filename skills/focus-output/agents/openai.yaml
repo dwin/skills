@@ -1,0 +1,6 @@
+interface:
+  display_name: "Focus Output"
+  short_description: "Keep responses actionable and easy to resume"
+  default_prompt: "Use $focus-output for action-first, low-distraction responses."
+policy:
+  allow_implicit_invocation: false

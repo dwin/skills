@@ -2,7 +2,7 @@
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "dwin-skills",
   "displayName": "Dwin Skills",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Darwin Smith's portable skills for software design, delivery, and pull request workflows.",
   "author": {
     "name": "Darwin Smith",
@@ -26,6 +26,7 @@
     "./skills/domain-modeling",
     "./skills/engineering-principles",
     "./skills/file-pr",
+    "./skills/focus-output",
     "./skills/grill-me",
     "./skills/grill-with-docs",
     "./skills/grilling",

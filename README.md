@@ -17,6 +17,7 @@ User-invoked entry points:
 - `improve-codebase-architecture` surfaces deepening opportunities.
 - `setup-dwin-skills` configures a repository's tracker and domain docs.
 - `grill-me` explicitly starts a rigorous decision interview before action.
+- `focus-output` keeps session responses action-first and low-distraction.
 - `handoff`, `teach`, `to-questionnaire`, and `wait-what` cover session
   transitions, learning, asynchronous discovery, and clarification.
 
@@ -126,4 +127,8 @@ The initial versions of the imported skills are adapted from
 [Matt Pocock's skills collection](https://github.com/mattpocock/skills). The
 original `ask-matt` and `setup-matt-pocock-skills` entry points are named
 `whats-next` and `setup-dwin-skills` here. See
+[`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) for the MIT license notice.
+
+`focus-output` is inspired by Ayoub Ghriss's
+[`i-have-adhd`](https://github.com/ayghri/i-have-adhd) skill. See
 [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) for the MIT license notice.
