@@ -24,6 +24,21 @@ easy to review. Prefer why the change matters over an inventory of edits.
 6. Inspect recent merged PRs for title conventions. Preserve meaningful ticket
    prefixes or conventional-commit style when the repository uses them.
 
+## Choose a standalone PR or a stack
+
+Use a standalone PR by default. Consider a native GitHub PR stack when the work
+contains two or more independently reviewable changes that form a real
+dependency chain and development on an upper layer should continue before its
+lower layer merges. Do not stack unrelated changes merely to submit them
+together; file independent PRs instead.
+
+Before proposing or filing a stack, read
+[references/github-pr-stacks.md](references/github-pr-stacks.md). Confirm the
+public-preview feature is available, every branch is in the same repository,
+and the repository's review, CI, merge, and automation workflows can handle
+stacks. State the intended bottom-to-top layers and trunk branch before creating
+or linking the stack.
+
 ## Write the title
 
 State the outcome concisely. Prefer a result a reviewer or release-note reader
@@ -60,6 +75,9 @@ every touched file, invent ticket links, or check boxes for work not completed.
   decisions remain. Otherwise follow the user's request and repository norm.
 - Do not force-push, rebase, merge, close, enable auto-merge, or announce the PR
   in external channels unless explicitly asked.
+- For a stack, create, link, update, and verify every requested layer as one
+  operation. Do not merge through a selected layer unless explicitly asked;
+  that action also merges every unmerged layer below it.
 - Do not add extra implementation while filing. Report unfinished work instead
   of expanding scope at the last moment.
 
