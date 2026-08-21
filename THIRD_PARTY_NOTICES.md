@@ -25,8 +25,8 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-The `focus-output` skill is inspired by Ayoub Ghriss's `i-have-adhd` skill and
-is provided under the following license:
+The `focus-output` skill is inspired by Ayoub Ghriss's `i-have-adhd` skill. The
+upstream `i-have-adhd` project is provided under the following license:
 
 MIT License
 
