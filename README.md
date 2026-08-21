@@ -130,5 +130,5 @@ original `ask-matt` and `setup-matt-pocock-skills` entry points are named
 [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) for the MIT license notice.
 
 `focus-output` is inspired by Ayoub Ghriss's
-[`i-have-adhd`](https://github.com/ayghri/i-have-adhd) skill. See
-[`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) for the MIT license notice.
+[`i-have-adhd`](https://github.com/ayghri/i-have-adhd) skill. The upstream project
+is MIT licensed; see [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) for its license text.
