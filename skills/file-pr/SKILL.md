@@ -79,7 +79,19 @@ every touched file, invent ticket links, or check boxes for work not completed.
   of expanding scope at the last moment.
 
 After creation or update, verify the rendered title, body, base/head branches,
-and draft state. Report the PR URL, head SHA, readiness state, validation, and
-remaining risk.
+and draft state. Follow the required checks triggered for the pushed head to a
+result or concrete blocker before handoff. Inspect relevant failure output and
+Terraform plan output; PR creation alone does not establish readiness. Fix
+in-scope failures when authorized. If validation is blocked by access, an
+approval, or a sustained runner failure, report what is needed to finish it.
+Respect an explicit request to file a draft without waiting for checks.
+
+For deployment changes, verify the effective workflow gates and environment
+settings against the requested rollout. A successful workflow with a skipped
+plan, apply, or deployment does not prove that operation succeeded. Preserve
+the agreed activation state; use the delivery and approval process to control
+execution instead of silently disabling it in the submitted configuration.
+
+Report the PR URL, head SHA, readiness state, validation, and remaining risk.
 
 If the user also asked to monitor the PR, continue with the `babysit-pr` skill.

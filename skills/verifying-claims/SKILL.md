@@ -9,9 +9,10 @@ Separate what you observed from what you concluded. Only the first is evidence.
 
 ## Name the claims before investigating
 
-List every claim the work depends on and the single command that settles each
-one. Show the list. A claim with no command behind it is a guess, and must be
-labelled as one when reported.
+List every claim the work depends on and the command that settles each one.
+Some claims need a short sequence rather than a single command, and a claim of
+absence always does. Show the list. A claim with no command behind it is a
+guess, and must be labelled as one when reported.
 
 ## Observe before concluding
 
@@ -28,6 +29,18 @@ and they never collapse into each other:
 Reporting a conclusion as observed when the command never ran is the failure
 this skill exists to prevent. An unverified claim costs the user a moment. A
 fabricated observation costs them the decision they made on top of it.
+
+## Redact what you show
+
+This skill has you quote command output, and the state worth verifying often
+sits next to credentials. Redact every secret, token, key, and personal
+identifier before showing output, writing `<REDACTED>` in its place. Quote only
+the lines carrying the signal, and prefer a value's hash or length over the
+value. A secret's presence, absence, or equality across two places is almost
+always the claim, and none of those require revealing it.
+
+If the redacted output no longer supports the verdict, say so and ask the user
+rather than pasting the unredacted original.
 
 ## Hold absence to the highest bar
 
