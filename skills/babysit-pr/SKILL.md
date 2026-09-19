@@ -26,6 +26,21 @@ the PR remains open.
 - Never weaken tests, linting, security controls, or intended behavior merely
   to obtain a green check.
 
+## Fix real defects only
+
+A finding earns a code change only when you can state the failure it causes.
+Never add a construct whose only effect is to satisfy a reviewer: no hardcoded
+"unchanged" summary jobs, no grep guards, no defensive branches for conditions
+the code cannot reach. When a finding has no reachable failure case, refute it
+with evidence instead of implementing it.
+
+When three or more actionable findings arrive together, post the classification
+from step 3 of Monitor and respond before writing code, and let the user
+correct the split first. A wrong split wastes every fix built on it.
+
+Use `verifying-claims` whenever a finding's validity depends on state you have
+not observed on the current head.
+
 ## Establish the baseline
 
 1. Resolve the PR and record its URL, base branch, head branch and SHA, draft

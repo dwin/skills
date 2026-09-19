@@ -43,6 +43,7 @@
     "./skills/to-spec",
     "./skills/to-tickets",
     "./skills/triage",
+    "./skills/verifying-claims",
     "./skills/wait-what",
     "./skills/wayfinder",
     "./skills/wizard",
