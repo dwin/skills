@@ -61,6 +61,17 @@ keeping the end-to-end contract consistent.
 
 ## Complete the work
 
+Carry the user's objective through the authorized boundary. A passing test,
+review result, commit, or handoff is a checkpoint when assigned work remains.
+Answer status questions briefly, then continue the active task unless the user
+pauses or changes it.
+
+When a dependency blocks one part, continue independent work within the agreed
+scope. Respect explicit holds on shared paths and unresolved policy decisions.
+Before stopping, identify the remaining work and the concrete dependency,
+permission, or decision that prevents progress. Preserve authorizations already
+given in the conversation; a checkpoint does not reset them.
+
 1. Re-read the request and diff for scope drift.
 2. Confirm types and validation match the actual runtime contract.
 3. Run focused tests and every repository-mandated check.

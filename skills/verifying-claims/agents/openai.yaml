@@ -1,0 +1,4 @@
+interface:
+  display_name: "Verifying Claims"
+  short_description: "Observe state instead of inferring it"
+  default_prompt: "Use $verifying-claims to establish the current state before acting."

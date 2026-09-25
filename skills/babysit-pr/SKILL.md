@@ -26,6 +26,21 @@ the PR remains open.
 - Never weaken tests, linting, security controls, or intended behavior merely
   to obtain a green check.
 
+## Fix real defects only
+
+A finding earns a code change only when you can state the failure it causes.
+Never add a construct whose only effect is to satisfy a reviewer: no hardcoded
+"unchanged" summary jobs, no grep guards, no defensive branches for conditions
+the code cannot reach. When a finding has no reachable failure case, refute it
+with evidence instead of implementing it.
+
+When three or more actionable findings arrive together, post the classification
+from step 3 of Monitor and respond before writing code, and let the user
+correct the split first. A wrong split wastes every fix built on it.
+
+Use `verifying-claims` whenever a finding's validity depends on state you have
+not observed on the current head.
+
 ## Establish the baseline
 
 1. Resolve the PR and record its URL, base branch, head branch and SHA, draft
@@ -52,9 +67,13 @@ Repeat at a practical cadence while the PR remains open:
    - stale or already addressed on the current head;
    - an infrastructure, runner, dependency, or unrelated failure;
    - ambiguous or outside the PR scope.
-4. When authorized to modify the branch, fix real in-scope issues with the
-   smallest complete change. Run focused validation plus repository-required
-   checks, commit and push, then immediately restart monitoring on the new SHA.
+4. When authorized to modify the branch, collect and deduplicate current
+   findings across reviewers before editing. Fix real in-scope issues as a
+   coherent batch and record each disposition with code or test evidence.
+   Complete any requested local review before the next push, address its valid
+   findings, and explicitly report an unavailable reviewer. Run focused
+   validation plus repository-required checks, commit and push, then immediately
+   restart monitoring on the new SHA. Leave changes local only when requested.
 5. Retry a likely transient failure only when the platform permits a safe rerun
    and the evidence supports one. Stop retrying the same failure after three
    unsuccessful attempts and request user help.
@@ -75,6 +94,13 @@ changes instead of narrating unchanged polls.
 - progress requires user action, such as missing permission, sustained
   infrastructure failure, exhausted retries, unsafe conflict resolution, or
   ambiguous reviewer direction.
+
+PR monitoring is one part of the user's task. If the PR merges and the user
+also asked to watch its apply, deployment, or runtime verification, continue
+that authorized work. Follow the merged revision through the relevant workflow
+and its actual execution steps. Report skipped operations separately from
+successful ones, and verify the requested runtime outcome when access permits.
+A merge event alone does not complete a rollout task.
 
 ## Hand off
 

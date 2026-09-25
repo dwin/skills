@@ -35,6 +35,8 @@ Model-invoked skills:
 - `writing-for-agents` improves durable instructions written for agents.
 - `grilling` provides reusable interview discipline for agents and other
   skills.
+- `verifying-claims` provides reusable evidence discipline for agents and
+  other skills.
 
 These entry points are explicit-only. Claude and Cursor read that policy from
 their skill frontmatter; Codex reads the equivalent policy from
