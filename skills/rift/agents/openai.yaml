@@ -1,0 +1,3 @@
+interface:
+  display_name: "Rift"
+  short_description: "Isolate tasks in Rift snapshot workspaces"
