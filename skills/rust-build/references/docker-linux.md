@@ -11,8 +11,9 @@ Linux `sccache` executable and the requested Rust toolchain. Record the resolved
 image digest; a mutable tag alone is insufficient provenance.
 
 [assets/Dockerfile.sccache](../assets/Dockerfile.sccache) is a builder example for
-official Debian-based Rust images. It installs checksum-verified Linux sccache
-0.18.0 for ARM64 or AMD64, sets the wrapper, disables incremental compilation,
+official Debian-based Rust images, including slim variants. It installs curl and
+CA certificates before downloading checksum-verified Linux sccache 0.18.0 for
+ARM64 or AMD64, sets the wrapper, disables incremental compilation,
 and caps the compiler cache at 10 GiB. Pass the repository's verified image digest
 through the required `RUST_IMAGE` build argument.
 
