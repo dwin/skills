@@ -2,9 +2,9 @@
 
 ## Select a compatible builder
 
-Use the repository's pinned Rust toolchain and required Linux architecture.
-On macOS ARM, `--platform linux/arm64` runs on the Linux VM without CPU emulation.
-A Linux AMD64 target is a separate compatibility decision, not a default.
+Use the repository's pinned Rust toolchain and required Linux architecture and ABI.
+Match the requested runtime, including its system libraries and minimum requirements.
+Select native execution or emulation deliberately when builder and runtime differ.
 
 Inspect an existing builder before creating another image. It must contain a
 Linux `sccache` executable and the requested Rust toolchain. Record the resolved
@@ -19,22 +19,24 @@ through the required `RUST_IMAGE` build argument.
 Build it using the directory containing the asset as the small build context:
 
 ```bash
-docker build --platform linux/arm64 \
+docker build --platform "${LINUX_PLATFORM:?Set the required Linux platform}" \
   --build-arg "RUST_IMAGE=${RUST_IMAGE:?Set a verified Rust image digest}" \
   -f "$SKILL_DIR/assets/Dockerfile.sccache" \
   -t "$BUILDER_IMAGE" "$SKILL_DIR/assets"
 ```
 
-Resolve these variables to explicit values before execution. Do not mount the
-host's entire Cargo home over the builder's toolchain or copy a macOS wrapper
-path into its Cargo configuration. Mount only supported package-cache directories
-and pass container-side settings deliberately.
+Resolve these variables to explicit values before execution. `LINUX_PLATFORM` may
+be `linux/arm64` or `linux/amd64`, according to the task. The bundled asset supports
+these two architectures; use the repository's supported builder for other targets.
+Do not mount the host's entire Cargo home over the builder's toolchain or carry
+host-specific executable paths into its Cargo configuration. Mount only supported
+package-cache directories and pass container-side settings deliberately.
 
 ## Reuse caches without accumulating target volumes
 
 Inspect the volume or BuildKit cache inventory. Reuse compatible existing Cargo
 registry and sccache stores. Stable identities such as
-`<repo>-cargo-linux-arm64` and `<repo>-sccache-linux-arm64` are examples, not
+`<repo>-cargo-linux-<arch>` and `<repo>-sccache-linux-<arch>` are examples, not
 permission to create duplicates when an equivalent cache already exists.
 Labels should identify the owner, purpose, platform, and toolchain compatibility.
 
@@ -64,20 +66,24 @@ artifacts outside the mount before copying them into the runtime image. BuildKit
 storage has its own lifecycle; a compiler-cache cap does not bound all image,
 layer, or build-cache storage.
 
-## Coordinate the local sccache store
+## Coordinate shared stores
 
-One shared local disk cache supports one owning sccache daemon at a time.
-Several independent container daemons must not write the same cache concurrently.
-
-Use one common build lock shared by every runner using that store. Keep it held
-until the owning container and its daemon have exited. A separate lock inside
-each task directory does not coordinate different tasks. If parallel builders
-are required, use an appropriate supported shared backend or independent bounded
-stores and report the resulting storage cost.
+Read [Cargo and compiler caches](caching.md) before sharing a local sccache store
+between builders. Container-specific daemons need one common lock covering their
+lifetime, independent bounded stores, or a supported shared backend. Hold any
+BuildKit serialization lock for the full cache use, including daemon shutdown.
 
 A writable target directory also requires coordination. Serial execution alone
 does not prove that Cargo's fingerprints remain correct when snapshots with old
 timestamps are mounted at the same source path.
+
+## VM-backed container hosts
+
+On a host where Docker uses a Linux VM, configure the cache inside that environment.
+For Linux qualification on an ARM Mac, `linux/arm64` avoids CPU emulation when the
+required target is ARM64. Select `linux/amd64` when that is the required runtime
+and report emulation if used. Apply the same host/runtime distinction on Windows
+or other VM-backed hosts.
 
 ## Verify the Linux path
 

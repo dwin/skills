@@ -1,5 +1,5 @@
 interface:
   display_name: "Rust Build"
-  short_description: "Cache Rust builds on macOS and Linux"
+  short_description: "Build and test Rust with reusable caches"
 policy:
   allow_implicit_invocation: true
