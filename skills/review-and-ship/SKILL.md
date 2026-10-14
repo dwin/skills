@@ -10,11 +10,13 @@ or an explicit instruction to merge when ready, finish by merging that PR.
 
 ## Authority and completion
 
-Invoking this workflow authorizes in-scope fixes, validation, local commits,
-feature-branch pushes, and PR creation or updates. Preserve narrower holds
-such as local-only work or "review before pushing." Replies, review submissions,
-thread resolution, history rewrites, and deployments retain their separate
-authorization boundaries.
+The user's request for this complete delivery loop authorizes in-scope fixes,
+validation, local commits, feature-branch pushes, and PR creation or updates.
+Loading this skill by itself grants no authority. Preserve narrower holds
+such as local-only work or "review before pushing." If the user's request
+does not authorize publication, ask before the first push or PR write.
+Replies, review submissions, thread resolution, history rewrites, and
+deployments retain their separate authorization boundaries.
 
 `--merge` authorizes the conditional merge for this PR; it does not authorize
 bypassing repository protections or an explicit deployment hold. Without merge
