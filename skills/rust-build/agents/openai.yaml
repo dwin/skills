@@ -1,0 +1,3 @@
+interface:
+  display_name: "Rust Build"
+  short_description: "Cache Rust builds on macOS and Linux"

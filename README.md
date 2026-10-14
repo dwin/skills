@@ -31,6 +31,7 @@ Model-invoked skills:
   design and implementation.
 - `research` investigates questions against primary sources.
 - `rift` installs Rift when needed and isolates tasks in snapshot workspaces.
+- `rust-build` builds and tests Rust with shared host or Linux Docker caches.
 - `resolving-merge-conflicts` preserves both sides' intent during resolution.
 - `wizard` turns manual procedures into resumable shell walkthroughs.
 - `writing-for-agents` improves durable instructions written for agents.
