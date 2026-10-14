@@ -78,13 +78,15 @@ separate Rift workspaces when their edits need isolation.
 Report the workspace path, branch, inherited changes, task changes, and
 validation.
 
-Keep a Rift the user asked for as a snapshot until the user releases it. Keep a
-task's Rift while its PR is open. Remove a Rift this task created when its PR
+Keep a Rift the user asked for as a snapshot until the user releases it. Keep
+an implementation Rift while its PR is open. Remove a Rift this task created when its PR
 merges, its review-only task has reported, or the user asks. Before removal,
 confirm all three:
 
 - `git status --porcelain` prints nothing. Discarding uncommitted files needs
-  the user's explicit authorization.
+  the user's explicit authorization. Inspect ignored artifacts and evidence
+  separately with `git status --ignored`, and move anything worth keeping out
+  of the Rift first. Removing evidence needs the user's approval.
 - Every commit the task made is pushed or merged, or the task made no commits.
 - Nothing is held for someone else, such as an adopted probe, a running
   service, or a stash.

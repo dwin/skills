@@ -32,7 +32,8 @@ needs them: each profile adds its own output tree to the lane. Serialize builds
 that share a writable lane. Copy executables the task must keep out of the lane
 before another build can replace them.
 
-When the task finishes, clean its lane with the build tool's clean command
+Clean the lane when its workspace meets the
+[cleanup conditions](../SKILL.md#clean-up). Use the build tool's clean command
 pointed at that lane, such as `cargo clean --target-dir <lane>`. A wrapper
 script that owns the lane may provide its own clean entry point; use that.
 
