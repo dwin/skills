@@ -1,6 +1,6 @@
 ---
 name: rust-build
-description: Build and test Rust projects with shared compilation caches. Use for Cargo builds, Rust test execution, build-cache setup, or Linux qualification from macOS.
+description: Build and test Rust with shared compilation caches. Use when running Cargo builds or tests, configuring Rust build caches or sccache, reducing Rust build storage, or building and running Rust in Linux Docker containers from macOS.
 ---
 
 # Rust build
@@ -15,7 +15,7 @@ macOS does not provide a Linux runtime.
 
 Read the repository's toolchain pin, Cargo configuration, lockfile, and build
 entry point. Preserve the requested Rust version, features, build profile, target,
-and financial overflow or assertion settings. Use existing runners when they
+integer-overflow checks, and assertion settings. Use existing runners when they
 meet the requested platform and cache requirements.
 
 Reuse the task's assigned workspace. When new isolation is needed, use the

@@ -13,14 +13,14 @@ image digest; a mutable tag alone is insufficient provenance.
 [assets/Dockerfile.sccache](../assets/Dockerfile.sccache) is a builder example for
 official Debian-based Rust images. It installs checksum-verified Linux sccache
 0.18.0 for ARM64 or AMD64, sets the wrapper, disables incremental compilation,
-and caps the compiler cache at 10 GiB. Its Rust tag is an example: pass the
-repository's verified image digest through `RUST_IMAGE`.
+and caps the compiler cache at 10 GiB. Pass the repository's verified image digest
+through the required `RUST_IMAGE` build argument.
 
 Build it using the directory containing the asset as the small build context:
 
 ```bash
 docker build --platform linux/arm64 \
-  --build-arg "RUST_IMAGE=$RUST_IMAGE" \
+  --build-arg "RUST_IMAGE=${RUST_IMAGE:?Set a verified Rust image digest}" \
   -f "$SKILL_DIR/assets/Dockerfile.sccache" \
   -t "$BUILDER_IMAGE" "$SKILL_DIR/assets"
 ```
@@ -41,7 +41,10 @@ Labels should identify the owner, purpose, platform, and toolchain compatibility
 For `docker run` builders:
 
 - Mount the source read-only at a stable container path when the command allows it.
-- Use `--locked` so dependency resolution cannot silently rewrite the lockfile.
+- Use `--locked` when the repository supplies `Cargo.lock`. If it intentionally
+  omits a lockfile, follow its dependency-resolution policy and build in a
+  disposable writable source copy so Cargo can create one. Preserve the resolved
+  lockfile with the task's build provenance.
 - Keep registry data separate from Cargo's executable and configuration paths.
 - Mount the bounded compiler cache at the builder's configured `SCCACHE_DIR`.
 - Use a fresh target directory in the disposable builder filesystem when reuse

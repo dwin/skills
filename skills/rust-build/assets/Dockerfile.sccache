@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
-# Override with the repository's verified Rust image digest.
-ARG RUST_IMAGE=rust:1.97.1-bookworm
+# Pass the repository's verified Rust image digest through RUST_IMAGE.
+ARG RUST_IMAGE
 FROM ${RUST_IMAGE}
 ARG TARGETARCH
 
