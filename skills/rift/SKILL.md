@@ -36,11 +36,12 @@ Confirm the executable works before creating a workspace.
 1. Resolve the intended source to an absolute path. Inspect its Git status,
    HEAD, index, and remote before snapshotting. Record inherited changes so
    later commits include only task-owned edits unless the user requests
-   otherwise. Unstage inherited index entries without changing working-tree
-   contents, stage only task-owned changes (select hunks interactively when
-   needed), and inspect the complete staged diff before committing. If inherited
-   and task changes cannot be separated confidently, do not commit them; report
-   the blocker.
+   otherwise. Leave the source index and working-tree contents unchanged.
+   After creating or selecting the Rift, and only inside that workspace before
+   making task commits, unstage inherited entries without changing working-tree
+   contents. Stage only task-owned changes (select hunks interactively when
+   needed) and inspect the complete staged diff. If inherited and task changes
+   cannot be separated confidently, do not commit them; report the blocker.
 2. Reuse a suitable Rift workspace already assigned to this task. For a new
    workspace, run `rift init` from the source, then
    `rift create --name <task-name>`. Capture the absolute path printed on
