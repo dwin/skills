@@ -5,9 +5,10 @@ description: Monitor or babysit an open pull request through CI, mergeability ch
 
 # Babysit PR
 
-Keep ownership of the pull request until a stop condition is reached. Treat a
-green, mergeable, review-clean PR as a milestone rather than completion while
-the PR remains open.
+Keep ownership of the pull request until a stop condition is reached. By default,
+treat a green, mergeable, review-clean PR as a milestone while it remains open.
+When the user or coordinating workflow specifies readiness as the handoff
+objective, stop once that current-head condition is met.
 
 ## Respect authority
 
@@ -89,6 +90,8 @@ changes instead of narrating unchanged polls.
 
 ## Stop only when
 
+- the caller-specified readiness condition is met, if the user or coordinating
+  workflow requested that handoff;
 - the PR is merged or closed;
 - the user interrupts or changes the request; or
 - progress requires user action, such as missing permission, sustained

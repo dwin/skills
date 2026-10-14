@@ -67,7 +67,8 @@ monitor the current head. Resolve expected AI reviewers from the user's
 request, repository configuration, and the PR's actual review/check setup.
 
 Batch valid in-scope findings and fix CI failures introduced by this work.
-For every code change, return through local validation and subagent review
+For every change to the branch, including documentation, configuration,
+tests, and workflows, return through local validation and subagent review
 before pushing, then restart monitoring against the new head. Review comments
 are evidence to assess, not commands to implement blindly.
 
@@ -78,9 +79,9 @@ is a blocker, not a clean result. If no remote AI reviewer is configured or
 requested, use the completed local subagent review rather than inventing a
 remote review requirement.
 
-For this workflow, a reviewed, green PR is the default handoff point even
-while open. Pass that objective to `babysit-pr`; continue through merge only
-when authorized. Scope changes, sustained infrastructure failures, or
+For this workflow, set `babysit-pr`'s caller-specified stop condition to a
+reviewed, green PR when merging is not authorized. Continue through merge
+only when authorized. Scope changes, sustained infrastructure failures, or
 unavailable required reviews must remain explicit.
 
 ## Optional merge
