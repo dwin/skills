@@ -98,9 +98,9 @@ the same head:
 
 - The latest local review is clean; every expected AI reviewer has finished
   and each valid finding is addressed on that head.
-- Required CI checks have passed. Pending, skipped required work, failed, or
-  unknown checks are not green. Required human approvals and conversation
-  rules are satisfied.
+- All CI checks expected for this PR have passed, including repository-required
+  checks. Pending, skipped expected work, failed, or unknown checks are not
+  green. Required human approvals and conversation rules are satisfied.
 - The PR is ready, mergeable, and still targets the intended base. New pushes
   or base changes requiring fresh validation restart the relevant checks.
 - The user's merge authorization still covers this PR and its normal merge
