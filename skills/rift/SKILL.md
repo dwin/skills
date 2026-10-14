@@ -8,6 +8,10 @@ description: Use Rift copy-on-write workspaces when the user requests Rift isola
 Use [Rift](https://github.com/anomalyco/rift) to give a task an isolated copy
 of the current workspace, including its Git index and uncommitted changes.
 
+This skill covers Rift's commands. The `managing-workspaces` skill sets the
+policy around them: when to isolate, which source to snapshot, ownership,
+storage, and when to clean up. Load it alongside this one.
+
 ## Ensure Rift is available
 
 Run `command -v rift` and `rift --help`. If it is missing, install the
@@ -40,8 +44,9 @@ Confirm the executable works before creating a workspace.
    across separate tool calls. Report the path so the user can open it.
 
 Start from a regular Git checkout. Rift rejects linked Git worktrees and
-repositories with active Git operations or lock files. Preserve those states;
-use a suitable regular checkout or report the blocker.
+repositories with active Git operations or lock files, and cannot snapshot a
+FIFO such as a secret manager's `.env` pipe. Preserve those states; use a clean
+seed checkout or report the blocker.
 
 Rift copies Git repositories with detached HEAD. Create a task branch before
 committing. For existing PR work, preserve the requested remote branch and
@@ -73,10 +78,9 @@ separate Rift workspaces when their edits need isolation.
 ## Finish and clean up
 
 Report the workspace path, branch, inherited changes, task changes, and
-validation. Preserve the workspace by default so the user can review it.
+validation. Keep the workspace until its cleanup point in
+`managing-workspaces` or a user request, and run that skill's checks first.
 
-When cleanup is requested, inspect Git status and confirm needed commits,
-untracked files, and artifacts are retained elsewhere before running
-`rift remove <absolute-workspace-path>`. Removal trashes the workspace
-subtree. Use `rift gc` only when permanent deletion of Rift trash is explicitly
-requested; it can affect trash from other tasks.
+Remove it with `rift remove <absolute-workspace-path>`. Removal trashes the
+workspace subtree. Use `rift gc` only when permanent deletion of Rift trash is
+explicitly requested; it can affect trash from other tasks.

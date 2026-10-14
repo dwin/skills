@@ -1,0 +1,48 @@
+# Isolation
+
+## Rift blockers
+
+Rift snapshots a regular Git checkout. It refuses three kinds of source:
+
+- **A linked worktree.** Create the Rift from the repository's regular
+  checkout instead.
+- **A checkout with an active Git operation or lock file**, such as a rebase,
+  merge, cherry-pick, bisect, or a leftover `index.lock`. That state belongs to
+  whoever started it. Leave it in place and use another source.
+- **A checkout containing a FIFO.** Secret managers can serve `.env` as a named
+  pipe, and the snapshot fails or hangs on it. Find pipes with
+  `find <source> -type p -not -path '*/.git/*'`.
+
+A clean seed checkout avoids all three.
+
+## Seed checkouts
+
+A **seed** is a regular clone kept only as a Rift source: on the default
+branch, with no local edits, FIFOs, or running work. Before creating a Rift,
+`git fetch` in the seed. Fetching updates remote refs without touching anyone's
+files. Then create the Rift and, inside it, branch from the fetched base:
+
+```bash
+git switch -c <task-branch> origin/<base>
+```
+
+When no seed exists and the only regular checkout carries someone's work,
+snapshot it anyway only if the inherited changes are recorded and kept out of
+commits. Otherwise make a fresh clone to serve as the seed.
+
+## Fallbacks
+
+- **Git worktree.** Run `git worktree add -b <task-branch> <path> <base>` from a
+  regular checkout. Worktrees share the repository's objects and refs, so a
+  branch checked out in one cannot be checked out in another. A worktree
+  cannot serve as a later Rift source.
+- **Fresh clone.** Use `git clone` into a task-named directory, such as one
+  under `/tmp`. Install dependencies with the repository's normal setup.
+
+State which fallback was used and why Rift was not.
+
+## Existing PR work
+
+Check out the PR's remote branch in the new workspace and compare it with the
+snapshot HEAD before committing. Push to that branch so the existing PR
+updates.
