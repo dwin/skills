@@ -27,8 +27,10 @@ Language specifics:
 A **lane** is the task's writable build output: a target directory, a
 subdirectory of a shared build volume, or a builder container's output path.
 Create one lane per task, named for the task, and reuse it for every build in
-that task. Serialize builds that share a writable lane. Copy executables the
-task must keep out of the lane before another build can replace them.
+that task. Build release, bench, or other extra profiles only when the task
+needs them: each profile adds its own output tree to the lane. Serialize builds
+that share a writable lane. Copy executables the task must keep out of the lane
+before another build can replace them.
 
 When the task finishes, clean its lane with the build tool's clean command
 pointed at that lane, such as `cargo clean --target-dir <lane>`. A wrapper
@@ -36,11 +38,11 @@ script that owns the lane may provide its own clean entry point; use that.
 
 ## Disk space
 
-Check free space with `df -h <path>` on the volume that will hold the output,
-before long builds, test loops, and benchmarks. Estimate the run's peak usage
-and keep headroom above it. Stop and report when free space would fall below
-10% of the volume or 20 GB, whichever is larger, unless the repository sets
-its own threshold. Report actual usage afterwards.
+The **disk floor** is 30 GB free plus the run's estimated peak usage, on the
+volume that will hold the output. Check it with `df -h <path>` before long
+builds, test loops, and benchmarks. Stop and report instead of starting a run
+that would breach the floor, and stop a running loop when free space drops
+below 30 GB. Report actual usage afterwards.
 
 Free space by cleaning this task's own lanes and temp data. Pruning shared
 caches or another task's storage needs the user's approval.

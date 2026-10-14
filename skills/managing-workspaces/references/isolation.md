@@ -40,9 +40,3 @@ commits. Otherwise make a fresh clone to serve as the seed.
   under `/tmp`. Install dependencies with the repository's normal setup.
 
 State which fallback was used and why Rift was not.
-
-## Existing PR work
-
-Check out the PR's remote branch in the new workspace and compare it with the
-snapshot HEAD before committing. Push to that branch so the existing PR
-updates.
