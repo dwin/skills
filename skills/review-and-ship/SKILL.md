@@ -72,7 +72,14 @@ tests, and workflows, return through local validation and subagent review
 before pushing, then restart monitoring against the new head. Review comments
 are evidence to assess, not commands to implement blindly.
 
-A reviewer is complete only when its result can be tied to the current head.
+A reviewer is complete only when its result can be tied to the current head
+and intended target branch. Carry the recorded target and pinned comparison
+base through monitoring. Before either readiness handoff or merge, verify
+that the PR still targets the intended branch. Retargeting changes the diff
+without a push: treat prior local and AI reviews as stale, resolve the intended
+comparison while preserving an explicit user fixed point, and repeat the
+relevant validation and full review before proceeding.
+
 Check review commit IDs or the provider's reviewed revision; a summary from
 before the latest push is stale. An unavailable or pending requested reviewer
 is a blocker, not a clean result. If no remote AI reviewer is configured or
@@ -103,8 +110,9 @@ the same head:
 
 Use the platform's expected-head guard when available, such as GitHub's
 `gh pr merge --match-head-commit <reviewed-sha>`. Respect the permitted merge
-method and merge queue. Verify the actual merged state and merge commit;
-enqueueing or enabling auto-merge is not proof of a merge.
+method and merge queue. Verify the actual merged state and resulting commit
+or commits for the selected merge method; enqueueing or enabling auto-merge
+is not proof of a merge.
 
 Continue any separately authorized rollout verification after merge. Report
 the PR URL, reviewed head, local review rounds, actual CI and AI-review state,
