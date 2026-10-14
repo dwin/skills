@@ -18,10 +18,14 @@ does not authorize publication, ask before the first push or PR write.
 Replies, review submissions, thread resolution, history rewrites, and
 deployments retain their separate authorization boundaries.
 
-`--merge` authorizes the conditional merge for this PR; it does not authorize
-bypassing repository protections or an explicit deployment hold. Without merge
-authorization, completion is a current-head PR whose expected reviews and CI
-are complete and clean, with remaining limitations reported.
+`--merge` authorizes the conditional merge for this PR and marking it ready
+for review after local validation and independent review pass and material
+draft blockers are cleared. Honor an explicit draft-only hold. Marking ready
+can trigger expected reviews; refresh their results and CI afterward.
+It does not authorize bypassing repository protections or an explicit
+deployment hold. Without merge authorization, completion is a current-head
+PR whose expected reviews and CI are complete and clean, with remaining
+limitations reported.
 
 Use the existing skills at each stage rather than copying their procedures.
 Read them when entering their stage:
