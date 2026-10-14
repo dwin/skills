@@ -1,6 +1,6 @@
 {
   "name": "dwin-skills",
-  "version": "0.3.4",
+  "version": "0.3.5",
   "description": "Darwin Smith's portable skills for software design, delivery, and pull request workflows.",
   "author": {
     "name": "Darwin Smith",

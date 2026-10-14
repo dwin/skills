@@ -72,6 +72,12 @@ Use `file-pr` to create or update the existing PR, then `babysit-pr` to
 monitor the current head. Resolve expected AI reviewers from the user's
 request, repository configuration, and the PR's actual review/check setup.
 
+If the PR is draft and local validation, independent review, and material
+draft blockers are cleared, mark it ready for review unless an explicit
+draft-only hold applies. Refresh CI and expected reviews after the transition,
+including reviewers that only run on ready PRs. Do not hand off a draft as
+ready while that authorized transition remains undone.
+
 Batch valid in-scope findings and fix CI failures introduced by this work.
 For every change to the branch, including documentation, configuration,
 tests, and workflows, return through local validation and subagent review
@@ -114,11 +120,13 @@ the same head:
   holds; do not bypass protections, use an admin override, or merge other
   stack layers without authorization.
 
-Use the platform's expected-head guard when available, such as GitHub's
-`gh pr merge --match-head-commit <reviewed-sha>`. Respect the permitted merge
-method and merge queue. Verify the actual merged state and resulting commit
-or commits for the selected merge method; enqueueing or enabling auto-merge
-is not proof of a merge.
+Merge only through an operation that atomically enforces the reviewed head,
+such as GitHub's `gh pr merge --match-head-commit <reviewed-sha>` or a platform
+queue with equivalent head enforcement. If no such operation is available,
+report the blocker; do not fall back to an unguarded merge. Respect the
+permitted merge method and merge queue. Verify the actual merged state and
+resulting commit or commits for the selected merge method; enqueueing or
+enabling auto-merge is not proof of a merge.
 
 Continue any separately authorized rollout verification after merge. Report
 the PR URL, reviewed head, local review rounds, actual CI and AI-review state,
