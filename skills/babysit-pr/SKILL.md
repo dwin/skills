@@ -34,9 +34,9 @@ Never add a construct whose only effect is to satisfy a reviewer: no hardcoded
 the code cannot reach. When a finding has no reachable failure case, refute it
 with evidence instead of implementing it.
 
-When three or more actionable findings arrive together, post the classification
-from step 3 of Monitor and respond before writing code, and let the user
-correct the split first. A wrong split wastes every fix built on it.
+Classify and deduplicate current findings before editing. Report the
+classification briefly and continue valid fixes within existing authorization.
+Ask when a finding expands scope or depends on an unresolved decision.
 
 Use `verifying-claims` whenever a finding's validity depends on state you have
 not observed on the current head.

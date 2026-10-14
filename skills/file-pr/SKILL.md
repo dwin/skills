@@ -64,6 +64,10 @@ Use this order when no template dictates another:
 Keep change lists brief and secondary. Do not paste commit logs, enumerate
 every touched file, invent ticket links, or check boxes for work not completed.
 
+Use repository-relative paths, portable commands, and shared URLs in PR text
+and committed documentation. Keep workstation-specific evidence paths in local
+notes unless the audience needs them.
+
 ## Create or update the PR
 
 - Choose the intended base branch from repository evidence; do not assume it is

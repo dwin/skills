@@ -23,6 +23,9 @@ User-invoked entry points:
 
 Model-invoked skills:
 
+- `review-and-ship` runs independent local review, fixes findings, files the PR,
+  and follows CI and AI reviews to readiness. Add `--merge` to authorize
+  merging when the current head satisfies repository requirements.
 - `code-review`, `babysit-pr`, and `file-pr` cover review and pull request
   delivery.
 - `diagnosing-bugs`, `tdd`, and `prototype` provide evidence-driven ways to
@@ -39,9 +42,28 @@ Model-invoked skills:
 - `verifying-claims` provides reusable evidence discipline for agents and
   other skills.
 
-These entry points are explicit-only. Claude and Cursor read that policy from
-their skill frontmatter; Codex reads the equivalent policy from
+The user-invoked entry points above are explicit-only. Claude and Cursor read
+that policy from their skill frontmatter; Codex reads the equivalent policy from
 `agents/openai.yaml`.
+
+## Review and deliver a branch
+
+Invoke `review-and-ship` to run the whole local-review-to-PR workflow. Your
+client may show the plugin namespace, such as `dwin-skills:review-and-ship`.
+
+```text
+$review-and-ship
+$review-and-ship origin/main --merge
+```
+
+The coordinator fixes valid findings; a read-only subagent runs `code-review`.
+Every fix batch passes local validation and another review before publishing.
+The workflow then files or updates the PR and follows CI and AI feedback.
+
+The default ends with a reviewed, green PR. `--merge` authorizes merging that
+PR after current-head checks, expected AI reviews, and repository requirements
+pass. It preserves explicit holds and separate permission for review replies,
+thread resolution, history rewrites, and deployment.
 
 ## Install
 
