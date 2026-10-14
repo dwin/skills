@@ -18,7 +18,10 @@ self-contained.
 
 ### 1. Pin the fixed point
 
-Whatever the user said is the fixed point — a commit SHA, branch name, tag, `main`, `HEAD~5`, etc. If they didn't specify one, ask for it.
+Resolve the comparison from the user's commit, branch, or supplied PR. For a PR,
+inspect its current base and head and verify the selected checkout against that
+head. Preserve an explicit fixed point. Ask only when available repository and
+PR evidence leaves the intended comparison unclear.
 
 Capture the diff command once: `git diff <fixed-point>...HEAD` (three-dot, so the comparison is against the merge-base). Also note the list of commits via `git log <fixed-point>..HEAD --oneline`.
 
@@ -31,7 +34,8 @@ Look for the originating spec, in this order:
 1. Issue references in the commit messages (`#123`, `Closes #45`, GitLab `!67`, etc.) — fetch them using `docs/agents/issue-tracker.md` when present, or the available issue-tracker tools otherwise.
 2. A path the user passed as an argument.
 3. A spec file under `docs/`, `specs/`, or `.scratch/` matching the branch name or feature.
-4. If nothing is found, ask the user where the spec is. If they say there isn't one, the **Spec** sub-agent will skip and report "no spec available".
+4. The user's task brief and acceptance criteria, when supplied.
+5. If nothing is found, ask the user where the spec is. If they say there isn't one, the **Spec** sub-agent will skip and report "no spec available".
 
 ### 3. Identify the standards sources
 
@@ -58,6 +62,13 @@ Each smell reads _what it is_ → _how to fix_; match it against the diff:
 - **Refused Bequest** — a subclass or implementer that ignores or overrides most of what it inherits. → drop the inheritance, use composition.
 
 ### 4. Spawn both sub-agents in parallel
+
+Check the effective reviewer model and reasoning effort against any settings
+the user specified. Resolve aliases through the available provider catalog and
+record the effective selection when observable. If an explicit setting is
+unavailable, report the limitation and obtain a decision before substituting.
+A generic request for critical review does not require a model-selection
+question.
 
 **Standards sub-agent prompt** — include:
 

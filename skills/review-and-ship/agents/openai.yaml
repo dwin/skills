@@ -1,0 +1,6 @@
+interface:
+  display_name: "Review and Ship"
+  short_description: "Review, fix, open, and monitor a pull request"
+  default_prompt: "Use $review-and-ship to review my branch with a subagent, fix valid findings, open the PR, and babysit it."
+policy:
+  allow_implicit_invocation: true
