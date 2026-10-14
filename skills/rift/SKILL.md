@@ -35,7 +35,12 @@ Confirm the executable works before creating a workspace.
 
 1. Resolve the intended source to an absolute path. Inspect its Git status,
    HEAD, index, and remote before snapshotting. Record inherited changes so
-   later commits include only task-owned edits unless the user requests otherwise.
+   later commits include only task-owned edits unless the user requests
+   otherwise. Unstage inherited index entries without changing working-tree
+   contents, stage only task-owned changes (select hunks interactively when
+   needed), and inspect the complete staged diff before committing. If inherited
+   and task changes cannot be separated confidently, do not commit them; report
+   the blocker.
 2. Reuse a suitable Rift workspace already assigned to this task. For a new
    workspace, run `rift init` from the source, then
    `rift create --name <task-name>`. Capture the absolute path printed on
@@ -46,8 +51,10 @@ Confirm the executable works before creating a workspace.
 
 Rift needs a regular Git checkout. It rejects linked Git worktrees,
 repositories with active Git operations or lock files, and FIFOs such as a
-secret manager's `.env` pipe. Leave those states in place and use another
-source; `managing-workspaces` covers clean seed checkouts.
+secret manager's `.env` pipe. Leave those states in place. A clean seed avoids
+these blockers for ordinary new isolation; if the user explicitly requests a
+snapshot of this current state, report the blocker and ask before using a source
+that omits it.
 
 Rift copies Git repositories with detached HEAD. Create a task branch, or check
 out the PR's remote branch, before committing.
@@ -84,12 +91,21 @@ merges, its review-only task has reported, or the user asks. Before removal,
 confirm all three:
 
 - `git status --porcelain` prints nothing. Discarding uncommitted files needs
-  the user's explicit authorization. Inspect ignored artifacts and evidence
-  separately with `git status --ignored`, and move anything worth keeping out
-  of the Rift first. Removing evidence needs the user's approval.
+  the user's explicit authorization. Inspect ignored files and evidence
+  separately with `git status --ignored`; inventory needed configuration,
+  inputs, artifacts, and evidence, and move anything worth keeping out of the
+  Rift first. Confirm the remaining ignored files are disposable; ask before
+  removing evidence or anything whose disposability is unclear.
 - Every commit the task made is pushed or merged, or the task made no commits.
 - Nothing is held for someone else, such as an adopted probe, a running
   service, or a stash.
+
+Before removal, use `rift list` to inspect the full registered descendant tree:
+`rift remove` trashes the selected workspace and its descendants. Keep the
+parent unless every affected workspace belongs to this task, is eligible for
+cleanup, and passes these retention checks. Read `.rift.toml` and run hooks
+only within task authorization; use `--no-hooks` when its hooks exceed that
+authorization.
 
 Remove it with `rift remove <absolute-workspace-path>`, never `rm -rf`.
 Removal trashes the workspace subtree. Use `rift gc` only when permanent

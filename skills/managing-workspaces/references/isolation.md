@@ -26,9 +26,12 @@ files. Then create the Rift and, inside it, branch from the fetched base:
 git switch -c <task-branch> origin/<base>
 ```
 
-When no seed exists and the only regular checkout carries someone's work,
-snapshot it anyway only if the inherited changes are recorded and kept out of
-commits. Otherwise make a fresh clone to serve as the seed.
+Unless the user explicitly requests a snapshot of the current workspace, use a
+clean seed rather than a checkout carrying someone's work. For a requested
+current-state snapshot, use the specified checkout and record its staged,
+unstaged, and untracked changes; keep inherited changes out of task commits.
+If that source has a Rift blocker, report it and ask before using a source that
+omits the requested state.
 
 ## Fallbacks
 

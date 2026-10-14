@@ -15,19 +15,27 @@ another task or session created belong to someone else.
 1. Reuse the workspace already assigned to this task, then continue from
    step 3.
 2. For new isolation, prefer Rift: load the `rift` skill for its commands.
-   Create from a clean seed checkout of the repository rather than a checkout
-   someone is working in. Fall back to a Git worktree, then a fresh clone, when
-   Rift is unavailable or blocked. Read
-   [Isolation](references/isolation.md) for Rift blockers, seeds, and the
-   fallbacks.
+   Unless the user explicitly requests a snapshot of the current workspace,
+   create from a clean seed checkout rather than a checkout someone is working
+   in. For a requested current-state snapshot, use that source so staged,
+   unstaged, and untracked changes are preserved. If it cannot be snapshotted,
+   report the blocker and ask before using a source that omits those changes.
+   For other tasks, fall back to a Git worktree, then a fresh clone, when Rift
+   is unavailable or blocked. Read [Isolation](references/isolation.md) for
+   Rift blockers, seeds, and the fallbacks.
 3. Name a new workspace and its branch for the task, and start the branch from
    the requested base. For an existing PR, check out the PR's remote branch and
    compare it with the workspace HEAD before committing. Push to that branch so
    the PR updates. A read-only review can use a detached checkout at the
    fetched PR SHA.
-4. Record the source path, base commit, and any inherited staged, unstaged, or
-   untracked changes. Stage task files by path so inherited changes stay out of
-   commits.
+4. Record the source path, base commit, and inherited staged, unstaged,
+   untracked, and ignored files. Rift preserves the source index: staging task
+   files by path alone can include inherited staged entries and inherited edits
+   in the same file. Unstage inherited entries without changing working-tree
+   contents, stage only task-owned changes (select hunks interactively when
+   needed), and inspect the complete staged diff before committing. If inherited
+   and task changes cannot be separated confidently, do not commit them; report
+   the blocker.
 5. Run every command with the workspace's absolute path as its working
    directory. Shell directory changes do not persist between tool calls.
 
@@ -78,12 +86,22 @@ Before removing anything, confirm all three:
 
 - The tree is clean: `git status --porcelain` prints nothing. Discarding
   uncommitted files needs the user's explicit authorization. Inspect ignored
-  artifacts and evidence separately with `git status --ignored`, and move
-  anything worth keeping out first.
+  files and evidence separately with `git status --ignored`; inventory needed
+  configuration, inputs, artifacts, and evidence, and move anything worth
+  keeping out first. Confirm the remaining ignored files are disposable; ask
+  before removing evidence or anything whose disposability is unclear.
 - Every commit the task made is pushed or merged, or the task made no commits,
   as in a read-only review.
 - Nothing is held for someone else, such as an untracked probe a reviewer told
   an implementer to adopt, a running service, or a stash.
+
+For a Rift, use `rift list` to inspect the full registered descendant tree
+before removal: `rift remove` trashes the selected workspace and its
+descendants. Keep the parent unless every affected workspace belongs to this
+task, is eligible for cleanup, and passes these retention checks. Read
+`.rift.toml` and apply the
+[Rift hook-authorization checks](../rift/SKILL.md#finish-and-clean-up); use
+`--no-hooks` when its hooks exceed task authorization.
 
 Then use each tool's own remove or clean command: `rift remove <path>` for a
 Rift, `git worktree remove <path>` for a worktree, and the build tool's clean
