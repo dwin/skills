@@ -1,0 +1,3 @@
+interface:
+  display_name: "Sprites"
+  short_description: "Run expensive work in remote Linux workspaces"
