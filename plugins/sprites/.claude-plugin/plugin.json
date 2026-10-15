@@ -1,0 +1,12 @@
+{
+  "name": "sprites",
+  "version": "0.1.3",
+  "description": "Offload builds, tests, data jobs, and agent work to Fly.io Sprites, with source transfer and optional SSHFS editing.",
+  "author": {
+    "name": "Darwin Smith",
+    "url": "https://github.com/dwin"
+  },
+  "repository": "https://github.com/dwin/skills",
+  "license": "MIT",
+  "skills": ["./skills/sprites"]
+}

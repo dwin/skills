@@ -5,6 +5,22 @@ composable Agent Skills that share one installable `dwin-skills` plugin for
 Claude Code and Codex. Cursor and other Agent Skills clients can consume the
 same `SKILL.md` directories directly.
 
+The separate `sprites` plugin runs builds, tests, data jobs, services, and agent
+tasks in Fly.io Sprites. It includes exact-source transfer, persistent cache
+guidance, agent coordination, and optional SSHFS editing. Existing Sprite and
+GitHub authentication can be reused.
+
+Install it from the same marketplace:
+
+```bash
+codex plugin add sprites@dwin
+```
+
+In Claude Code, use `/plugin install sprites@dwin`. Add the marketplace as
+described below first. Invoke `$sprites:sprites` in Codex or ask an agent to
+use Sprites when local resources are constrained. Installing the plugin does
+not create a Sprite or start a workload.
+
 ## Available skills
 
 User-invoked entry points:
@@ -95,8 +111,10 @@ skills/<name>/
 ```
 
 Each skill directory is a canonical, independently reusable Agent Skill. The
-single plugin is the managed distribution unit; product-specific files do not
-duplicate skill instructions.
+`dwin-skills` plugin distributes the main collection.
+Standalone plugins live under `plugins/<name>/` with their own matching Claude
+and Codex manifests. Sprites uses `plugins/sprites/skills/sprites/`; its portable
+discovery link lives in `.agents/skills/sprites`.
 
 ## Validate changes
 
