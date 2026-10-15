@@ -4,7 +4,7 @@ Choose one direction for a run. Keep the local checkout authoritative for a loca
 
 ## Committed source
 
-Clone using GitHub authentication already available inside the Sprite. Inspect `gh auth status` without printing token values, then verify access to the intended repository. Fetch the requested commit or ref and compare `git rev-parse HEAD` with the expected SHA. Use a task-specific checkout; preserve any existing dirty checkout.
+Choose the configured GitHub access method first. For native Git authentication, inspect `gh auth status` when applicable without printing token values, verify repository access, then clone or fetch. If a Sprites gateway is configured, follow [GitHub gateway](github-gateway.md); ordinary `gh` or Git login may be unnecessary. Fetch or retrieve the requested commit and verify its identity. Use a task-specific checkout; preserve any existing dirty checkout.
 
 ## Local edits
 
