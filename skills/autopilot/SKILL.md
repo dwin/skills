@@ -71,8 +71,8 @@ Honor narrower holds the user states, such as "stay local" or "keep it draft".
    ready or after a push, re-request it once. If it is still not done after
    another 30 minutes, it is missing: a missing requested or required
    reviewer blocks, and any other missing reviewer is reported and dropped.
-7. **Iterate.** Give every new finding a disposition and batch the fixes.
-   Every push goes back through steps 2–4 first, so the local reviewer sees
+7. **Iterate.** Give every new finding a disposition, then commit the batched
+   fixes. Every push goes back through steps 2–4 first, so the local reviewer sees
    every change before remote reviewers do. Reply on each bot thread with its
    disposition in one line, and resolve the thread once it is fixed or
    refuted. Repeat until the stop condition holds.
