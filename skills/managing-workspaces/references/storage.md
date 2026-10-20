@@ -39,6 +39,9 @@ script that owns the lane may provide its own clean entry point; use that.
 
 ## Disk space
 
+The disk floor protects a local machine that other sessions and the user
+share. A cloud agent sandbox has its own disk, so skip the floor there.
+
 The **disk floor** is the reserve the user or repository states, plus the
 run's estimated peak usage, on the volume that will hold the output. Without a
 stated reserve, use 30 GB. Check it with `df -h <path>` before storage-heavy

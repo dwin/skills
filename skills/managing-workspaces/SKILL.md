@@ -52,9 +52,9 @@ else's and report it.
 ## Keep storage bounded
 
 Share package stores and compiler caches outside checkouts, and reuse one
-compatible build lane for the task's builds. Before storage-heavy runs, such as
-large builds, long test loops, and benchmarks, check free space against the
-[disk floor](references/storage.md#disk-space). Tests clean up the databases,
+compatible build lane for the task's builds. On a local machine, check free
+space against the [disk floor](references/storage.md#disk-space) before
+storage-heavy runs, such as large builds, long test loops, and benchmarks. Tests clean up the databases,
 clusters, and fixture directories they create.
 
 Read [Storage](references/storage.md) before configuring caches or lanes,
