@@ -37,7 +37,8 @@ Honor narrower holds the user states, such as "stay local" or "keep it draft".
 1. **Baseline.** Resolve the workspace, branch, PR (if any), base branch, and
    head SHA. Record unrelated local changes so commits leave them out. On the
    default branch, create a feature branch first.
-2. **Sync.** Fetch and merge `origin/<base>` into the branch when it is behind.
+2. **Sync.** Fetch the base branch from the PR's base repository, which for a
+   fork is not `origin`, and merge it into the branch when it is behind.
    Rebase instead only when the repository requires linear history. Push in
    step 5, after review. A conflict resolution is new work: it goes through
    the next review.
@@ -102,24 +103,24 @@ Without `merge`, stop when all of these hold on the current head:
 - every expected AI reviewer is done or dropped, and each of its findings has
   a disposition;
 - required CI checks pass;
-- the PR is marked ready and has no merge conflicts with its base.
+- the PR is marked ready, and a fresh fetch shows the head contains the
+  base's tip. When it does not, return to step 2.
 
 A bot that reviews only once, or only on request, need not re-review every
 push. The local review covers the later commits.
 
 Also stop, and report, when progress needs the user: a scope decision,
 conflicting reviewers, a human reviewer requesting changes, required checks
-failing for reasons outside this PR after three reruns, or a missing required
-reviewer.
+failing for reasons outside this PR after three reruns, a missing required
+reviewer, or a base that moved three times in a row while waiting.
 
 ## Merge
 
 With `merge`, after the stop condition holds:
 
-1. Sync with the base once more. If the base moved, run steps 2–4 on the new
-   head before pushing it, then wait for CI on it. The head that passes is
-   the one to merge. If the base moves again three times in a row, stop and
-   report the moving base.
+1. Sync with the base once more. If the base moved, run the loop from step 2
+   again until the stop condition holds on the new head, including reviewers
+   that review every push. That head is the one to merge.
 2. Confirm required approvals, required checks, and conversation-resolution
    rules are satisfied. When a required human approval is missing, stop:
    report the PR as ready and waiting for approval.
