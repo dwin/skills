@@ -139,13 +139,21 @@ ask_secret() {
 
 # write_env KEY VALUE upserts KEY='VALUE' into ENV_FILE (replaces any existing
 # line) and sets $KEY. Idempotent. Creates ENV_FILE at mode 0600; writes through
-# a symlink and keeps an existing file's mode.
+# a symlink and keeps an existing file's mode. A value containing ' is written
+# double-quoted, which dotenv parsers and shells both read literally only when
+# it has no ", \, $ or backtick; other such values are refused.
 write_env() {
-  local key="$1" value="$2" tmp sq="'\\''"
+  local key="$1" value="$2" tmp line
+  if [[ "$value" != *\'* ]]; then line="$key='$value'"
+  elif [[ "$value" != *[\"\\\$\`]* ]]; then line="$key=\"$value\""
+  else
+    warn "$key mixes ' with \", \\, \$ or a backtick; no .env quoting reads that portably. Set it by hand."
+    return 1
+  fi
   [[ -e "$ENV_FILE" ]] || (umask 077 && : > "$ENV_FILE")
   tmp=$(mktemp)
   grep -vE "^${key}=" "$ENV_FILE" > "$tmp" || true
-  printf "%s='%s'\n" "$key" "${value//\'/$sq}" >> "$tmp"
+  printf '%s\n' "$line" >> "$tmp"
   cat "$tmp" > "$ENV_FILE"
   rm -f "$tmp"
   printf -v "$key" '%s' "$value"

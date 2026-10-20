@@ -60,7 +60,7 @@ Publish the approved tickets. **How** depends on the tracker `setup-dwin-skills`
 
 Work the **frontier**: any ticket whose blockers are all done. For a purely linear chain that means top to bottom.
 
-Do NOT close or modify any parent issue.
+Do NOT close a parent issue or rewrite its title or body. Adding the tickets as its sub-issues is fine.
 
 ```markdown
 # <NN> — <Ticket title>

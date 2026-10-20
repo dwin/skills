@@ -26,19 +26,11 @@ The user has asked for a **retrospective**. You are suggesting improvements to t
 
 ## Reference
 
-### Implementation vs Review
-
-Remember that all work goes through two stages: implementation and review. The implementation agent has the most **context pressure**. They are responsible for exploration, writing code, and debugging failures.
-
-The review agent has the least context pressure - it receives a diff, so no exploration needed. It often does not need to write code or debug.
-
-This means that the review agent should be responsible for imposing coding standards, not the implementation agent.
-
 ### Files
 
 You have access to several files in the repo:
 
 - `CLAUDE.md`/`AGENTS.md`: these files are pushed to the context window of any agent working in this repo. They should be used incredibly sparingly, usually only for **navigation pointers** to other files.
-- `CODING_STANDARDS.md`: this file is read during review, not implementation. Add **navigation pointers** to docs folders if the standards file gets more than 1,000 lines long.
+- `CODING_STANDARDS.md`: the standards `code-review` enforces. Check how the repo's implementation and review steps actually load it before recommending where a rule belongs. Add **navigation pointers** to docs folders if the standards file gets more than 1,000 lines long.
 - Docs: use docs as references files, pointed to by other files. Look for existing docs before writing new ones.
 - Skills: use skills for docs (since their description goes into the agent's context window), or for user-invoked commands. Follow the advice in the `writing-for-agents` skill.
