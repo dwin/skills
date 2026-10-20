@@ -97,17 +97,18 @@ confirm() {
 # quotes or a plain dotenv double-quoted value undone.
 _existing() {
   [[ -f "$ENV_FILE" ]] || return 1
-  local line value q="'" sq="'\\''"; line=$(grep -E "^${1}=" "$ENV_FILE" | tail -n1) || return 1
+  local LC_ALL=C line value; line=$(grep -E "^${1}=" "$ENV_FILE" | tail -n1) || return 1
   value="${line#*=}"
+  # Reuse only what write_env writes, or a plain unquoted value: forms every
+  # shell and dotenv parser reads literally. Anything else: ask again.
   if [[ "$value" == \'*\' ]]; then
     value="${value:1:${#value}-2}"
-    [[ "${value//"$sq"/}" == *\'* ]] && return 1   # text after the closing quote; ask again
-    value="${value//"$sq"/$q}"
+    [[ "$value" == *[\'\\]* ]] && return 1
   elif [[ "$value" == \"*\" ]]; then
     value="${value:1:${#value}-2}"
-    [[ "$value" == *[\\\$\"\`]* ]] && return 1   # escapes, $, " or `: can't decode safely; ask again
+    [[ "$value" == *[\"\\\$\`]* ]] && return 1
   elif [[ "$value" == *[!A-Za-z0-9_./:@%+,=-]* ]]; then
-    return 1   # shells and dotenv parsers may read anything else differently; ask again
+    return 1
   fi
   printf '%s' "$value"
 }
@@ -146,14 +147,17 @@ ask_secret() {
 # write_env KEY VALUE upserts KEY='VALUE' into ENV_FILE (replaces any existing
 # line) and sets $KEY. Idempotent. Creates ENV_FILE at mode 0600; writes through
 # a symlink and keeps an existing file's mode. A value containing ' is written
-# double-quoted, which dotenv parsers and shells both read literally only when
-# it has no ", \, $ or backtick; other such values are refused.
+# double-quoted. Values every shell and dotenv parser would not read literally,
+# those with a backslash or mixing ' with ", $ or a backtick, are refused.
 write_env() {
   local key="$1" value="$2" tmp line
-  if [[ "$value" != *\'* ]]; then line="$key='$value'"
-  elif [[ "$value" != *[\"\\\$\`]* ]]; then line="$key=\"$value\""
-  else
-    warn "$key mixes ' with \", \\, \$ or a backtick; no .env quoting reads that portably. Set it by hand."
+  local LC_ALL=C
+  if [[ "$value" == *\\* ]]; then line=""
+  elif [[ "$value" != *\'* ]]; then line="$key='$value'"
+  elif [[ "$value" != *[\"\$\`]* ]]; then line="$key=\"$value\""
+  fi
+  if [[ -z "$line" ]]; then
+    warn "$key has a backslash, or mixes ' with \", \$ or a backtick; .env readers disagree on that. Set it by hand."
     return 1
   fi
   [[ -e "$ENV_FILE" ]] || (umask 077 && : > "$ENV_FILE")
