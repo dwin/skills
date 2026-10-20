@@ -8,10 +8,11 @@ description: Use Rift copy-on-write workspaces when the user requests Rift isola
 Use [Rift](https://github.com/anomalyco/rift) to give a task an isolated copy
 of the current workspace, including its Git index and uncommitted changes.
 
-This skill covers Rift's commands and works on its own. The
-`managing-workspaces` skill carries the wider policy: choosing an isolation
-method, seed checkouts, ownership, build storage, and cleanup authorization.
-Load it alongside this one when it is available.
+This skill covers Rift's commands and works on its own. Rift is for local
+machines; cloud agent sandboxes do not need it. The `managing-workspaces` skill
+carries the wider policy: choosing an isolation method, seed checkouts,
+ownership, build storage, and cleanup. Load it alongside this one when it is
+available.
 
 ## Ensure Rift is available
 
@@ -86,29 +87,17 @@ separate Rift workspaces when their edits need isolation.
 Report the workspace path, branch, inherited changes, task changes, and
 validation.
 
-Keep a Rift the user asked for as a snapshot until the user releases it. Keep
-an implementation Rift while its PR is open. Remove a Rift this task created when its PR
-merges, its review-only task has reported, or the user asks. Before removal,
-confirm all three:
+Follow `managing-workspaces` for when to remove a Rift and the checks to pass
+first. Without that skill, keep the Rift until the user asks for removal.
 
-- `git status --porcelain` prints nothing. Discarding uncommitted files needs
-  the user's explicit authorization. Inspect ignored files and evidence
-  separately with `git status --ignored`; inventory needed configuration,
-  inputs, artifacts, and evidence, and move anything worth keeping out of the
-  Rift first. Confirm the remaining ignored files are disposable; ask before
-  removing evidence or anything whose disposability is unclear.
-- Every commit the task made is pushed or merged, or the task made no commits.
-- Nothing is held for someone else, such as an adopted probe, a running
-  service, or a stash.
-
-Before removal, use `rift list` to inspect the full registered descendant tree:
-`rift remove` trashes the selected workspace and its descendants. Keep the
-parent unless every affected workspace belongs to this task, is eligible for
-cleanup, and passes these retention checks. Read `.rift.toml` and run hooks
-only within task authorization; use `--no-hooks` when its hooks exceed that
-authorization.
+`rift remove` trashes the selected workspace and every registered descendant,
+but `rift list` prints only direct children. Before removal, run `rift list` on
+the workspace and again on each child it reports, until no new children appear.
+Keep the parent unless every workspace in that tree belongs to this task and
+passes the removal checks. Read `.rift.toml` and run hooks only within task
+authorization; use `--no-hooks` when its hooks exceed that authorization.
 
 Remove it with `rift remove <absolute-workspace-path>`, never `rm -rf`.
-Removal trashes the workspace subtree. Use `rift gc` only when permanent
-deletion of Rift trash is explicitly requested; it can affect trash from other
-tasks.
+Removal moves the subtree into Rift's `.trash` storage and frees no disk space.
+Report the trash that remains. `rift gc` permanently deletes all trash,
+including other tasks', so run it only when the user explicitly asks.

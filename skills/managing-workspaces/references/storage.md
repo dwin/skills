@@ -26,7 +26,7 @@ Language specifics:
 
 A **lane** is the task's writable build output: a target directory, a
 subdirectory of a shared build volume, or a builder container's output path.
-Create one lane per task, named for the task, and reuse it for every build in
+Name lanes for the task, and reuse a compatible lane for every build in
 that task. Build release, bench, or other extra profiles only when the task
 needs them: each profile adds its own output tree to the lane. Serialize builds
 that share a writable lane. Copy executables the task must keep out of the lane
@@ -39,11 +39,12 @@ script that owns the lane may provide its own clean entry point; use that.
 
 ## Disk space
 
-The **disk floor** is 30 GB free plus the run's estimated peak usage, on the
-volume that will hold the output. Check it with `df -h <path>` before long
-builds, test loops, and benchmarks. Stop and report instead of starting a run
-that would breach the floor, and stop a running loop when free space drops
-below 30 GB. Report actual usage afterwards.
+The **disk floor** is the reserve the user or repository states, plus the
+run's estimated peak usage, on the volume that will hold the output. Without a
+stated reserve, use 30 GB. Check it with `df -h <path>` before storage-heavy
+runs. Stop and report instead of starting a run that would breach the floor,
+and stop a running loop when free space drops below the reserve. Report actual
+usage afterwards.
 
 Free space by cleaning this task's own lanes and temp data. Pruning shared
 caches or another task's storage needs the user's approval.
@@ -52,10 +53,11 @@ caches or another task's storage needs the user's approval.
 
 Tests remove what they create: databases, `initdb` clusters, containers, and
 fixture directories. Prefer the framework's cleanup hook, such as Go's
-`t.Cleanup`. After a test loop, compare the size of `$TMPDIR` with its size
-before the loop. Growth points to a leak: one `initdb` Postgres cluster left in
-`$TMPDIR` per test cost about 74 MB each. Fix a leak when the task covers that
-code; otherwise report it with the path and size.
+`t.Cleanup`. For a test loop, point the tests at a task-owned temp root, for
+example by setting `TMPDIR` for the run, and compare its size before and after.
+Growth points to a leak, such as an `initdb` cluster left behind by each test.
+Fix a leak when the task covers that code; otherwise report it with the path and
+size.
 
 ## Containers and Docker
 
