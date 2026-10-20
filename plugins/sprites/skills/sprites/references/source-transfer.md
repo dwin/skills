@@ -19,10 +19,10 @@ A remote checkout omits local edits. Record HEAD, `git status --short`, and the 
 - **Working patch:** `git diff --binary --no-ext-diff --no-textconv --src-prefix=a/ --dst-prefix=b/ HEAD > /task/evidence/working.patch`, covering staged and unstaged tracked changes together.
 - **Untracked files:** only the ones the task needs, packaged explicitly with a manifest of path and SHA-256 hash. Exclude ignored credentials, dependencies, host build outputs, and home directories.
 
-**Source tree ID.** The tree ID is the comparison key for working-tree content and file modes. First record the changed paths, staged additions and deletions included, plus the selected untracked files, in a path list that travels with the payload:
+**Source tree ID.** The tree ID is the comparison key for working-tree content and file modes. First record the changed paths, staged additions and deletions included, plus the selected untracked files, in a path list that travels with the payload. List each selected untracked file or symlink by its own path, expanding a directory into its files first; the recipe below skips a directory path without failing:
 
 ```bash
-untracked=(<selected-untracked-paths...>)
+untracked=(<selected-untracked-files...>)
 { git diff -z --name-only --no-renames HEAD
   if ((${#untracked[@]})); then printf '%s\0' "${untracked[@]}"; fi
 } > /task/evidence/paths.nul
