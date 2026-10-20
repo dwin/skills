@@ -106,8 +106,8 @@ _existing() {
   elif [[ "$value" == \"*\" ]]; then
     value="${value:1:${#value}-2}"
     [[ "$value" == *[\\\$\"]* ]] && return 1   # escapes, $ or ": can't decode safely; ask again
-  elif [[ "$value" == *[\#\'\"]* ]]; then
-    return 1   # inline comment or partial quoting: can't decode safely; ask again
+  elif [[ "$value" == *[\#\'\"[:space:]]* ]]; then
+    return 1   # comment, partial quoting, or whitespace: readers disagree; ask again
   fi
   printf '%s' "$value"
 }
