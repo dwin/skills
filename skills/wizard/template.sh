@@ -105,9 +105,9 @@ _existing() {
     value="${value//"$sq"/$q}"
   elif [[ "$value" == \"*\" ]]; then
     value="${value:1:${#value}-2}"
-    [[ "$value" == *[\\\$\"]* ]] && return 1   # escapes, $ or ": can't decode safely; ask again
-  elif [[ "$value" == *[\#\'\"[:space:]]* ]]; then
-    return 1   # comment, partial quoting, or whitespace: readers disagree; ask again
+    [[ "$value" == *[\\\$\"\`]* ]] && return 1   # escapes, $, " or `: can't decode safely; ask again
+  elif [[ "$value" == *[!A-Za-z0-9_./:@%+,=-]* ]]; then
+    return 1   # shells and dotenv parsers may read anything else differently; ask again
   fi
   printf '%s' "$value"
 }
