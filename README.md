@@ -20,6 +20,7 @@ User-invoked entry points:
 - `focus-output` keeps session responses action-first and low-distraction.
 - `autopilot` drives a branch to a reviewed, ready PR, and with `merge`
   merges it.
+- `retro` reviews a session for fixes to the agent's environment.
 - `handoff`, `teach`, `to-questionnaire`, and `wait-what` cover session
   transitions, learning, asynchronous discovery, and clarification.
 
@@ -36,7 +37,6 @@ Model-invoked skills:
   and cleanup, and loads `rift` for Rift commands.
 - `rift` installs Rift when needed and isolates tasks in snapshot workspaces.
 - `rust-build` configures, diagnoses, and shares Rust compilation caches (sccache, shared target directories, container and CI reuse).
-- `resolving-merge-conflicts` preserves both sides' intent during resolution.
 - `wizard` turns manual procedures into resumable shell walkthroughs.
 - `writing-for-agents` improves durable instructions written for agents.
 - `grilling` provides reusable interview discipline for agents and other
