@@ -24,7 +24,7 @@ done < <(
 shell_files=(scripts/*.sh)
 while IFS= read -r -d '' shell_file; do
   shell_files+=("$shell_file")
-done < <(find skills -type f -name '*.sh' -print0)
+done < <(find skills plugins -type f -name '*.sh' -print0)
 bash -n "${shell_files[@]}"
 shellcheck "${shell_files[@]}"
 workflow_files=("$marketplace_root"/.github/workflows/*.yml)
@@ -32,3 +32,6 @@ go -C tools tool actionlint -color "${workflow_files[@]}"
 uvx zizmor==1.29.0 .github/workflows
 
 claude plugin validate . --strict
+for plugin_root in plugins/*; do
+  claude plugin validate "$plugin_root" --strict
+done

@@ -7,6 +7,13 @@
   "description": "Darwin Smith's portable skills for software design and delivery.",
   "plugins": [
     {
+      "name": "sprites",
+      "source": "./plugins/sprites",
+      "description": "Remote Linux workspaces for builds, tests, data jobs, and agents.",
+      "category": "Development",
+      "tags": ["sprites", "remote", "builds", "agents"]
+    },
+    {
       "name": "dwin-skills",
       "source": "./",
       "description": "Decision interviews, debugging, research, TDD, architecture, and pull request workflows.",

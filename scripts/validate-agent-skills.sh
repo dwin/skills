@@ -18,7 +18,7 @@ cleanup() {
 }
 trap cleanup EXIT
 
-for skill in "$marketplace_root"/skills/*; do
+for skill in "$marketplace_root"/skills/* "$marketplace_root"/plugins/*/skills/*; do
   if grep -Eq '^(disable-model-invocation|argument-hint):' "$skill/SKILL.md"; then
     skill_name="$(basename "$skill")"
     normalized_skill="$validation_root/$skill_name"
