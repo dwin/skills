@@ -88,7 +88,9 @@ Report the workspace path, branch, inherited changes, task changes, and
 validation.
 
 Follow `managing-workspaces` for when to remove a Rift and the checks to pass
-first. Without that skill, keep the Rift until the user asks for removal.
+first. Without that skill, remove a Rift only when the user asks, after
+confirming `git status --porcelain` prints nothing and the task's commits are
+pushed.
 
 `rift remove` trashes the selected workspace and every registered descendant,
 but `rift list` prints only direct children. Before removal, run `rift list` on
