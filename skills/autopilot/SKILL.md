@@ -47,23 +47,25 @@ Honor narrower holds the user states, such as "stay local" or "keep it draft".
    [Reviewers](references/reviewers.md) and have it run `code-review` against
    the pinned base and the current head. Give every finding a disposition (see
    below). Commit the fixes, validate, and review the whole change again,
-   pointing the reviewer at the new commits and the earlier dispositions. The
+   pointing the reviewer at the new commits and the earlier dispositions.
+   When step 2 brought in base commits, also have it check how they interact
+   with this PR, even in files the PR does not touch. The
    step is done when a round on the current head is **clean**: no valid
    in-scope finding is left without a fix. Five rounds without
    converging means something structural is wrong: stop and report it.
 5. **Publish.** Push, then use `file-pr` to create or update the PR. Mark it
-   ready for review, then sync again if the base moved.
+   ready for review.
 6. **Remote review.** Use `babysit-pr` to monitor CI and reviews, with this
    skill's authority and stop condition. Work out which AI reviewers to expect
    from the PR's requested reviewers and check runs, from repository config
    such as `.cursor/BUGBOT.md`, `greptile.json`, `.coderabbit.yaml`, or a
    Claude review workflow, and from recent merged PRs. A reviewer is **done**
-   when it has submitted a completed review, or its check run has finished; a
-   successful run with no comments counts. For a reviewer not done 30 minutes
-   after the PR goes ready or after a push, re-request it once. If it is
-   still not done after another 30 minutes, it is missing: a missing
-   requested or required reviewer blocks, and a missing reviewer inferred
-   only from past PRs is reported and dropped.
+   when it has submitted a completed review, or its check run succeeded; a
+   successful run with no comments counts. A failed or cancelled run without
+   a review is not done. For a reviewer not done 30 minutes after the PR goes
+   ready or after a push, re-request it once. If it is still not done after
+   another 30 minutes, it is missing: a missing requested or required
+   reviewer blocks, and any other missing reviewer is reported and dropped.
 7. **Iterate.** Give every new finding a disposition and batch the fixes.
    Every push goes back through steps 2–4 first, so the local reviewer sees
    every change before remote reviewers do. Reply on each bot thread with its
@@ -114,11 +116,10 @@ reviewer.
 
 With `merge`, after the stop condition holds:
 
-1. Sync with the base once more. If the base moved, push the new head and
-   wait for CI on it. Run local review again when the sync needed a conflict
-   resolution, or when the base's new commits touch files this PR changes;
-   otherwise the PR's diff is unchanged. The head that passes is the one to
-   merge.
+1. Sync with the base once more. If the base moved, run steps 2–4 on the new
+   head before pushing it, then wait for CI on it. The head that passes is
+   the one to merge. If the base moves again three times in a row, stop and
+   report the moving base.
 2. Confirm required approvals, required checks, and conversation-resolution
    rules are satisfied. When a required human approval is missing, stop:
    report the PR as ready and waiting for approval.
