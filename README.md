@@ -33,6 +33,7 @@ Model-invoked skills:
 - `managing-workspaces` owns a task's workspace from isolation through storage
   and cleanup, and loads `rift` for Rift commands.
 - `rift` installs Rift when needed and isolates tasks in snapshot workspaces.
+- `rust-build` configures, diagnoses, and shares Rust compilation caches (sccache, shared target directories, container and CI reuse).
 - `resolving-merge-conflicts` preserves both sides' intent during resolution.
 - `wizard` turns manual procedures into resumable shell walkthroughs.
 - `writing-for-agents` improves durable instructions written for agents.
