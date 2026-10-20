@@ -16,7 +16,7 @@ Confirm `git rev-parse HEAD` equals the recorded SHA before building. Transfer s
 
 A remote checkout omits local edits. Record HEAD, `git status --short`, and the submodule and LFS state the task uses. The parent's patch and tree ID record only each submodule's commit, so a submodule with local edits needs its own capture, transfer, and verification in its own checkout, using the steps below; when that is not practical, stop and report it. Capture the edits as:
 
-- **Working patch:** `git diff --binary --no-ext-diff --no-textconv HEAD > /task/evidence/working.patch`, covering staged and unstaged tracked changes together.
+- **Working patch:** `git diff --binary --no-ext-diff --no-textconv --src-prefix=a/ --dst-prefix=b/ HEAD > /task/evidence/working.patch`, covering staged and unstaged tracked changes together.
 - **Untracked files:** only the ones the task needs, packaged explicitly with a manifest of path and SHA-256 hash. Exclude ignored credentials, dependencies, host build outputs, and home directories.
 
 **Source tree ID.** The tree ID is the comparison key for working-tree content and file modes. First record the changed paths, staged additions and deletions included, plus the selected untracked files, in a path list that travels with the payload:
@@ -48,7 +48,7 @@ Freeze local edits while capturing. Record the source tree ID before and after c
 
 **Upload and verify.** Hash every payload file locally, upload with `sprite file` or `sprite exec --file <local>:<remote>`, and verify the same hashes remotely. In the fresh checkout at HEAD, run `git apply --binary` with the working patch (skip it when the file is empty, since `git apply` rejects an empty patch), unpack the selected untracked files, and check every command's result. Compute the source tree ID remotely with the uploaded path list and compare it with the local one before building. `git ls-tree -r` on both IDs shows which paths differ. `git status --short` differs legitimately here: the patch lands staged changes as unstaged.
 
-**Index fidelity.** When the staging boundary matters to the task, capture `git diff --cached --binary --no-ext-diff --no-textconv` and `git diff --binary --no-ext-diff --no-textconv` instead of the single working patch. Apply the first with `git apply --index --binary` and the second with `git apply --binary`, skipping either one when it is empty, then also compare `git write-tree` of the real index on both sides.
+**Index fidelity.** When the staging boundary matters to the task, capture `git diff --cached --binary --no-ext-diff --no-textconv --src-prefix=a/ --dst-prefix=b/` and `git diff --binary --no-ext-diff --no-textconv --src-prefix=a/ --dst-prefix=b/` instead of the single working patch. Apply the first with `git apply --index --binary` and the second with `git apply --binary`, skipping either one when it is empty, then also compare `git write-tree` of the real index on both sides.
 
 For a directory tree or larger artifact, inspect `sprite file --help` and its subcommands rather than guessing copy direction or recursive syntax. Streaming tar over stdin is another option; use `set -o pipefail` locally and omit `--no-stdin`.
 
