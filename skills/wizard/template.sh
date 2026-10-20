@@ -6,8 +6,9 @@
 # Everything above the "STAGES" marker is the wizard library: do not hand-edit
 # it. Author the per-step stages below the marker.
 
-# Library helpers such as confirm and set_var are used only by some wizards.
-# shellcheck disable=SC2329
+# Library helpers such as confirm and set_var are used only by some wizards
+# (SC2317 in older ShellCheck, SC2329 in newer).
+# shellcheck disable=SC2317,SC2329
 
 set -euo pipefail
 
