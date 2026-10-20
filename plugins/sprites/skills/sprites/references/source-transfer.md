@@ -22,8 +22,10 @@ A remote checkout omits local edits. Record HEAD, `git status --short`, and the 
 **Source tree ID.** The tree ID is the comparison key for working-tree content and file modes. First record the changed paths, staged additions and deletions included, plus the selected untracked files, in a path list that travels with the payload:
 
 ```bash
+untracked=(<selected-untracked-paths...>)
 { git diff -z --name-only --no-renames HEAD
-  printf '%s\0' <selected-untracked-paths...>; } > /task/evidence/paths.nul
+  if ((${#untracked[@]})); then printf '%s\0' "${untracked[@]}"; fi
+} > /task/evidence/paths.nul
 ```
 
 Then compute the tree ID with a temporary index, which leaves the real index untouched and writes only loose objects. Use the same path list on both sides:
@@ -31,7 +33,7 @@ Then compute the tree ID with a temporary index, which leaves the real index unt
 ```bash
 idx=$(mktemp) &&
   GIT_INDEX_FILE="$idx" git read-tree HEAD &&
-  GIT_INDEX_FILE="$idx" git add -A --pathspec-file-nul \
+  GIT_INDEX_FILE="$idx" git --literal-pathspecs add -A --pathspec-file-nul \
     --pathspec-from-file=/task/evidence/paths.nul &&
   GIT_INDEX_FILE="$idx" git write-tree
 rm -f "$idx"
