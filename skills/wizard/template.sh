@@ -6,9 +6,8 @@
 # Everything above the "STAGES" marker is the wizard library: do not hand-edit
 # it. Author the per-step stages below the marker.
 
-# Library helpers such as confirm and set_var are used only by some wizards
-# (SC2317 in older ShellCheck, SC2329 in newer).
-# shellcheck disable=SC2317,SC2329
+# Library helpers such as confirm and set_var are used only by some wizards.
+# shellcheck disable=SC2329
 
 set -euo pipefail
 
@@ -86,6 +85,7 @@ pause() {
 }
 
 # confirm "question" is a y/N gate; returns success on yes.
+# shellcheck disable=SC2317 # optional helper; older ShellCheck calls it unreachable
 confirm() {
   local reply=""
   printf '  %s? %s [y/N] ' "$YELLOW" "$1"
@@ -178,6 +178,7 @@ set_secret() {
 }
 
 # set_var NAME VALUE sets a GitHub Actions repo variable (non-secret).
+# shellcheck disable=SC2317 # optional helper; older ShellCheck calls it unreachable
 set_var() {
   local name="$1" value="$2"
   if command -v gh >/dev/null 2>&1 && gh auth status >/dev/null 2>&1; then
