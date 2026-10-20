@@ -36,14 +36,16 @@ Honor narrower holds the user states, such as "stay local" or "keep it draft".
 
 1. **Baseline.** Resolve the workspace, branch, PR (if any), base branch, and
    head SHA. Record unrelated local changes so commits leave them out. On the
-   default branch, create a feature branch first.
+   default branch, create a feature branch first. Commit the task changes
+   before syncing.
 2. **Sync.** Fetch the base branch from the PR's base repository, which for a
    fork is not `origin`, and merge it into the branch when it is behind.
-   Rebase instead only when the repository requires linear history. Push in
-   step 5, after review. A conflict resolution is new work: it goes through
+   Rebase instead only when the repository requires linear history. If
+   unrelated uncommitted changes block the sync, stop and report them rather
+   than moving someone else's work. Push in step 5, after review. A conflict resolution is new work: it goes through
    the next review.
 3. **Validate.** Run focused checks and the repository's required checks.
-   Commit the task changes, so the review has an immutable head.
+   Commit any changes, so the review has an immutable head.
 4. **Local review.** Choose a reviewer from
    [Reviewers](references/reviewers.md) and have it run `code-review` against
    the pinned base and the current head. Give every finding a disposition (see
@@ -60,7 +62,9 @@ Honor narrower holds the user states, such as "stay local" or "keep it draft".
    skill's authority and stop condition. Work out which AI reviewers to expect
    from the PR's requested reviewers and check runs, from repository config
    such as `.cursor/BUGBOT.md`, `greptile.json`, `.coderabbit.yaml`, or a
-   Claude review workflow, and from recent merged PRs. A reviewer is **done**
+   Claude review workflow, and from recent merged PRs. Record then which
+   reviewers are requested or required; your own re-request below does not
+   change that. A reviewer is **done**
    when it has submitted a completed review, or its check run succeeded; a
    successful run with no comments counts. A failed or cancelled run without
    a review is not done. For a reviewer not done 30 minutes after the PR goes
