@@ -7,7 +7,9 @@ cd "$marketplace_root"
 
 ./scripts/validate-agent-skills.sh
 
-markdownlint-cli2 '**/*.md' '#.git/**' '#node_modules/**' '#.agents/skills/**'
+markdownlint --config .markdownlint.yaml --dot \
+  --ignore '.git/**' --ignore 'node_modules/**' --ignore '.agents/skills/**' \
+  '**/*.md'
 prettier --check . --ignore-path .gitignore
 
 while IFS= read -r -d '' json_file; do
