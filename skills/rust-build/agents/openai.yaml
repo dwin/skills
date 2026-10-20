@@ -1,5 +1,5 @@
 interface:
   display_name: "Rust Build"
-  short_description: "Build and test Rust with reusable caches"
+  short_description: "Configure and diagnose Rust compilation caches"
 policy:
   allow_implicit_invocation: true

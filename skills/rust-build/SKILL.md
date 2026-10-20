@@ -1,65 +1,78 @@
 ---
 name: rust-build
-description: Build and test Rust using the repository's toolchain and supported caches. Use when running Cargo builds or tests, configuring Rust build caches or sccache, reducing build storage, or preparing native, cross-compiled, container, or CI builds.
+description: Rust compilation caches. Use when configuring, diagnosing, or sharing sccache, shared target directories, or container and CI cache reuse, or when reducing Rust build storage across workspaces or runners.
 ---
 
-# Rust build
+# Rust compilation caches
 
-## Resolve the build contract
+Follow `managing-workspaces` for workspace and build-lane lifecycle, when available.
+For targets and runtimes, follow the repository's instructions; a successful
+cross-compile does not prove runtime compatibility.
 
-Read the repository's instructions, toolchain pin, Cargo manifests and configuration,
-lockfile policy, and build or CI entry point. Reuse an existing runner when it
-satisfies the task. Preserve the selected packages, features, profile, target,
-compiler flags, integer-overflow checks, and assertion settings.
+## Incremental compilation and sccache
 
-Identify the build host, artifact target, and required execution environment.
-Use the project's normal native build when it meets the task. For a different
-target or platform setup, read [Platforms and cross-compilation](references/platforms.md).
-For Linux container builds, also read [Linux Docker builds](references/docker-linux.md).
-A successful cross-compilation alone does not prove runtime compatibility.
+sccache cannot cache an incrementally compiled rustc invocation. Cargo compiles
+incrementally only workspace members and path dependencies, so with incremental
+left on, sccache still caches eligible registry and Git dependencies.
 
-Reuse the task's assigned workspace. Follow the repository's isolation policy
-when creating another workspace; load the available Rift skill if Rift is selected.
-Record the source revision and inherited changes before compiling.
+Keep incremental compilation for normal development. Set `CARGO_INCREMENTAL=0`
+when you deliberately want sccache to cache workspace and path crates, such as
+disposable builders or reuse across workspaces, after measuring that it beats
+incremental rebuilds for the workload.
 
-## Choose storage and caching
+## The sccache server
 
-Inspect effective Cargo configuration and existing caches before changing settings.
-Share supported package stores and compiler caches outside checkouts. Keep cache
-identities stable across tasks and separate writable build output from runtime state.
-Coordinate any shared target directory and preserve task artifacts before another
-build can replace them. Use independent targets when source identity or concurrent
-writers make reuse unsafe.
+- One server owns a local disk store at a time; concurrent servers on one
+  `SCCACHE_DIR` race and fail builds. When separate daemons (containers, runners)
+  would share a store, hold one lock beside the store for each daemon's whole
+  lifetime, give each daemon its own bounded store, or use a shared backend.
+- The server reads its configuration at startup. Changing a client's environment
+  leaves an already-running server unchanged; restart it with
+  `sccache --stop-server`, then confirm cache location and size in
+  `sccache --show-stats`.
+- `SCCACHE_CACHE_SIZE` (default 10 GiB) bounds only the sccache store; target
+  directories, package downloads, and Docker build cache grow separately.
 
-Prefer supported `sccache` for compilation reuse across workspaces. Preserve the
-repository's incremental workflow when it is required; disable incremental
-compilation for builds selected to use `sccache`. Keep local caches bounded.
-When configuring caching, choosing between cache strategies, or diagnosing misses,
-read [Cargo and compiler caches](references/caching.md).
+## What sccache reuses
 
-Apply task-specific settings in the selected build environment. Inspect existing
-wrappers and configuration precedence before overriding them; host settings do
-not automatically configure containers or remote runners.
+- Crates that invoke the linker (`bin`, `dylib`, `cdylib`, `proc-macro`) are
+  never cached; their library dependencies can be.
+- Absolute paths enter Rust cache keys, so workspace crates built from different
+  checkout paths miss. Build from a stable path when cross-workspace hits matter.
+  As of sccache 0.18, `SCCACHE_BASEDIRS` normalizes C and C++ paths, not Rust.
+- Procedural macros that read files may not be cached correctly.
 
-## Build and verify
+## Verify hits
 
-Run the repository's requested build or test command with its selected packages,
-features, target, and profile. Use `--locked` when preserving an existing lockfile;
-otherwise follow the project's resolution policy and retain the resolved lockfile
-when reproducibility is required. Respect offline or vendored dependency policies.
-Set build parallelism to fit the runner's memory and CPU budget when needed.
+Cargo reporting `Fresh` means rustc never ran, so sccache saw nothing. Read
+`sccache --show-stats` before and after a build that really compiles, such as a
+fresh target directory with otherwise identical inputs, and report hits, misses,
+and non-cacheable reasons. Zero statistics only on a server your task owns.
 
-Verify the required artifact or tests in the intended execution environment.
-Identify any emulation or untested target. When cache reuse is part of the task,
-check statistics around real compilation; Cargo reporting `Fresh` is not an
-`sccache` hit. Measure the relevant workload before claiming build-time or storage
-savings.
+## Shared target directories
 
-Preserve required artifacts and provenance: source revision, toolchain, host and
-target, effective build options, and artifact hash. Keep databases, journals,
-replays, and benchmark evidence separate from caches; preserve required storage
-and warm/cold-cache conditions.
+Cargo decides freshness mainly from file timestamps. Restored or copied sources
+with old timestamps can make a reused target directory look up to date against
+changed code; use a fresh target directory unless the source snapshot provably
+matches. Cargo serializes builds on one target directory, so copy each task's
+artifacts out before the next build overwrites them.
 
-Report commands, verification, artifact paths, cache locations and limits, and
-retained state. Cleanup of existing caches, volumes, workspaces, or runtime
-evidence requires the user's approval.
+## Containers and CI
+
+Host cache settings (environment, Cargo config, a running sccache server) do not
+reach a container or runner; configure the wrapper and cache inside it. Mount only
+`$CARGO_HOME/registry` and `$CARGO_HOME/git` into a builder; the rest of the host's
+Cargo home holds host binaries, configuration, and credentials. For Docker
+builders, read [Linux Docker builds](references/docker-linux.md).
+
+When the task needs reproducibility, record `rustc -Vv`, `sccache --version`, the
+image digest, and the lockfile used. Ask before pruning existing caches, volumes,
+or target directories.
+
+## Sources
+
+- [Cargo profiles: incremental](https://doc.rust-lang.org/cargo/reference/profiles.html#incremental)
+- [Cargo FAQ: why is Cargo rebuilding](https://doc.rust-lang.org/cargo/faq.html#why-is-cargo-rebuilding-my-code)
+- [sccache Rust caveats](https://github.com/mozilla/sccache/blob/main/docs/Rust.md)
+- [sccache local storage](https://github.com/mozilla/sccache/blob/main/docs/Local.md)
+- [sccache configuration](https://github.com/mozilla/sccache/blob/main/docs/Configuration.md)
