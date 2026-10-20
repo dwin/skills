@@ -99,6 +99,7 @@ _existing() {
   [[ -f "$ENV_FILE" ]] || return 1
   local LC_ALL=C line value; line=$(grep -E "^${1}=" "$ENV_FILE" | tail -n1) || return 1
   value="${line#*=}"
+  [[ "$value" == *[[:cntrl:]]* ]] && return 1
   # Reuse only what write_env writes, or a plain unquoted value: forms every
   # shell and dotenv parser reads literally. Anything else: ask again.
   if [[ "$value" == \'*\' ]]; then
@@ -148,17 +149,17 @@ ask_secret() {
 # line) and sets $KEY. Idempotent. Creates ENV_FILE at mode 0600; writes through
 # a symlink and keeps an existing file's mode. A value containing ' is written
 # double-quoted. Values every shell and dotenv parser would not read literally,
-# those with a backslash or ${ (python-dotenv interpolates it even in single
+# those with a backslash, a control character, or ${ (python-dotenv interpolates it even in single
 # quotes) or mixing ' with ", $ or a backtick, are refused.
 write_env() {
   local key="$1" value="$2" tmp line
   local LC_ALL=C
-  if [[ "$value" == *\\* || "$value" == *\$\{* ]]; then line=""
+  if [[ "$value" == *[\\[:cntrl:]]* || "$value" == *\$\{* ]]; then line=""
   elif [[ "$value" != *\'* ]]; then line="$key='$value'"
   elif [[ "$value" != *[\"\$\`]* ]]; then line="$key=\"$value\""
   fi
   if [[ -z "$line" ]]; then
-    warn "$key has a backslash or \${, or mixes ' with \", \$ or a backtick; .env readers disagree on that. Set it by hand."
+    warn "$key has a backslash, control character, or \${, or mixes ' with \", \$ or a backtick; .env readers disagree on that. Set it by hand."
     return 1
   fi
   [[ -e "$ENV_FILE" ]] || (umask 077 && : > "$ENV_FILE")
