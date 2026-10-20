@@ -8,6 +8,12 @@ description: Use Rift copy-on-write workspaces when the user requests Rift isola
 Use [Rift](https://github.com/anomalyco/rift) to give a task an isolated copy
 of the current workspace, including its Git index and uncommitted changes.
 
+This skill covers Rift's commands and works on its own. Rift is for local
+machines; cloud agent sandboxes do not need it. The `managing-workspaces` skill
+carries the wider policy: choosing an isolation method, seed checkouts,
+ownership, build storage, and cleanup. Load it alongside this one when it is
+available.
+
 ## Ensure Rift is available
 
 Run `command -v rift` and `rift --help`. If it is missing, install the
@@ -30,7 +36,13 @@ Confirm the executable works before creating a workspace.
 
 1. Resolve the intended source to an absolute path. Inspect its Git status,
    HEAD, index, and remote before snapshotting. Record inherited changes so
-   later commits include only task-owned edits unless the user requests otherwise.
+   later commits include only task-owned edits unless the user requests
+   otherwise. Leave the source index and working-tree contents unchanged.
+   After creating or selecting the Rift, and only inside that workspace before
+   making task commits, unstage inherited entries without changing working-tree
+   contents. Stage only task-owned changes (select hunks interactively when
+   needed) and inspect the complete staged diff. If inherited and task changes
+   cannot be separated confidently, do not commit them; report the blocker.
 2. Reuse a suitable Rift workspace already assigned to this task. For a new
    workspace, run `rift init` from the source, then
    `rift create --name <task-name>`. Capture the absolute path printed on
@@ -39,15 +51,16 @@ Confirm the executable works before creating a workspace.
    the explicit working directory. Shell directory changes do not persist
    across separate tool calls. Report the path so the user can open it.
 
-Start from a regular Git checkout. Rift rejects linked Git worktrees and
-repositories with active Git operations or lock files. Preserve those states;
-use a suitable regular checkout or report the blocker.
+Rift needs a regular Git checkout. It rejects linked Git worktrees,
+repositories with active Git operations or lock files, and FIFOs such as a
+secret manager's `.env` pipe. Leave those states in place. A clean seed avoids
+these blockers for ordinary new isolation; if the user explicitly requests a
+snapshot of this current state, report the blocker and ask before using a source
+that omits it.
 
-Rift copies Git repositories with detached HEAD. Create a task branch before
-committing. For existing PR work, preserve the requested remote branch and
-inspect its relationship to the snapshot HEAD before choosing a branch.
-Inherited staged changes require special care: avoid blanket staging or
-commits that absorb the source's unrelated work.
+Rift copies Git repositories with detached HEAD. Before committing, create a
+task branch at HEAD. For PR work, first compare HEAD with the fetched PR branch
+and keep any commits only HEAD has on a branch, then check out the PR branch.
 
 By default, Rift omits regenerable artifacts, including dependencies and build
 caches. Use `--copy-all` when the task needs those files, otherwise run the
@@ -73,10 +86,21 @@ separate Rift workspaces when their edits need isolation.
 ## Finish and clean up
 
 Report the workspace path, branch, inherited changes, task changes, and
-validation. Preserve the workspace by default so the user can review it.
+validation.
 
-When cleanup is requested, inspect Git status and confirm needed commits,
-untracked files, and artifacts are retained elsewhere before running
-`rift remove <absolute-workspace-path>`. Removal trashes the workspace
-subtree. Use `rift gc` only when permanent deletion of Rift trash is explicitly
-requested; it can affect trash from other tasks.
+Follow `managing-workspaces` for when to remove a Rift and the checks to pass
+first. Without that skill, remove a Rift only when the user asks, after
+confirming `git status --porcelain` prints nothing and the task's commits are
+pushed.
+
+`rift remove` trashes the selected workspace and every registered descendant,
+but `rift list` prints only direct children. Before removal, run `rift list` on
+the workspace and again on each child it reports, until no new children appear.
+Keep the parent unless every workspace in that tree belongs to this task and
+passes the removal checks. Read `.rift.toml` and run hooks only within task
+authorization; use `--no-hooks` when its hooks exceed that authorization.
+
+Remove it with `rift remove <absolute-workspace-path>`, never `rm -rf`.
+Removal moves the subtree into Rift's `.trash` storage and frees no disk space.
+Report the trash that remains. `rift gc` permanently deletes all trash,
+including other tasks', so run it only when the user explicitly asks.

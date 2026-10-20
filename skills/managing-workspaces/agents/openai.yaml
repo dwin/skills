@@ -1,0 +1,3 @@
+interface:
+  display_name: "Managing Workspaces"
+  short_description: "Isolate, size, and clean up task workspaces"

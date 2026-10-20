@@ -1,0 +1,33 @@
+# syntax=docker/dockerfile:1
+# Pass the repository's verified Rust image digest through RUST_IMAGE.
+ARG RUST_IMAGE
+FROM ${RUST_IMAGE}
+ARG TARGETARCH
+
+RUN set -eu; \
+    apt-get update; \
+    apt-get install -y --no-install-recommends ca-certificates curl; \
+    rm -rf /var/lib/apt/lists/*; \
+    case "$TARGETARCH" in \
+      arm64) triple=aarch64-unknown-linux-musl; \
+        checksum=2b3284d5da3b46a47dc4229e75bb7b88ac4aa99c8d754fb7d2f84997e5a4354a ;; \
+      amd64) triple=x86_64-unknown-linux-musl; \
+        checksum=45f1447fbe231e3037bde351ef70677dd212216c8d62ae7ca409fecc4d6acc89 ;; \
+      *) echo "Unsupported Linux builder architecture: $TARGETARCH" >&2; exit 1 ;; \
+    esac; \
+    archive="sccache-v0.18.0-$triple"; \
+    curl --fail --location --retry 3 \
+      "https://github.com/mozilla/sccache/releases/download/v0.18.0/$archive.tar.gz" \
+      --output /tmp/sccache.tar.gz; \
+    printf '%s  %s\n' "$checksum" /tmp/sccache.tar.gz | sha256sum --check -; \
+    tar --extract --gzip --file /tmp/sccache.tar.gz --directory /usr/local/bin \
+      --strip-components=1 "$archive/sccache"; \
+    rm /tmp/sccache.tar.gz; \
+    sccache --version
+
+ENV RUSTC_WRAPPER=/usr/local/bin/sccache \
+    CARGO_INCREMENTAL=0 \
+    SCCACHE_DIR=/var/cache/sccache \
+    SCCACHE_CACHE_SIZE=10G
+
+WORKDIR /workspace
