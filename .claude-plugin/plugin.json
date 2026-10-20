@@ -33,6 +33,7 @@
     "./skills/handoff",
     "./skills/implement",
     "./skills/improve-codebase-architecture",
+    "./skills/managing-workspaces",
     "./skills/prototype",
     "./skills/research",
     "./skills/resolving-merge-conflicts",
