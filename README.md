@@ -18,6 +18,8 @@ User-invoked entry points:
 - `setup-dwin-skills` configures a repository's tracker and domain docs.
 - `grill-me` explicitly starts a rigorous decision interview before action.
 - `focus-output` keeps session responses action-first and low-distraction.
+- `autopilot` drives a branch to a reviewed, ready PR, and with `merge`
+  merges it.
 - `retro` reviews a session for fixes to the agent's environment.
 - `handoff`, `teach`, `to-questionnaire`, and `wait-what` cover session
   transitions, learning, asynchronous discovery, and clarification.
@@ -42,9 +44,25 @@ Model-invoked skills:
 - `verifying-claims` provides reusable evidence discipline for agents and
   other skills.
 
-These entry points are explicit-only. Claude and Cursor read that policy from
-their skill frontmatter; Codex reads the equivalent policy from
+The user-invoked entry points above are explicit-only. Claude and Cursor read
+that policy from their skill frontmatter; Codex reads the equivalent policy from
 `agents/openai.yaml`.
+
+## Autopilot a branch
+
+Invoke `autopilot` to take a branch from local work to a ready PR. Your client
+may show the plugin namespace, such as `dwin-skills:autopilot`.
+
+```text
+$autopilot
+$autopilot merge
+```
+
+The workflow keeps the branch current with its base. A reviewer from a
+different model family runs `code-review` before anything is pushed. The
+implementer fixes, refutes, or defers each finding, then files the PR, marks it
+ready, and handles CI and AI-reviewer feedback the same way. `merge` adds a
+head-guarded merge once every requirement passes on the current head.
 
 ## Install
 
