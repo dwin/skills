@@ -28,7 +28,7 @@ untracked=(<selected-untracked-paths...>)
 } > /task/evidence/paths.nul
 ```
 
-Then compute the tree ID with a temporary index, which leaves the real index untouched and writes only loose objects. Use the same path list on both sides; an empty list means HEAD's tree:
+Then compute the tree ID with a temporary index, which leaves the real index untouched and writes only loose objects. Use the same path list on both sides; an empty list means HEAD's tree. `-f` keeps listed paths that match ignore rules, such as files staged with `git add -f`:
 
 ```bash
 (
@@ -36,7 +36,7 @@ Then compute the tree ID with a temporary index, which leaves the real index unt
   trap 'rm -f "$idx"' EXIT
   GIT_INDEX_FILE="$idx" git read-tree HEAD &&
     { [ ! -s /task/evidence/paths.nul ] ||
-      GIT_INDEX_FILE="$idx" git --literal-pathspecs add -A --pathspec-file-nul \
+      GIT_INDEX_FILE="$idx" git --literal-pathspecs add -A -f --pathspec-file-nul \
         --pathspec-from-file=/task/evidence/paths.nul; } &&
     GIT_INDEX_FILE="$idx" git write-tree
 )
