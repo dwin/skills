@@ -29,7 +29,8 @@ Separate unknowns into:
 2. Investigate answerable factual questions before asking the user.
 3. Ask the ready decisions together in a numbered round. Keep each question
    focused, explain why it matters, offer concrete choices when useful, and
-   state the recommended answer with its tradeoff.
+   state the recommended answer with its tradeoff. Word each question so
+   "yes" accepts the recommendation.
 4. Wait for the user's answers. Do not continue down branches whose
    prerequisites remain unsettled.
 5. Update the decision tree from the answers, surface newly ready decisions,
