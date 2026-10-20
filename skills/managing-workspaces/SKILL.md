@@ -25,9 +25,10 @@ someone else.
      [Isolation](references/isolation.md) for Rift blockers, seeds, and the
      fallbacks.
 3. Name a new workspace and its branch for the task, and start the branch from
-   the requested base. For an existing PR, check out the PR's remote branch and
-   compare it with the workspace HEAD before committing. Push to that branch so
-   the PR updates. A read-only review can use a detached checkout at the
+   the requested base. For an existing PR, fetch its branch and compare it with
+   the workspace HEAD before switching. Report commits that only HEAD has, and
+   keep them on a branch, before checking out the PR branch. Push to that branch
+   so the PR updates. A read-only review can use a detached checkout at the
    fetched PR SHA.
 4. Record the source path, base commit, and any inherited staged, unstaged, or
    untracked changes, so task commits include only task-owned edits.

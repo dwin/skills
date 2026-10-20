@@ -58,8 +58,9 @@ these blockers for ordinary new isolation; if the user explicitly requests a
 snapshot of this current state, report the blocker and ask before using a source
 that omits it.
 
-Rift copies Git repositories with detached HEAD. Create a task branch, or check
-out the PR's remote branch, before committing.
+Rift copies Git repositories with detached HEAD. Before committing, create a
+task branch at HEAD. For PR work, first compare HEAD with the fetched PR branch
+and keep any commits only HEAD has on a branch, then check out the PR branch.
 
 By default, Rift omits regenerable artifacts, including dependencies and build
 caches. Use `--copy-all` when the task needs those files, otherwise run the
