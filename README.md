@@ -18,14 +18,13 @@ User-invoked entry points:
 - `setup-dwin-skills` configures a repository's tracker and domain docs.
 - `grill-me` explicitly starts a rigorous decision interview before action.
 - `focus-output` keeps session responses action-first and low-distraction.
+- `autopilot` drives a branch to a reviewed, ready PR, and with `merge`
+  merges it.
 - `handoff`, `teach`, `to-questionnaire`, and `wait-what` cover session
   transitions, learning, asynchronous discovery, and clarification.
 
 Model-invoked skills:
 
-- `review-and-ship` runs independent local review, fixes findings, files the PR,
-  and follows CI and AI reviews to readiness. Add `--merge` to authorize
-  merging when the current head satisfies repository requirements.
 - `code-review`, `babysit-pr`, and `file-pr` cover review and pull request
   delivery.
 - `diagnosing-bugs`, `tdd`, and `prototype` provide evidence-driven ways to
@@ -46,24 +45,21 @@ The user-invoked entry points above are explicit-only. Claude and Cursor read
 that policy from their skill frontmatter; Codex reads the equivalent policy from
 `agents/openai.yaml`.
 
-## Review and deliver a branch
+## Autopilot a branch
 
-Invoke `review-and-ship` to run the whole local-review-to-PR workflow. Your
-client may show the plugin namespace, such as `dwin-skills:review-and-ship`.
+Invoke `autopilot` to take a branch from local work to a ready PR. Your client
+may show the plugin namespace, such as `dwin-skills:autopilot`.
 
 ```text
-$review-and-ship
-$review-and-ship origin/main --merge
+$autopilot
+$autopilot merge
 ```
 
-The coordinator fixes valid findings; a read-only subagent runs `code-review`.
-Every fix batch passes local validation and another review before publishing.
-The workflow then files or updates the PR and follows CI and AI feedback.
-
-The default ends with a reviewed, green PR. `--merge` authorizes merging that
-PR after current-head checks, expected AI reviews, and repository requirements
-pass. It preserves explicit holds and separate permission for review replies,
-thread resolution, history rewrites, and deployment.
+The workflow keeps the branch current with its base. A reviewer from a
+different model family runs `code-review` before anything is pushed. The
+implementer fixes, refutes, or defers each finding, then files the PR, marks it
+ready, and handles CI and AI-reviewer feedback the same way. `merge` adds a
+head-guarded merge once every requirement passes on the current head.
 
 ## Install
 

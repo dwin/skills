@@ -63,13 +63,6 @@ Each smell reads _what it is_ → _how to fix_; match it against the diff:
 
 ### 4. Spawn both sub-agents in parallel
 
-Check the effective reviewer model and reasoning effort against any settings
-the user specified. Resolve aliases through the available provider catalog and
-record the effective selection when observable. If an explicit setting is
-unavailable, report the limitation and obtain a decision before substituting.
-A generic request for critical review does not require a model-selection
-question.
-
 **Standards sub-agent prompt** — include:
 
 - The full diff command and commit list.

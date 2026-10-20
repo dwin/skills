@@ -19,6 +19,7 @@
     "planning"
   ],
   "skills": [
+    "./skills/autopilot",
     "./skills/babysit-pr",
     "./skills/code-review",
     "./skills/codebase-design",
@@ -36,7 +37,6 @@
     "./skills/prototype",
     "./skills/research",
     "./skills/resolving-merge-conflicts",
-    "./skills/review-and-ship",
     "./skills/rift",
     "./skills/setup-dwin-skills",
     "./skills/tdd",
@@ -48,8 +48,8 @@
     "./skills/verifying-claims",
     "./skills/wait-what",
     "./skills/wayfinder",
-    "./skills/wizard",
     "./skills/whats-next",
+    "./skills/wizard",
     "./skills/writing-for-agents"
   ]
 }
