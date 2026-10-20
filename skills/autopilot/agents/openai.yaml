@@ -1,0 +1,6 @@
+interface:
+  display_name: "Autopilot"
+  short_description: "Review, ready, and land a branch's pull request"
+  default_prompt: "Use $autopilot to sync my branch with its base branch, get it reviewed by another model family, mark the PR ready, and handle AI review feedback."
+policy:
+  allow_implicit_invocation: false
