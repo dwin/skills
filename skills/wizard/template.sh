@@ -152,7 +152,7 @@ ask_secret() {
 # those with a backslash, a control character, or ${ (python-dotenv interpolates it even in single
 # quotes) or mixing ' with ", $ or a backtick, are refused.
 write_env() {
-  local key="$1" value="$2" tmp line
+  local key="$1" value="$2" tmp line=""
   local LC_ALL=C
   if [[ "$value" == *[\\[:cntrl:]]* || "$value" == *\$\{* ]]; then line=""
   elif [[ "$value" != *\'* ]]; then line="$key='$value'"
