@@ -1,6 +1,6 @@
 ---
 name: sprites
-description: Run builds, tests, data jobs, development services, or agent tasks on Fly.io Sprites when local CPU, memory, disk, or Linux compatibility is a constraint. Use for Sprite setup, remote workspaces, artifact transfer, and optional SSHFS mounts.
+description: Run builds, tests, data jobs, development services, or agent tasks on Fly.io Sprites when local CPU, memory, disk, or Linux compatibility is a constraint. Use for Sprite setup, Sprite workspaces, artifact transfer, and optional SSHFS mounts.
 ---
 
 # Sprites
@@ -12,13 +12,11 @@ Move expensive work to an authenticated Fly.io Sprite. Keep editing and orchestr
 1. Inspect `sprite --help`, `sprite list`, and relevant command help. Use existing authentication; report an auth failure without printing tokens or reading credential files. Target each command with `-o <org> -s <sprite>` so concurrent agents cannot change each other's target through `sprite use`.
 2. Reuse a suitable existing Sprite. Inspect remote CPU, memory, free disk, installed tools, and active jobs before sizing work. Create another Sprite when the authorized task needs isolation and existing capacity is unsuitable; record its purpose and expected storage.
 3. Choose one source of truth: a remote checkout for remote development, or a local checkout whose exact source is transferred for remote validation. Record repository, commit, staged and unstaged changes, remote directory, and toolchain. Never treat a remote branch with the same name as proof that it contains local edits.
-4. Use a task-specific checkout under `/home/sprite/workspaces/`. Verify the configured GitHub access method before cloning. A Sprites GitHub gateway may work even when `gh` and Git are unauthenticated; read [GitHub gateway](references/github-gateway.md) when one is configured. With native Git access, fetch the intended ref and verify HEAD and status. Otherwise use a verified source archive. Check repository instructions in the remote source tree before changing it. Keep credentials inside their existing stores; copying local home directories or auth files is unnecessary.
+4. Use a task-specific checkout under `/home/sprite/workspaces/`. Verify the configured GitHub access method before cloning. A Sprites GitHub connector may work even when `gh` and Git are unauthenticated; read [GitHub gateway](references/github-gateway.md) when one is configured. Check out the exact commit and verify HEAD. Read [source transfer](references/source-transfer.md) when the Sprite cannot fetch that commit or the local checkout has uncommitted work. Check repository instructions in the remote source tree before changing it. Keep credentials inside their existing stores; copying local home directories or auth files is unnecessary.
 
-For local uncommitted work, read [source transfer](references/source-transfer.md). For local editors on a remote checkout, read [SSHFS](references/sshfs.md). When preparing a reusable builder or measuring cache reuse, read [checkpoints and caches](references/checkpoints-and-caches.md).
+For local editors on a remote checkout, read [SSHFS](references/sshfs.md). When preparing a reusable builder, building Rust, or measuring cache reuse, read [checkpoints and caches](references/checkpoints-and-caches.md).
 
 ## Execute remotely
-
-Use the CLI directly; inspect installed help when an example differs from the current release:
 
 ```bash
 sprite exec -o <org> -s <sprite> --no-stdin --no-port-forward \
@@ -27,7 +25,7 @@ sprite exec -o <org> -s <sprite> --no-stdin --no-port-forward \
 
 Pass arguments directly. When shell syntax is needed, invoke `bash -lc` explicitly and quote local and remote variables separately. Use `--no-stdin` for unattended commands; omit it when streaming input. Use `--no-port-forward` for compute jobs to avoid claiming laptop ports.
 
-Install dependencies with the repository's package manager and lockfile on Linux. Reuse compatible persistent caches within the Sprite. Give each task its own `CARGO_TARGET_DIR`, scoped by repository, toolchain, and platform. Share a target only when every writer uses the same explicit lock around the entire Cargo invocation and the task-specific artifact copy. A writer that is already running or cannot join that lock requires a separate target. A bounded Linux sccache may be shared when one daemon owns each writable disk cache; otherwise use a task-specific cache or serialize its users. A macOS cache wrapper does not configure the Sprite. Run Docker remotely only when the workload needs it and Docker is available; inspect remote volumes before allocating caches. Keep journals, databases, and benchmark results in run-specific paths.
+Install dependencies with the repository's package manager and lockfile on Linux. Write build outputs to task-owned paths, and share a writable cache only when one owner or one lock serializes every writer; [checkpoints and caches](references/checkpoints-and-caches.md) has the Cargo and sccache rules. Run Docker remotely only when the workload needs it and Docker is available; inspect remote volumes before allocating caches. Keep journals, databases, and benchmark results in run-specific paths.
 
 Start with a small representative command, then run the required workload. Capture its exit status, complete log, source SHA and dirty state, tool versions, command, artifact paths, and relevant resource usage. Preserve task-specific copies before a later build can overwrite outputs. Linux binaries must run on the remote Linux platform or a compatible deployment target.
 
@@ -36,10 +34,6 @@ For long tasks, use the session or service mechanism shown by installed help. Di
 ## Delegate work
 
 Give each agent the skill path, org/Sprite, absolute remote checkout, source SHA and dirty-state transfer, exact task, allowed side effects, cache ownership, and evidence destination. Require the agent to run compute through `sprite exec` and return command results and artifact provenance. Agents sharing a Sprite need separate writable checkouts and outputs; serialize access to shared writable targets or databases. GitHub access inside the Sprite does not expand permission to push, merge, or deploy.
-
-Example assignment:
-
-> Use the sprites skill. On org ORG, Sprite NAME, validate commit SHA in /home/sprite/workspaces/TASK. Run the repository's build and focused tests remotely. Keep logs and artifacts under that task directory, preserve source and outputs, and return exit codes, tool versions, and artifact paths. Do not change the branch or publish results externally.
 
 ## Return results
 

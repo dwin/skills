@@ -1,12 +1,16 @@
 # Checkpoints and caches
 
-Use Git commits and verified source archives for code identity. Use Sprite checkpoints for environment rollback. Check `sprite checkpoint --help` and the storage driver before relying on version-specific behavior.
+Use Git commits and source tree IDs (see [source transfer](source-transfer.md)) for code identity. Use Sprite checkpoints for environment rollback. Check `sprite checkpoint --help` and the storage driver before relying on version-specific behavior.
 
 For a new builder, prepare pinned tools and a bounded cache configuration, verify them, then create one named baseline checkpoint before expensive build outputs accumulate. Record its ID and tool versions. Create another checkpoint before an environment change worth rolling back. A checkpoint contains the filesystem, including credentials, caches, and targets; it is not a directory-scoped source snapshot. Copy-on-write history can retain changed cache blocks. Keep checkpoints deliberately and obtain cleanup authorization before pruning. Restore affects the whole Sprite and interrupts other work; inspect read-only checkpoint paths when recovery only needs a file.
 
+## Rust targets and sccache
+
 On a 100 GB Sprite, start with a 5–10 GiB sccache cap rather than copying a workstation's larger limit. Also budget registry downloads, toolchains, targets, preserved artifacts, and checkpoint history; the sccache cap bounds only its own cache. Estimate peak usage and reserve headroom before building.
 
-One daemon owns each writable local sccache store. Set its environment before starting it; later client environment changes do not reconfigure a running daemon. Configure `RUSTC_WRAPPER=sccache`, `CARGO_INCREMENTAL=0`, `SCCACHE_DIR`, and `SCCACHE_CACHE_SIZE` on Linux. Reuse stable task-owned Cargo target paths across the task's runs. Different target or checkout paths can miss Rust cache entries, including dependencies. Executables and procedural macros still need linking.
+Give each task its own `CARGO_TARGET_DIR`, scoped by repository, toolchain, and platform, and reuse that path across the task's runs; different target or checkout paths can miss Rust cache entries, including dependencies. Share a target only when every writer holds the same explicit lock around the entire Cargo invocation and the task-specific artifact copy. A writer that is already running or cannot join that lock gets a separate target.
+
+One daemon owns each writable local sccache store; other users get a task-specific cache or are serialized behind that owner. Set the daemon's environment before starting it; later client environment changes do not reconfigure a running daemon. Configure `RUSTC_WRAPPER=sccache`, `CARGO_INCREMENTAL=0`, `SCCACHE_DIR`, and `SCCACHE_CACHE_SIZE` inside the Sprite. Executables and procedural macros still need linking.
 
 To measure reuse, record stats and time a real build, preserve exact binaries, then rebuild with an empty target at the same path and the same inputs while keeping sccache. Renaming a task-owned target aside preserves evidence without deletion, but temporarily doubles target storage. Compare hit/miss deltas and exit codes; Cargo's unchanged-target no-op measures a different behavior. Preserve the requested warm/cold benchmark protocol.
 
