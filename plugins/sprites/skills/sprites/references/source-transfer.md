@@ -28,13 +28,14 @@ untracked=(<selected-untracked-paths...>)
 } > /task/evidence/paths.nul
 ```
 
-Then compute the tree ID with a temporary index, which leaves the real index untouched and writes only loose objects. Use the same path list on both sides:
+Then compute the tree ID with a temporary index, which leaves the real index untouched and writes only loose objects. Use the same path list on both sides; an empty list means HEAD's tree:
 
 ```bash
 idx=$(mktemp) &&
   GIT_INDEX_FILE="$idx" git read-tree HEAD &&
-  GIT_INDEX_FILE="$idx" git --literal-pathspecs add -A --pathspec-file-nul \
-    --pathspec-from-file=/task/evidence/paths.nul &&
+  { [ ! -s /task/evidence/paths.nul ] ||
+    GIT_INDEX_FILE="$idx" git --literal-pathspecs add -A --pathspec-file-nul \
+      --pathspec-from-file=/task/evidence/paths.nul; } &&
   GIT_INDEX_FILE="$idx" git write-tree
 rm -f "$idx"
 ```
