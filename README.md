@@ -18,6 +18,7 @@ User-invoked entry points:
 - `setup-dwin-skills` configures a repository's tracker and domain docs.
 - `grill-me` explicitly starts a rigorous decision interview before action.
 - `focus-output` keeps session responses action-first and low-distraction.
+- `retro` reviews a session for fixes to the agent's environment.
 - `handoff`, `teach`, `to-questionnaire`, and `wait-what` cover session
   transitions, learning, asynchronous discovery, and clarification.
 
@@ -31,7 +32,6 @@ Model-invoked skills:
   design and implementation.
 - `research` investigates questions against primary sources.
 - `rift` installs Rift when needed and isolates tasks in snapshot workspaces.
-- `resolving-merge-conflicts` preserves both sides' intent during resolution.
 - `wizard` turns manual procedures into resumable shell walkthroughs.
 - `writing-for-agents` improves durable instructions written for agents.
 - `grilling` provides reusable interview discipline for agents and other

@@ -35,7 +35,7 @@
     "./skills/improve-codebase-architecture",
     "./skills/prototype",
     "./skills/research",
-    "./skills/resolving-merge-conflicts",
+    "./skills/retro",
     "./skills/rift",
     "./skills/setup-dwin-skills",
     "./skills/tdd",
@@ -47,8 +47,8 @@
     "./skills/verifying-claims",
     "./skills/wait-what",
     "./skills/wayfinder",
-    "./skills/wizard",
     "./skills/whats-next",
+    "./skills/wizard",
     "./skills/writing-for-agents"
   ]
 }
