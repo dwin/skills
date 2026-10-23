@@ -1,6 +1,6 @@
 ---
 name: t3code-remote
-description: Connect outside agents to T3 Code over remote MCP with OAuth, troubleshoot connection or permission failures, and read or steer projects and threads in the connected environment.
+description: T3 Code remote MCP access. Use when connecting outside agents with OAuth, fixing login or permission failures, reading or steering projects and threads, or scripting threads with t3 thread on the host.
 ---
 
 # T3 Code remote access
@@ -23,8 +23,7 @@ T3 Code did not start.
 
 Discover the tools actually exposed by this connection and inspect the relevant
 schemas. Tool availability and names can differ from those injected into agents
-inside T3 Code; use advertised operations rather than assuming internal
-delegation tools are available.
+inside T3 Code; use this connection's advertised operations.
 
 Resolve the target project and thread from live reads before sending work.
 Read the thread's current state and recent context before continuing it. For a

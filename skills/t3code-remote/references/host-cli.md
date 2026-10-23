@@ -1,9 +1,8 @@
 # Scripts on the environment host
 
-Use this branch only on the machine running the T3 Code environment. The
+Use this reference only on the machine running the T3 Code environment. The
 `t3 thread` CLI exposes the same tools there without an OAuth sign-in. Follow
-the installed CLI's `--help` for available flags; this is not a remote-client
-authentication workaround.
+the installed CLI's `--help` for available flags.
 
 ```sh
 t3 thread list

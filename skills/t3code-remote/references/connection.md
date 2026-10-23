@@ -8,18 +8,20 @@ and the connected server's advertised tool schemas.
 ## Choose the route
 
 Identify the client and obtain the MCP URL from **Settings → Connections →
-saved environment menu → Copy MCP URL**. Use the copied address ending in
-`/mcp`; choose a route reachable from the agent's actual runtime:
+saved environment menu → Copy MCP URL**. The copied URL reflects this device's
+connection route; a client elsewhere may need a different route. Use an address
+ending in `/mcp` that the agent's actual runtime can reach:
 
-- An agent on the host can use `localhost`. An agent on another of the user's
-  computers can use T3 Connect or reachable HTTPS, including Tailscale HTTPS.
+- Agents on the user's computers can use T3 Connect or reachable HTTPS,
+  including Tailscale HTTPS. On the environment host, `localhost` also works.
 - Hosted agents such as ChatGPT need the internet-reachable T3 Connect address.
   A Tailscale address works only from the user's tailnet.
 - OAuth credentials can be sent over HTTPS or to localhost. Plain HTTP LAN or
   Tailscale IP addresses can allow discovery while preventing sign-in.
 
 Configure only the requested client. Replace the placeholder URL below with the
-environment's MCP URL.
+environment's MCP URL. Check the installed client's `mcp login --help` before
+using `--no-browser`; older versions may not support it.
 
 ## Claude Code
 
@@ -29,8 +31,9 @@ claude mcp login t3
 claude mcp list
 ```
 
-For a machine without a browser, use `claude mcp login t3 --no-browser`; open the
-printed sign-in URL elsewhere and enter the final URL in the CLI prompt.
+For a machine without a browser, use `claude mcp login t3 --no-browser`; the user
+opens the printed sign-in URL elsewhere and enters the final URL directly in
+the CLI prompt. Hand that prompt to the user when the agent is driving the CLI.
 
 ## Codex
 
@@ -50,7 +53,8 @@ server URL to the environment's T3 Connect URL ending in `/mcp`, and choose
 **OAuth**. Discovery supplies the authentication settings; no client ID or
 secret is needed. Create the app and complete its sign-in page.
 
-Other clients must support remote MCP over HTTP with OAuth. Clients without
+Other clients must support remote MCP over HTTP with OAuth. Give the client the
+MCP URL and choose OAuth; it discovers the sign-in settings. Clients without
 OAuth support cannot connect through this workflow.
 
 ## Approve and verify access
