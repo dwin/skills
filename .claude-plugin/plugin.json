@@ -41,6 +41,7 @@
     "./skills/rift",
     "./skills/rust-build",
     "./skills/setup-dwin-skills",
+    "./skills/t3code-remote",
     "./skills/tdd",
     "./skills/teach",
     "./skills/to-questionnaire",

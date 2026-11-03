@@ -1,0 +1,3 @@
+interface:
+  display_name: "T3 Code Remote"
+  short_description: "Connect to and steer T3 Code over remote MCP"

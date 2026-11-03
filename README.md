@@ -53,6 +53,7 @@ Model-invoked skills:
   and cleanup, and loads `rift` for Rift commands.
 - `rift` installs Rift when needed and isolates tasks in snapshot workspaces.
 - `rust-build` configures, diagnoses, and shares Rust compilation caches (sccache, shared target directories, container and CI reuse).
+- `t3code-remote` connects outside agents to T3 Code over MCP with OAuth and reads or steers remote projects and threads.
 - `wizard` turns manual procedures into resumable shell walkthroughs.
 - `writing-for-agents` improves durable instructions written for agents.
 - `grilling` provides reusable interview discipline for agents and other
