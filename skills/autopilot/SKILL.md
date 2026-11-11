@@ -69,7 +69,8 @@ local", "keep it draft", or "wait for approval".
    reviewers are requested or required; your own re-request below does not
    change that. A reviewer is **done**
    when it has submitted a completed review, or its check run succeeded; a
-   successful run with no comments counts. A failed or cancelled run without
+   successful run with no comments counts. For a reviewer that reviews every
+   push, both mean the current head. A failed or cancelled run without
    a review is not done. For a reviewer not done 30 minutes after the PR goes
    ready or after a push, re-request it once. If it is still not done after
    another 30 minutes, it is missing: a missing requested or required

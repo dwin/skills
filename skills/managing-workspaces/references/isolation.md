@@ -35,7 +35,8 @@ git switch --no-track -c <task-branch> origin/<base>
 `--no-track` leaves the task branch without an upstream. Branching from
 `origin/<base>` otherwise makes the base its upstream, and a later plain
 `git push` aims at the base branch. Publish the task branch under its own name
-with `git push -u origin HEAD`.
+with `git push -u <remote> HEAD`, naming the remote that will hold the PR's
+head branch: `origin`, or the fork's remote when `origin` is the upstream.
 
 Unless the user explicitly requests a snapshot of the current workspace, use a
 clean seed rather than a checkout carrying someone's work. For a requested

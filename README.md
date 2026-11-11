@@ -174,3 +174,8 @@ original `ask-matt` and `setup-matt-pocock-skills` entry points are named
 `focus-output` is inspired by Ayoub Ghriss's
 [`i-have-adhd`](https://github.com/ayghri/i-have-adhd) skill. The upstream project
 is MIT licensed; see [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) for its license text.
+
+The Behavior axis of `code-review` is adapted from the `interrogate` skill in
+Lauren Tan's [pstack](https://github.com/cursor/plugins/tree/main/pstack). The
+upstream project is MIT licensed; see
+[`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) for its license text.
