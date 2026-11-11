@@ -99,16 +99,19 @@ message calls the PR ready, clean, green, mergeable, or waiting only on someone
 else, observe all of these after the last push and quote the head SHA with
 them:
 
-- every check run is terminal: name the failing, pending, and skipped ones, and
-  say whether each skip is expected;
+- every check run on this head has finished and succeeded. A skipped or
+  neutral result counts only when it is expected for this change, so name each
+  one and say why. A failed, cancelled, or timed-out run blocks, as does one
+  still pending;
 - each expected reviewer, human or bot, has a review on this head, or a
-  successful check run for it;
-- no actionable review thread is unresolved;
+  successful check run for it, and none has a request for changes standing;
+- no actionable finding is open, wherever the reviewer wrote it: an inline
+  thread, the summary body of a review, or a comment on the PR;
 - the head contains the base's tip, and the platform reports it mergeable.
 
 A notification that checks passed is a prompt to run these queries, and they
-are the evidence. With anything pending, report "not ready, waiting on" and
-list it.
+are the evidence. When any item fails, report "not ready" and list what the PR
+is waiting on and what blocks it.
 
 ## Stop only when
 

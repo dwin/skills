@@ -14,12 +14,19 @@ easy to review. Prefer why the change matters over an inventory of edits.
 2. Inspect the working tree, commits, complete diff against the intended base,
    and current branch tracking state. Confirm the diff matches the user's goal
    and does not contain unrelated or sensitive material.
-3. Run all repository-required validation: the commands the repository's CI
-   runs on a pull request, at the tool versions CI pins, on the tree being
-   pushed. Name any check that cannot be reproduced locally instead of counting
-   it as passed. Do not claim checks that did not run or pass. If required
-   validation fails, fix it only when that work is already authorized;
-   otherwise report the blocker instead of filing a misleading PR.
+3. Run the repository-required validation on the tree being pushed. The aim is
+   the result CI's pull-request checks will give, reached the way the
+   repository does it locally: follow its instructions and use the local entry
+   point they name, such as a `make` or `just` target, a package script, or a
+   cached or affected-only variant. When the instructions name none, read the
+   pull-request workflow and run the same checks with the tools already
+   installed. Use the dependencies, caches, and containers the workspace
+   already has, and fetch more only when a check cannot give the same result
+   without it. Name any check left uncovered locally, including one whose
+   local tool version could change the result, and let CI settle it instead of
+   counting it as passed. Do not claim checks that did not run or pass. If
+   required validation fails, fix it only when that work is already
+   authorized; otherwise report the blocker instead of filing a misleading PR.
 4. Push the branch if needed, under its own name: `git push -u origin HEAD`.
    A task branch created from `origin/<base>` can have the base as its
    upstream, and a plain `git push` then aims at the base. A direct request to

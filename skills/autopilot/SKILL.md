@@ -131,16 +131,19 @@ With `merge`, after the stop condition holds:
 2. Confirm required checks and conversation-resolution rules are satisfied on
    that head. These gate the merge: when one is failing or pending, stop and
    report it. A required human approval that is merely missing does not gate
-   it, because `merge` is the user's approval: continue with the admin
-   override in step 3. A human reviewer who requested changes is a stop.
+   it, because `merge` is the user's approval: step 3 covers it with the admin
+   override, or reports it where a merge queue rules the override out. A
+   human reviewer who requested changes is a stop.
 3. Merge with the repository's allowed method, guarding the reviewed head:
    `gh pr merge <number> --squash --match-head-commit <sha>` (or `--merge` or
    `--rebase`), or the platform's
    equivalent. Add `--admin` only for the missing approval in step 2, and say
    in the report that the merge used it. When the repository uses a merge
-   queue, enqueue the PR and follow it until the PR is merged or removed from
-   the queue. Without a head-guarded merge operation, report the blocker
-   instead of merging.
+   queue, enqueue the PR without `--admin`, because there the flag merges
+   directly and skips the queue along with the approval. Follow the PR until
+   it is merged or removed from the queue. If the missing approval keeps it
+   out of the queue, stop and report the approval as the blocker. Without a
+   head-guarded merge operation, report the blocker instead of merging.
 4. Verify that the PR shows as merged and that the base branch contains the
    resulting commit. An enqueued PR or enabled auto-merge does not count as a
    merge.
