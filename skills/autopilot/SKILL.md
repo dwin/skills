@@ -109,7 +109,8 @@ Without `merge`, stop when all of these hold on the current head:
 - the latest local review round is clean;
 - every expected AI reviewer is done or dropped, and each of its findings has
   a disposition;
-- required CI checks pass;
+- CI passes on the current head by the check rule in `babysit-pr`'s Ready,
+  which counts every check run, required or not;
 - the PR is marked ready, and a fresh fetch shows the head contains the
   base's tip. When it does not, return to step 2.
 
@@ -117,8 +118,8 @@ A bot that reviews only once, or only on request, need not re-review every
 push. The local review covers the later commits.
 
 Also stop, and report, when progress needs the user: a scope decision,
-conflicting reviewers, a human reviewer requesting changes, required checks
-failing for reasons outside this PR after three reruns, a missing required
+conflicting reviewers, a human reviewer requesting changes, checks failing
+for reasons outside this PR after three reruns, a missing required
 reviewer, or a base that moved three times in a row while waiting.
 
 ## Merge
@@ -128,12 +129,12 @@ With `merge`, after the stop condition holds:
 1. Sync with the base once more. If the base moved, run the loop from step 2
    again until the stop condition holds on the new head, including reviewers
    that review every push. That head is the one to merge.
-2. Confirm required checks and conversation-resolution rules are satisfied on
-   that head. These gate the merge: when one is failing or pending, stop and
-   report it. A required human approval that is merely missing does not gate
+2. Confirm the checks still pass on that head and conversation-resolution
+   rules are satisfied. These gate the merge: when one is failing or pending,
+   stop and report it. A required human approval that is merely missing does not gate
    it, because `merge` is the user's approval: step 3 covers it with the admin
    override, or reports it where a merge queue rules the override out. A
-   human reviewer who requested changes is a stop.
+   request for changes still standing, from a human or a bot, is a stop.
 3. Merge with the repository's allowed method, guarding the reviewed head:
    `gh pr merge <number> --squash --match-head-commit <sha>` (or `--merge` or
    `--rebase`), or the platform's
