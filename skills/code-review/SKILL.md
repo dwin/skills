@@ -65,6 +65,10 @@ Each smell reads _what it is_ → _how to fix_; match it against the diff:
 
 Issue both sub-agent calls together, in the foreground, and aggregate the reports they return. Background sub-agents can finish without their reports reaching you.
 
+A review is **read-only**. Open both prompts with: "Read the code and run checks, then report. The author owns every edit, commit, push, and post, so leave the working tree, the branch, and the PR exactly as you found them." The same rule binds you when you are the reviewer.
+
+When your own brief rules out sub-agents, as a reviewer started by another agent usually is, run the Standards axis and then the Spec axis yourself and report them under the same two headings.
+
 **Standards sub-agent prompt** — include:
 
 - The full diff command and commit list.

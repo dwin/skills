@@ -64,20 +64,23 @@ loops, or keeping evidence.
 
 ## Clean up
 
-Remove a task-created workspace and its lanes when the user or repository
-instructions authorize cleanup and one of these holds:
+Remove a task-created workspace and its lanes as soon as one of these holds:
 
-- the task's PR merged;
+- the task's PR merged and no follow-up work will reuse the workspace;
 - a review-only task has reported its review; or
 - the user asks.
 
-Without that authorization, list the candidates with their paths and sizes and
-ask. `rift gc`, shared caches, Docker volumes, retained evidence, and anything
-this task did not create always need the user's approval.
+A merge is the authorization: remove then, without asking. User or repository
+instructions that say to keep workspaces take precedence.
 
 Keep a workspace that existed before the task, an implementation workspace
-while its PR is open, and anything under an explicit retention hold, such as a
-snapshot the user asked for.
+while its PR is open, a workspace that planned follow-up work will reuse, and
+anything under an explicit retention hold, such as a snapshot the user asked
+for.
+
+`rift gc`, shared caches, Docker volumes, retained evidence, and anything this
+task did not create always need the user's approval. List them with their
+paths and sizes and ask.
 
 Before removing anything, confirm all three:
 

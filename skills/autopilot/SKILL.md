@@ -27,10 +27,12 @@ Invoking autopilot authorizes, for this branch and its PR only:
 - replying to and resolving threads opened by review bots, and re-requesting
   their reviews.
 
-`merge` adds a guarded merge of this PR. Nothing else is implied. Draft replies
-to human reviewers for the user instead of posting them. History rewrites,
-admin overrides, deployments, and other PRs keep their own authorization.
-Honor narrower holds the user states, such as "stay local" or "keep it draft".
+`merge` adds a guarded merge of this PR, with an admin override when a missing
+human approval is the only requirement left unmet. Nothing else is implied.
+Draft replies to human reviewers for the user instead of posting them. History
+rewrites, admin overrides of any other rule, deployments, and other PRs keep
+their own authorization. Honor narrower holds the user states, such as "stay
+local", "keep it draft", or "wait for approval".
 
 ## Loop
 
@@ -49,8 +51,9 @@ Honor narrower holds the user states, such as "stay local" or "keep it draft".
 4. **Local review.** Choose a reviewer from
    [Reviewers](references/reviewers.md) and have it run `code-review` against
    the pinned base and the current head. Give every finding a disposition (see
-   below). Commit the fixes, validate, and review the whole change again,
-   pointing the reviewer at the new commits and the earlier dispositions.
+   below). Commit the fixes, validate, and review the whole change again: a
+   fresh reviewer reads the current head blind, then reconciles the earlier
+   findings, as Reviewers describes.
    When step 2 brought in base commits, also have it check how they interact
    with this PR, even in files the PR does not touch. The
    step is done when a round on the current head is **clean**: no valid
@@ -94,8 +97,8 @@ current head's source, deduplicate across reviewers, then give it exactly one
 Scope is the PR's stated goal. A fix that needs new abstractions, options, or
 defensive branches for unreachable states is a sign the finding should be
 refuted or deferred. Follow `babysit-pr`'s rule on fixing real defects only.
-Pass refutations back to the local reviewer in the next round. If it contests
-with new evidence, re-evaluate. If the disagreement survives one exchange,
+Pass refutations to the local reviewer in the next round's reconciliation. If
+it contests with new evidence, re-evaluate. If the disagreement survives one exchange,
 keep your position and list it in the report. When a finding recurs after a
 fix, diagnose why the fix missed instead of patching again.
 
@@ -125,15 +128,19 @@ With `merge`, after the stop condition holds:
 1. Sync with the base once more. If the base moved, run the loop from step 2
    again until the stop condition holds on the new head, including reviewers
    that review every push. That head is the one to merge.
-2. Confirm required approvals, required checks, and conversation-resolution
-   rules are satisfied. When a required human approval is missing, stop:
-   report the PR as ready and waiting for approval.
+2. Confirm required checks and conversation-resolution rules are satisfied on
+   that head. These gate the merge: when one is failing or pending, stop and
+   report it. A required human approval that is merely missing does not gate
+   it, because `merge` is the user's approval: continue with the admin
+   override in step 3. A human reviewer who requested changes is a stop.
 3. Merge with the repository's allowed method, guarding the reviewed head:
    `gh pr merge <number> --squash --match-head-commit <sha>` (or `--merge` or
    `--rebase`), or the platform's
-   equivalent. When the repository uses a merge queue, enqueue the PR and
-   follow it until the PR is merged or removed from the queue. Without a
-   head-guarded merge operation, report the blocker instead of merging.
+   equivalent. Add `--admin` only for the missing approval in step 2, and say
+   in the report that the merge used it. When the repository uses a merge
+   queue, enqueue the PR and follow it until the PR is merged or removed from
+   the queue. Without a head-guarded merge operation, report the blocker
+   instead of merging.
 4. Verify that the PR shows as merged and that the base branch contains the
    resulting commit. An enqueued PR or enabled auto-merge does not count as a
    merge.

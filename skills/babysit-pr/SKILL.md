@@ -12,14 +12,18 @@ objective, stop once that current-head condition is met.
 
 ## Respect authority
 
-- Treat a request to watch or babysit as permission for read-only monitoring.
-- Make and push fixes only when the user also asked to address feedback, fix
-  failures, keep the PR green, or otherwise modify the branch.
+- For a PR this session authored, or one authored by the user's own account,
+  babysitting includes the work: fix in-scope failures and findings, commit,
+  push, and take the PR out of draft. Hold back when the user asked to watch
+  only or to keep it a draft, or when the PR exists to explore an idea.
+- For anyone else's PR, a request to watch or babysit is read-only. Change the
+  branch only when the user also asked to address feedback, fix failures, or
+  keep it green.
 - Treat permission to change code separately from permission to speak for the
   user. Do not post replies, submit reviews, or resolve threads unless the user
   authorized PR communication.
-- Do not merge, close, reopen, force-push, rebase, mark ready, or enable
-  auto-merge without explicit authorization for that action.
+- Do not merge, close, reopen, force-push, rebase, or enable auto-merge without
+  explicit authorization for that action.
 - Follow repository instructions and work only on the PR branch. Preserve
   unrelated local changes.
 - Keep review-driven work within the PR's stated goal. Report scope-expanding
@@ -88,6 +92,24 @@ Use the environment's recurring-monitor or wait facility. Keep the watcher
 observable; do not leave an unowned detached process. Report meaningful state
 changes instead of narrating unchanged polls.
 
+## Ready
+
+**Ready** is a claim about the current head, and every push voids it. Before a
+message calls the PR ready, clean, green, mergeable, or waiting only on someone
+else, observe all of these after the last push and quote the head SHA with
+them:
+
+- every check run is terminal: name the failing, pending, and skipped ones, and
+  say whether each skip is expected;
+- each expected reviewer, human or bot, has a review on this head, or a
+  successful check run for it;
+- no actionable review thread is unresolved;
+- the head contains the base's tip, and the platform reports it mergeable.
+
+A notification that checks passed is a prompt to run these queries, and they
+are the evidence. With anything pending, report "not ready, waiting on" and
+list it.
+
 ## Stop only when
 
 - the caller-specified readiness condition is met, if the user or coordinating
@@ -97,6 +119,11 @@ changes instead of narrating unchanged polls.
 - progress requires user action, such as missing permission, sustained
   infrastructure failure, exhausted retries, unsafe conflict resolution, or
   ambiguous reviewer direction.
+
+A ready PR waiting for someone to merge it is still open. Keep the watch armed
+for the merge when the environment can wake you on it, so the work after the
+merge starts without the user reporting it. When the environment cannot, say
+in the handoff that the merge will go unnoticed until the user reports it.
 
 PR monitoring is one part of the user's task. If the PR merges and the user
 also asked to watch its apply, deployment, or runtime verification, continue
