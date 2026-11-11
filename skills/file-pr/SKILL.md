@@ -27,7 +27,9 @@ easy to review. Prefer why the change matters over an inventory of edits.
    counting it as passed. Do not claim checks that did not run or pass. If
    required validation fails, fix it only when that work is already
    authorized; otherwise report the blocker instead of filing a misleading PR.
-4. Push the branch if needed, under its own name: `git push -u origin HEAD`.
+4. Push the branch if needed, under its own name, to the remote that owns the
+   PR's head branch: `git push -u <remote> HEAD`. That remote is `origin` in
+   most checkouts and the fork's remote when `origin` is the upstream.
    A task branch created from `origin/<base>` can have the base as its
    upstream, and a plain `git push` then aims at the base. A direct request to
    create the PR authorizes this normal prerequisite, but not history

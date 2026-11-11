@@ -1,14 +1,15 @@
 ---
 name: code-review
-description: Review the changes since a fixed point (commit, branch, tag, or merge-base) along two axes — Standards (does the code follow this repo's documented coding standards?) and Spec (does the code match what the originating issue/spec asked for?). Runs both reviews in parallel sub-agents and reports them side by side. Use when the user wants to review a branch, a PR, work-in-progress changes, or asks to "review since X".
+description: Review the changes since a fixed point (commit, branch, tag, or merge-base) along three axes — Standards (does the code follow this repo's documented coding standards?), Spec (does the code match what the originating issue/spec asked for?), and Behavior (does the change hold up when a reviewer runs it and tries to break it?). Runs the reviews in parallel sub-agents and reports them side by side. Use when the user wants to review a branch, a PR, work-in-progress changes, or asks to "review since X".
 ---
 
-Two-axis review of the diff between `HEAD` and a fixed point the user supplies:
+Three-axis review of the diff between `HEAD` and a fixed point the user supplies:
 
 - **Standards** — does the code conform to this repo's documented coding standards?
 - **Spec** — does the code faithfully implement the originating issue / spec?
+- **Behavior** — does the change hold up when run? A Behavior finding counts only when a command shows the failure.
 
-Both axes run as **parallel sub-agents** so they don't pollute each other's context, then this skill aggregates their findings.
+The axes run as **parallel sub-agents** so they don't pollute each other's context, then this skill aggregates their findings.
 
 If `docs/agents/issue-tracker.md` exists, follow it. Otherwise, use the issue
 tracker tools or CLI available in the current environment and keep the review
@@ -37,6 +38,8 @@ Look for the originating spec, in this order:
 4. The user's task brief and acceptance criteria, when supplied.
 5. If nothing is found, ask the user where the spec is. If they say there isn't one, the **Spec** sub-agent will skip and report "no spec available".
 
+The Behavior axis needs the change's **intent** even when there is no spec. With a spec, the intent is the spec. Without one, write the intent in a sentence or two from the commits and the PR description, and label it as inferred.
+
 ### 3. Identify the standards sources
 
 Search the repo for every file that documents how code should be written. When `CODING_STANDARDS.md` or `CONTRIBUTING.md` exists, it must be on the list.
@@ -61,13 +64,13 @@ Each smell reads _what it is_ → _how to fix_; match it against the diff:
 - **Middle Man** — a class or function that mostly just delegates onward. → cut it, call the real target direct.
 - **Refused Bequest** — a subclass or implementer that ignores or overrides most of what it inherits. → drop the inheritance, use composition.
 
-### 4. Spawn both sub-agents in parallel
+### 4. Spawn the sub-agents in parallel
 
-Issue both sub-agent calls together, in the foreground, and aggregate the reports they return. Background sub-agents can finish without their reports reaching you.
+Issue the sub-agent calls together, in the foreground, and aggregate the reports they return. Background sub-agents can finish without their reports reaching you.
 
-A review is **read-only**. Open both prompts with: "Read the code and run checks, then report. The author owns every edit, commit, push, and post, so leave the working tree, the branch, and the PR exactly as you found them." The same rule binds you when you are the reviewer.
+A review is **read-only**. Open every prompt with: "Read the code and run checks, then report. The author owns every edit, commit, push, and post, so leave the working tree, the branch, and the PR exactly as you found them." The same rule binds you when you are the reviewer.
 
-When your own brief rules out sub-agents, as a reviewer started by another agent usually is, run the Standards axis and then the Spec axis yourself and report them under the same two headings.
+When your own brief rules out sub-agents, as a reviewer started by another agent usually is, run the Standards axis, then Spec, then Behavior yourself and report them under the same three headings.
 
 **Standards sub-agent prompt** — include:
 
@@ -83,17 +86,31 @@ When your own brief rules out sub-agents, as a reviewer started by another agent
 
 If the spec is missing, skip the Spec sub-agent and note this in the final report.
 
+**Behavior sub-agent prompt** — include:
+
+- The diff command and commit list.
+- The intent from step 2.
+- How this repo builds and runs its tests, from its instructions.
+- The brief: "Try to break this change. Prove each finding with a run against the real code: a failing test, a repro script, or command output that shows the wrong behavior. Report each finding with a title, the exact command, the path of any repro file, the output it printed, and the output the intent requires. Leave out anything you did not run. Style, naming, structure, and risks that need a future change to matter belong to the other axes. Keep repro files in a temporary directory outside the checkout; when one has to sit inside the tree, as a test file does, work in a disposable copy of the checkout. 'No findings' is a valid result. Under 400 words, not counting quoted output."
+
+When the diff has nothing to run, as with a prose-only change, skip the Behavior sub-agent and note this in the final report.
+
 ### 5. Aggregate
 
-Present the two reports under `## Standards` and `## Spec` headings, verbatim or lightly cleaned. Do **not** merge or rerank findings — the two axes are deliberately separate (see _Why two axes_).
+Before reporting, rerun the command behind each Behavior finding. Keep a finding when the output shows the failure and the failure breaks the intent. Drop the rest, and merge findings that share a root cause.
+
+Present the reports under `## Standards`, `## Spec`, and `## Behavior` headings. Give Standards and Spec verbatim or lightly cleaned. Under Behavior, give each kept finding's command, its output, and how it breaks the intent, then the number dropped and why; say "no verified findings" when none survive. Do **not** merge or rerank findings across axes — they are deliberately separate (see _Why three axes_).
 
 End with a one-line summary: total findings per axis, and the worst issue _within each axis_ (if any). Don't pick a single winner across axes — that's the reranking the separation exists to prevent.
 
-## Why two axes
+## Why three axes
 
-A change can pass one axis and fail the other:
+A change can pass one axis and fail another:
 
 - Code that follows every standard but implements the wrong thing → **Standards pass, Spec fail.**
 - Code that does exactly what the issue asked but breaks the project's conventions → **Spec pass, Standards fail.**
+- Code that follows the standards and reads as a match for the spec but gives the wrong result when run → **Standards and Spec pass, Behavior fail.**
 
-Reporting them separately stops one axis from masking the other.
+Standards and Spec are readings of the diff. Behavior reports only what a run showed, so it catches what a reading passes over and stays silent on anything it could not execute.
+
+Reporting them separately stops one axis from masking another.

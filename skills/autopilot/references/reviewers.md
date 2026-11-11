@@ -36,9 +36,11 @@ your conclusions. Give it:
   (`git diff <base>...<head>`);
 - the task brief or spec, and the repository's standards files;
 - an instruction to run `code-review` if the skill is available to it,
-  otherwise to review both Standards and Spec itself;
+  otherwise to review Standards, Spec, and Behavior itself, reporting a
+  Behavior finding only when a command it ran shows the failure;
 - the output format: a list of findings, each with severity, `file:line`, the
-  failure it causes, and the smallest fix.
+  failure it causes, the smallest fix, and for a Behavior finding the command
+  and its output.
 
 Keep the brief to those facts. Where you suspect problems, what you fixed
 since the last round, and what earlier rounds found all wait for
