@@ -1,11 +1,13 @@
 ---
 name: verifying-claims
-description: Establish the state of a pull request, branch, secret, deployed resource, or file by observing it rather than inferring it. Use when work depends on external state, when about to report that something does not exist, or when another skill needs a reusable evidence discipline.
+description: Establish the state of a pull request, check, branch, secret, deployed resource, or file by observing it rather than inferring it. Use before stating that something is ready, passing, merged, deployed, configured, or absent, when relaying another agent's report, when work depends on external state, or when another skill needs a reusable evidence discipline.
 ---
 
 # Verifying Claims
 
 Separate what you observed from what you concluded. Only the first is evidence.
+The bar is the same wherever the claim is written: a final report, a status
+update, a PR body, an approval request, or a brief handed to another agent.
 
 ## Name the claims before investigating
 
@@ -29,6 +31,18 @@ and they never collapse into each other:
 Reporting a conclusion as observed when the command never ran is the failure
 this skill exists to prevent. An unverified claim costs the user a moment. A
 fabricated observation costs them the decision they made on top of it.
+
+Two kinds of statement pass for observations and are neither:
+
+- **A relayed report.** What another agent said it did is a claim with that
+  agent as its source. Observe the result yourself (the pushed commit, the PR
+  state, the test output) before stating it as fact, or attribute it ("the
+  implementer reports") and mark it unverified.
+- **A prediction.** A plan, a diff, or a green workflow shows what should
+  happen when a change merges, applies, or deploys. Say "the plan shows", and
+  name what a plan cannot show. Afterwards, observe the outcome itself: the
+  steps the apply or deploy run executed and skipped, and the revision now
+  running. Merged, applied, and live are three separate states.
 
 ## Redact what you show
 
@@ -54,8 +68,10 @@ A single-vocabulary search that returns nothing is unverified, not absent.
 ## Treat state as timestamped
 
 Every observation is true as of the moment it was made. A result gathered
-before the last push, deploy, rebase, or apply is a memory rather than an
-observation. Re-run it before acting on it.
+before the last edit, push, deploy, rebase, or apply is a memory rather than an
+observation. Re-run it before acting on it. A test run that predates the final
+edit says nothing about the final tree, and a scripted edit that matched
+nothing leaves the old code in place: confirm the change landed, then run.
 
 When a prior observation and a current one disagree, the current one wins and
 the disagreement is itself worth reporting.

@@ -1,6 +1,6 @@
 ---
 name: file-pr
-description: Create, open, file, or submit a pull request with an outcome-focused title and description. Use when the user asks to turn completed branch work into a PR, update the PR for the current branch, or prepare a pull request for review.
+description: Create or update a pull request with an outcome-focused title and description. Use before running `gh pr create` or its equivalent for any reason, whether the user asked for a PR, the task ends in one, or an existing PR's title or body needs updating.
 ---
 
 # File PR
@@ -14,15 +14,33 @@ easy to review. Prefer why the change matters over an inventory of edits.
 2. Inspect the working tree, commits, complete diff against the intended base,
    and current branch tracking state. Confirm the diff matches the user's goal
    and does not contain unrelated or sensitive material.
-3. Run all repository-required validation. Do not claim checks that did not run
-   or pass. If required validation fails, fix it only when that work is already
+3. Run the repository-required validation on the tree being pushed. The aim is
+   the result CI's pull-request checks will give, reached the way the
+   repository does it locally: follow its instructions and use the local entry
+   point they name, such as a `make` or `just` target, a package script, or a
+   cached or affected-only variant. When the instructions name none, read the
+   pull-request workflow and run the same checks with the tools already
+   installed. Use the dependencies, caches, and containers the workspace
+   already has, and fetch more only when a check cannot give the same result
+   without it. Name any check left uncovered locally, including one whose
+   local tool version could change the result, and let CI settle it instead of
+   counting it as passed. Do not claim checks that did not run or pass. If
+   required validation fails, fix it only when that work is already
    authorized; otherwise report the blocker instead of filing a misleading PR.
-4. Push the branch if needed. A direct request to create the PR authorizes this
-   normal prerequisite, but not history rewrites.
+4. Push the branch if needed, under its own name: `git push -u origin HEAD`.
+   A task branch created from `origin/<base>` can have the base as its
+   upstream, and a plain `git push` then aims at the base. A direct request to
+   create the PR authorizes this normal prerequisite, but not history
+   rewrites.
 5. Find an existing open PR for the head branch. Update it instead of creating
    a duplicate.
-6. Inspect recent merged PRs for title conventions. Preserve meaningful ticket
-   prefixes or conventional-commit style when the repository uses them.
+6. Inspect recent merged PRs and any PR title check for title conventions.
+   Preserve meaningful ticket prefixes or conventional-commit style when the
+   repository uses them. When the convention requires a ticket key, settle it
+   before creating the PR: look in the branch name, the commits, the task
+   brief, and the tracker (through `docs/agents/issue-tracker.md` when
+   present). Create a ticket when the user asked for one or repository
+   instructions call for it; otherwise ask which ticket applies.
 
 ## Choose a standalone PR or a stack
 
@@ -72,8 +90,9 @@ notes unless the audience needs them.
 
 - Choose the intended base branch from repository evidence; do not assume it is
   always `main`.
-- Prefer a draft when material validation, migration, documentation, or user
-  decisions remain. Otherwise follow the user's request and repository norm.
+- Open the PR ready for review. File a draft when the user asks for one, when
+  repository instructions require it, or when the PR exists to explore an idea
+  and is not meant to merge as it stands.
 - Do not force-push, rebase, merge, close, enable auto-merge, or announce the PR
   in external channels unless explicitly asked.
 - For a stack, create, link, update, and verify every requested layer as one
@@ -96,6 +115,8 @@ plan, apply, or deployment does not prove that operation succeeded. Preserve
 the agreed activation state; use the delivery and approval process to control
 execution instead of silently disabling it in the submitted configuration.
 
-Report the PR URL, head SHA, readiness state, validation, and remaining risk.
+Report the PR URL, head SHA, validation, and remaining risk. Call the PR ready
+only after the Ready check in `babysit-pr` holds on that head; until then,
+report what it is waiting on.
 
 If the user also asked to monitor the PR, continue with the `babysit-pr` skill.

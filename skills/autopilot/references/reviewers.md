@@ -27,7 +27,8 @@ effective model and family for the report.
 
 ## Brief
 
-The reviewer starts with no context. Give it:
+Every round starts **blind**: a fresh reviewer with no context and none of
+your conclusions. Give it:
 
 - the absolute workspace path, and an instruction to make no edits, commits,
   or GitHub posts;
@@ -36,11 +37,26 @@ The reviewer starts with no context. Give it:
 - the task brief or spec, and the repository's standards files;
 - an instruction to run `code-review` if the skill is available to it,
   otherwise to review both Standards and Spec itself;
-- in later rounds, the new commits to focus on, the previous findings with
-  their dispositions, and the refutations it may contest;
 - the output format: a list of findings, each with severity, `file:line`, the
   failure it causes, and the smallest fix.
+
+Keep the brief to those facts. Where you suspect problems, what you fixed
+since the last round, and what earlier rounds found all wait for
+reconciliation, because a reviewer told what to expect tends to confirm it.
 
 Run the reviewer in the foreground, or wait for its completion notification.
 A review counts only when its report arrives and names the head SHA it
 reviewed.
+
+## Reconcile
+
+From the second round on, after the blind report arrives, send the same
+reviewer the previous round's findings, each with its disposition and, for a
+refutation, the evidence. Ask it to mark each one fixed, not fixed, or
+contested with new evidence, and to withdraw any finding in its blind report
+that repeats one it now accepts as refuted. When the route cannot continue a
+reviewer's session, start a second reviewer and give it the blind report along
+with the earlier findings.
+
+A round is clean when the blind report and the reconciliation together leave
+no valid in-scope finding without a fix.

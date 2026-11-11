@@ -10,7 +10,7 @@
     "test:codex-marketplace": "./scripts/smoke-test-codex.sh"
   },
   "devDependencies": {
-    "@anthropic-ai/claude-code": "2.1.233",
+    "@anthropic-ai/claude-code": "2.1.311",
     "@openai/codex": "0.147.0",
     "markdownlint-cli": "0.49.1",
     "prettier": "3.9.6"

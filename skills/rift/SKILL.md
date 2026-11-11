@@ -52,8 +52,10 @@ Confirm the executable works before creating a workspace.
    across separate tool calls. Report the path so the user can open it.
 
 Rift needs a regular Git checkout. It rejects linked Git worktrees,
-repositories with active Git operations or lock files, and FIFOs such as a
-secret manager's `.env` pipe. Leave those states in place. A clean seed avoids
+repositories with active Git operations or lock files, FIFOs such as a secret
+manager's `.env` pipe, and sockets such as the `fsmonitor--daemon.ipc` that
+another worktree's Git daemon leaves under `.git/worktrees/`, which fails with
+`unsupported filesystem entry`. Leave those states in place. A clean seed avoids
 these blockers for ordinary new isolation; if the user explicitly requests a
 snapshot of this current state, report the blocker and ask before using a source
 that omits it.

@@ -27,10 +27,12 @@ Invoking autopilot authorizes, for this branch and its PR only:
 - replying to and resolving threads opened by review bots, and re-requesting
   their reviews.
 
-`merge` adds a guarded merge of this PR. Nothing else is implied. Draft replies
-to human reviewers for the user instead of posting them. History rewrites,
-admin overrides, deployments, and other PRs keep their own authorization.
-Honor narrower holds the user states, such as "stay local" or "keep it draft".
+`merge` adds a guarded merge of this PR, with an admin override when a missing
+human approval is the only requirement left unmet. Nothing else is implied.
+Draft replies to human reviewers for the user instead of posting them. History
+rewrites, admin overrides of any other rule, deployments, and other PRs keep
+their own authorization. Honor narrower holds the user states, such as "stay
+local", "keep it draft", or "wait for approval".
 
 ## Loop
 
@@ -49,8 +51,9 @@ Honor narrower holds the user states, such as "stay local" or "keep it draft".
 4. **Local review.** Choose a reviewer from
    [Reviewers](references/reviewers.md) and have it run `code-review` against
    the pinned base and the current head. Give every finding a disposition (see
-   below). Commit the fixes, validate, and review the whole change again,
-   pointing the reviewer at the new commits and the earlier dispositions.
+   below). Commit the fixes, validate, and review the whole change again: a
+   fresh reviewer reads the current head blind, then reconciles the earlier
+   findings, as Reviewers describes.
    When step 2 brought in base commits, also have it check how they interact
    with this PR, even in files the PR does not touch. The
    step is done when a round on the current head is **clean**: no valid
@@ -94,8 +97,8 @@ current head's source, deduplicate across reviewers, then give it exactly one
 Scope is the PR's stated goal. A fix that needs new abstractions, options, or
 defensive branches for unreachable states is a sign the finding should be
 refuted or deferred. Follow `babysit-pr`'s rule on fixing real defects only.
-Pass refutations back to the local reviewer in the next round. If it contests
-with new evidence, re-evaluate. If the disagreement survives one exchange,
+Pass refutations to the local reviewer in the next round's reconciliation. If
+it contests with new evidence, re-evaluate. If the disagreement survives one exchange,
 keep your position and list it in the report. When a finding recurs after a
 fix, diagnose why the fix missed instead of patching again.
 
@@ -106,7 +109,8 @@ Without `merge`, stop when all of these hold on the current head:
 - the latest local review round is clean;
 - every expected AI reviewer is done or dropped, and each of its findings has
   a disposition;
-- required CI checks pass;
+- CI passes on the current head by the check rule in `babysit-pr`'s Ready,
+  which counts every check run, required or not;
 - the PR is marked ready, and a fresh fetch shows the head contains the
   base's tip. When it does not, return to step 2.
 
@@ -114,8 +118,8 @@ A bot that reviews only once, or only on request, need not re-review every
 push. The local review covers the later commits.
 
 Also stop, and report, when progress needs the user: a scope decision,
-conflicting reviewers, a human reviewer requesting changes, required checks
-failing for reasons outside this PR after three reruns, a missing required
+conflicting reviewers, a human reviewer requesting changes, checks failing
+for reasons outside this PR after three reruns, a missing required
 reviewer, or a base that moved three times in a row while waiting.
 
 ## Merge
@@ -125,14 +129,21 @@ With `merge`, after the stop condition holds:
 1. Sync with the base once more. If the base moved, run the loop from step 2
    again until the stop condition holds on the new head, including reviewers
    that review every push. That head is the one to merge.
-2. Confirm required approvals, required checks, and conversation-resolution
-   rules are satisfied. When a required human approval is missing, stop:
-   report the PR as ready and waiting for approval.
+2. Confirm the checks still pass on that head and conversation-resolution
+   rules are satisfied. These gate the merge: when one is failing or pending,
+   stop and report it. A required human approval that is merely missing does not gate
+   it, because `merge` is the user's approval: step 3 covers it with the admin
+   override, or reports it where a merge queue rules the override out. A
+   request for changes still standing, from a human or a bot, is a stop.
 3. Merge with the repository's allowed method, guarding the reviewed head:
    `gh pr merge <number> --squash --match-head-commit <sha>` (or `--merge` or
    `--rebase`), or the platform's
-   equivalent. When the repository uses a merge queue, enqueue the PR and
-   follow it until the PR is merged or removed from the queue. Without a
+   equivalent. Add `--admin` only for the missing approval in step 2, and say
+   in the report that the merge used it. When the repository uses a merge
+   queue, enqueue the PR without `--admin`, because there the flag merges
+   directly and skips the queue along with the approval. Follow the PR until
+   it is merged or removed from the queue. If the missing approval keeps it
+   out of the queue, stop and report the approval as the blocker. Without a
    head-guarded merge operation, report the blocker instead of merging.
 4. Verify that the PR shows as merged and that the base branch contains the
    resulting commit. An enqueued PR or enabled auto-merge does not count as a
