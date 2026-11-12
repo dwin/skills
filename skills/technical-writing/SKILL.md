@@ -134,5 +134,5 @@ Before:
 After:
 
 > The client retries a failed request with exponential backoff, up to
-> `RETRY_MAX` attempts. Raise `RETRY_MAX` only for an upstream that fails
-> intermittently. A higher value can add latency.
+> `RETRY_MAX` attempts. Raise `RETRY_MAX` only when the upstream is known to
+> fail intermittently. Otherwise the extra attempts may add latency.
