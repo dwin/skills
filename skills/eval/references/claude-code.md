@@ -170,3 +170,6 @@ Each run in the JSON has a `tracePath`: a JSON Lines file of every message
 and tool call in that run. The file is there when the harness kept the run's
 directory, which `--keep-temp` makes it do for every run. Read the trace of
 the run that failed. A rerun of the same case is a different run and may pass.
+A run that stopped before the agent started, as when its scaffold script
+fails, has an empty `tracePath`: read its `error` field and the harness's
+output.
