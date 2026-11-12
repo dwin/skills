@@ -9,10 +9,11 @@ the user asks for one. Report the diagnosis and stop. When the user then asks
 for a fix, continue with `diagnosing-bugs`.
 
 A capture can hold secrets: tokens, authorization headers, and personal data.
-Redact every secret before you quote anything from a capture or a command's
-output: write `<REDACTED>` in its place, and quote only the lines that carry
-the signal. Tell a sub-agent that reads a capture to do the same in what it
-sends back.
+Redact every secret before you show a command, its output, or anything from a
+capture: write `<REDACTED>` in its place, and quote only the lines that carry
+the signal. Give a command its credential through an environment variable, so
+the value stays out of what you show. Tell a sub-agent that reads a capture to
+do the same in what it sends back.
 
 Choose the branch:
 
