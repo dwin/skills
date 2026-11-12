@@ -10,13 +10,20 @@ cd "$marketplace_root"
 # Cursor and other hosts discover skills through .agents/skills. Every skill
 # needs a link there, and every link has to resolve.
 for skill_dir in skills/*/ plugins/*/skills/*/; do
+  # A pattern that matches nothing stays as written. Skip it.
+  [[ -d "$skill_dir" ]] || continue
   skill_name="$(basename "$skill_dir")"
   if [[ ! -L ".agents/skills/$skill_name" ]]; then
     echo "Missing discovery link: .agents/skills/$skill_name" >&2
     exit 1
   fi
+  if [[ ! ".agents/skills/$skill_name" -ef "$skill_dir" ]]; then
+    echo "Discovery link points elsewhere: .agents/skills/$skill_name" >&2
+    exit 1
+  fi
 done
 for link in .agents/skills/*; do
+  [[ -L "$link" ]] || continue
   if [[ ! -e "$link" ]]; then
     echo "Broken discovery link: $link" >&2
     exit 1
