@@ -58,9 +58,9 @@ where they cluster.
 - **False ranges.** "From X to Y" where X and Y are not ends of a scale. List
   the items.
 - **Passive voice and missing subjects.** "The config is validated", "no
-  setup needed". Name the actor: "the loader validates the config", "you do
-  not need to set anything up". Keep the passive only when the actor is
-  unknown or does not matter.
+  setup needed". Name the actor when the source says who it is: "the loader
+  validates the config", "you do not need to set anything up". Keep the
+  passive when the actor is unknown or does not matter.
 - **Fancy words.** "Utilize", "leverage", "facilitate", "perform", "numerous",
   "in the event that". Write "use", "help", "do", "many", "if".
 - **Adverbs propping up verbs.** "Runs quickly", "significantly improves".
@@ -90,9 +90,10 @@ where they cluster.
   without the ceremony.
 - **Feelings instead of mechanisms.** "Types that follow your schema", "SQL
   you can read", "the database stays close at hand". Name the mechanism or a
-  number: "renaming a column fails the build". Ask what the sentence tells
-  the reader to do or know. If it could appear unchanged in another project's
-  docs, it says nothing about this one. Cut it.
+  number the source gives, in a sentence such as "renaming a column fails the
+  build". Ask what the sentence tells the reader to do or know. If it could
+  appear unchanged in another project's docs, it says nothing about this
+  one. Cut it.
 
 ## Punctuation and layout
 
