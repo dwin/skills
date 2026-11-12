@@ -14,7 +14,8 @@ they disagree with and pastes a text summary back into the thread.
    - `label`: what is being decided, in a few words;
    - `what`: one plain sentence describing the thing;
    - `why`: the reason for your pick, with its cost;
-   - `options`: the answers on offer, with your `pick` among them.
+   - `options`: the answers on offer, each with different text, and your
+     `pick` among them.
 4. Mark a pick the user already stated with `by: "you"`.
 5. Group items by topic. Open the groups that need attention, and put items
    that are settled or already carried out in a last group.
