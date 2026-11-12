@@ -69,7 +69,10 @@ their own rules:
 
 - **Pasted text**, the default: give the draft, the audit lines, and the final
   rewrite.
-- **A file**: rewrite the prose in place, leaving code blocks, frontmatter,
-  data, and link targets untouched. Report a short summary of what changed.
+- **A file the user asked you to edit**: rewrite the prose in place, leaving
+  code blocks, frontmatter, data, and link targets untouched. Report a short
+  summary of what changed.
+- **A file the user asked you to check or review**: leave the file as it is.
+  Report the patterns you found, each with its line and a proposed rewrite.
 - **A step inside another task**, such as a pull request description another
   skill is writing: run the loop silently and return only the final text.

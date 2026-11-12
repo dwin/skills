@@ -42,7 +42,10 @@ worth more than a paragraph of summary.
 3. **Follow links inside your source only.** Record a link into another source
    under Leads for that source's investigator.
 4. **Quote verbatim** with the exact location: pull request number, ticket ID,
-   URL, commit hash, or `file:line`.
+   URL, commit hash, or `file:line`. The one change you make to a quote:
+   write `<REDACTED>` in place of a secret, such as a token, a password, a
+   key, or a URL that carries one, and in place of personal data the reason
+   does not need.
 5. **Record what you searched,** with the queries word for word. An empty
    search is a finding.
 6. **Keep the contradictions.** When items disagree, record both. When three

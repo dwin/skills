@@ -31,6 +31,11 @@ Rows read like a note to a teammate:
 Write each cell the way you would tell a teammate what you did, in plain
 words. `unslop` applies to log text.
 
+Keep secrets and personal data out of every cell. Write `<REDACTED>` in
+place of a token, a password, a key, or a URL that carries one, and point to
+where the evidence lives instead of pasting it. The script does not do this
+for you.
+
 ## Add a row
 
 Run [`scripts/work-log.sh`](../scripts/work-log.sh) by its full path, which

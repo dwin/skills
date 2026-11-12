@@ -70,8 +70,10 @@ While the loop runs:
 - **Give each verdict as VERIFIED, NOT VERIFIED, or INCONCLUSIVE.**
   Inconclusive is not a pass. Report negative results.
 - **Fix what blocks the goal.** Broken tooling, a flaky check, a related bug,
-  or a stale doc is yours to fix when the fix is reversible. Put it in its own
-  commit or pull request, then return to the exit condition.
+  or a stale doc is yours to fix when the fix is reversible. Keep it a
+  separate change from the goal's work. Commit it, or open a pull request
+  for it, only when the user's go-ahead for this run covers that. Then
+  return to the exit condition.
 - **Bring to the user only what no experiment can settle:** an action that
   cannot be undone, a product or preference call, access you lack, or a real
   dead end. Keep working on everything else while you wait, as `swarm`

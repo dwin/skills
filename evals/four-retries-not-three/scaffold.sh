@@ -54,7 +54,7 @@ this way.
 
 ## Consequences
 
-A failing upload now takes about 3 seconds longer to report its error.
+A failing upload now takes about 1.6 seconds longer to report its error.
 MD
 
 cat > CHANGELOG.md <<'MD'
