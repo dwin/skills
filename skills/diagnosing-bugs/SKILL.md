@@ -15,6 +15,12 @@ This skill has you show commands, outputs and captured artifacts. **Redact every
 
 If the redacted output is not enough to diagnose the bug, say so and ask the user.
 
+## Start from a capture when that is all there is
+
+When the evidence is a capture, such as a profile, a trace, a heap snapshot, or a spindump, and there is no way to run the failing system, the phases below do not apply yet: they need a command that reproduces the bug. Follow [the forensics playbook](../whats-next/playbooks/forensics.md) to a cited diagnosis and report it. The same playbook covers a cause that has to be read from a running process.
+
+When the user then asks for a fix, return to Phase 1. The fix needs a feedback loop and a regression test like any other.
+
 ## Phase 1 — Build a feedback loop
 
 **This is the skill.** Everything else is mechanical. If you have a **tight** pass/fail signal for the bug — one that goes red on _this_ bug — you will find the cause; bisection, hypothesis-testing, and instrumentation all just consume it. If you don't have one, no amount of staring at code will save you.
@@ -111,8 +117,6 @@ Tool preference:
 **Tag every debug log** with a unique prefix, e.g. `[DEBUG-a4f2]`. Cleanup at the end becomes a single grep. Untagged logs survive; tagged logs die.
 
 **Perf branch.** For performance regressions, logs are usually wrong. Instead: establish a baseline measurement (timing harness, `performance.now()`, profiler, query plan), then bisect. Measure first, fix second. Vet each number with the measurement checks in `verifying-claims` before acting on it.
-
-**Captured evidence.** When the evidence is a capture, such as a profile, a trace, a heap snapshot, or a spindump, or when the cause has to be read from a running process, follow [the forensics playbook](../whats-next/playbooks/forensics.md) to a cited diagnosis, then return here for the fix.
 
 ## Phase 5 — Fix + regression test
 

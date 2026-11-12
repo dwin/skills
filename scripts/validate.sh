@@ -7,6 +7,22 @@ cd "$marketplace_root"
 
 ./scripts/validate-agent-skills.sh
 
+# Cursor and other hosts discover skills through .agents/skills. Every skill
+# needs a link there, and every link has to resolve.
+for skill_dir in skills/*/ plugins/*/skills/*/; do
+  skill_name="$(basename "$skill_dir")"
+  if [[ ! -L ".agents/skills/$skill_name" ]]; then
+    echo "Missing discovery link: .agents/skills/$skill_name" >&2
+    exit 1
+  fi
+done
+for link in .agents/skills/*; do
+  if [[ ! -e "$link" ]]; then
+    echo "Broken discovery link: $link" >&2
+    exit 1
+  fi
+done
+
 markdownlint --config .markdownlint.yaml --dot \
   --ignore '.git/**' --ignore 'node_modules/**' --ignore '.agents/skills/**' \
   '**/*.md'
