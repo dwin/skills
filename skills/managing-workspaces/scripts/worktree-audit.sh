@@ -16,14 +16,19 @@
 #   BRANCH     The checked-out branch, or (detached).
 #   MERGED     yes when the base contains HEAD. A squash merge shows no here,
 #              so read PR as well.
-#   PR         #number/state of a pull request from a branch of this name: an
-#              open or draft one first, then a merged one whose head commit
-#              contains this HEAD. outdated means a merged one exists and
-#              does not contain HEAD: the branch moved on, or the pull
-#              request came from another repository. - when there is none, ?
-#              when gh cannot tell or its listing was cut off before reaching
-#              the branch. With ?, an open pull request cannot hold a row:
-#              look before removing a candidate.
+#   PR         #number/state of a pull request from a branch of this name, in
+#              the repository gh resolves from this one's remotes. The
+#              header line names it. An open or draft one comes first, then
+#              a merged one. merged means its head commit contains this HEAD
+#              and the base contains its merge commit. not-in-base means the
+#              head matches and the base does not contain the merge commit:
+#              it merged into another branch, or the base needs a fetch.
+#              outdated means a merged one exists and does not contain HEAD:
+#              the branch moved on, or the pull request came from another
+#              repository. A detached worktree shows an open pull request
+#              whose head commit is its HEAD. - when there is none, ? when
+#              gh cannot tell or a listing was cut off. With ?, an open pull
+#              request cannot hold a row: look before removing a candidate.
 #   UNPUSHED   Commits on HEAD that no remote-tracking branch contains.
 #   TRACKED    Tracked files with uncommitted changes. ? when `git status`
 #              failed there; the row is then marked review.
@@ -31,8 +36,8 @@
 #              are not counted. ? when `git status` failed.
 #   SUGGEST    main, missing, hold-locked, hold-changes, hold-open-pr,
 #              hold-unpushed, candidate, or review. A candidate is merged, or
-#              a merged pull request contains its HEAD, and it has no
-#              uncommitted or untracked files. hold-locked means someone ran
+#              PR says merged, and it has no uncommitted or untracked files.
+#              hold-locked means someone ran
 #              `git worktree lock` on it.
 #              Advice only: a worktree another session is using stays,
 #              whatever this column says.
@@ -42,6 +47,9 @@ set -uo pipefail
 # Keep Git from refreshing an index while it reads one: `git status` would
 # otherwise rewrite the index file of each worktree it looks at.
 export GIT_OPTIONAL_LOCKS=0
+# GH_REPO points gh at whatever repository it names. Without it, gh reads the
+# remotes of the repository being audited.
+unset GH_REPO
 
 usage() { sed -n '2,/^set -uo/p' "$0" | sed '$d; s/^# \{0,1\}//'; }
 
@@ -97,24 +105,39 @@ base_commit="$(git rev-parse --verify --quiet "$base^{commit}")" || {
   exit 1
 }
 
-# Pull request state per branch, newest first, from one gh call. A listing
-# that fills the limit may have left older pull requests out, so a branch it
-# does not name is then unknown, not free of pull requests.
+# Pull request state per branch, from two gh listings of one repository: the
+# open ones, then every state, newest first. A listing that fills the limit
+# may have left pull requests out. Open ones are listed apart so that a
+# merged one is not read as the whole story while an open one sits past the
+# cut.
 pr_limit=1000
 prs="$(mktemp)"
-trap 'rm -f "$prs"' EXIT
+prs_open="$(mktemp)"
+trap 'rm -f "$prs" "$prs_open"' EXIT
+pr_fields=number,state,isDraft,headRefName,headRefOid,mergeCommit
+# Name, number, state, head commit, merge commit. A pull request closed as a
+# draft is closed, so draft is read only from an open one.
+pr_rows='.[] | [.headRefName, .number,
+  (if .state == "OPEN" and .isDraft then "draft" else (.state | ascii_downcase) end),
+  .headRefOid, (.mergeCommit.oid // "-")] | @tsv'
 pr_known=no
 pr_capped=no
+open_capped=no
+pr_repo=""
 if command -v gh >/dev/null 2>&1 &&
-  gh pr list --state all --limit "$pr_limit" --json number,state,isDraft,headRefName,headRefOid \
-    --jq '.[] | [.headRefName, .number, (if .isDraft then "draft" else (.state | ascii_downcase) end), .headRefOid] | @tsv' \
-    >"$prs" 2>/dev/null; then
+  pr_repo="$(gh repo view --json url --jq .url 2>/dev/null)" && [ -n "$pr_repo" ] &&
+  gh pr list --repo "$pr_repo" --state open --limit "$pr_limit" \
+    --json "$pr_fields" --jq "$pr_rows" >"$prs_open" 2>/dev/null &&
+  gh pr list --repo "$pr_repo" --state all --limit "$pr_limit" \
+    --json "$pr_fields" --jq "$pr_rows" >"$prs" 2>/dev/null; then
   pr_known=yes
+  [ "$(wc -l <"$prs_open")" -ge "$pr_limit" ] && open_capped=yes
   [ "$(wc -l <"$prs")" -ge "$pr_limit" ] && pr_capped=yes
 fi
 pr_source=unknown
-[ "$pr_known" = yes ] && pr_source=gh
-[ "$pr_capped" = yes ] && pr_source="gh, newest $pr_limit only"
+[ "$pr_known" = yes ] && pr_source="gh, $pr_repo"
+[ "$pr_capped" = yes ] && pr_source="$pr_source, newest $pr_limit only"
+[ "$open_capped" = yes ] && pr_source="$pr_source, open ones cut at $pr_limit"
 
 now="$(date +%s)"
 # Records end in NUL, so a path may hold any other character.
@@ -178,42 +201,60 @@ worktrees | while IFS= read -r -d '' worktree; do
 
   pr="?"
   if [ "$pr_known" = yes ]; then
-    pr="-"
-    if [ "$branch" != "(detached)" ]; then
-      [ "$pr_capped" = yes ] && pr="?"
-      # A branch name is not unique: a fork can open a pull request from a
-      # branch of the same name, and a branch can gain commits after its pull
-      # request merged. So read every row for the name. An open one holds the
-      # row. A merged one counts only when its head commit contains this HEAD.
-      head_commit="$(git -C "$worktree" rev-parse --verify --quiet HEAD 2>/dev/null || echo "")"
-      pr_open=""
-      pr_merged=""
-      pr_outdated=""
-      pr_closed=""
-      while IFS="$(printf '\t')" read -r _ pr_number pr_state pr_head; do
-        case "$pr_state" in
-          open | draft) [ -n "$pr_open" ] || pr_open="#$pr_number/$pr_state" ;;
-          merged)
-            if [ -n "$head_commit" ] && [ -n "$pr_head" ] &&
-              { [ "$pr_head" = "$head_commit" ] ||
-                git -C "$worktree" merge-base --is-ancestor "$head_commit" "$pr_head" 2>/dev/null; }; then
-              [ -n "$pr_merged" ] || pr_merged="#$pr_number/merged"
-            else
-              [ -n "$pr_outdated" ] || pr_outdated="#$pr_number/outdated"
-            fi
-            ;;
-          *) [ -n "$pr_closed" ] || pr_closed="#$pr_number/$pr_state" ;;
-        esac
-      done < <(awk -F '\t' -v b="$branch" '$1 == b' "$prs")
-      if [ -n "$pr_open" ]; then
-        pr="$pr_open"
-      elif [ -n "$pr_merged" ]; then
-        pr="$pr_merged"
-      elif [ -n "$pr_outdated" ]; then
-        pr="$pr_outdated"
-      elif [ -n "$pr_closed" ]; then
-        pr="$pr_closed"
+    # A branch name is not unique: a fork can open a pull request from a
+    # branch of the same name, and a branch can gain commits after its pull
+    # request merged. So read every row for the name. An open one holds the
+    # row. A merged one counts only when its head commit contains this HEAD
+    # and the base contains its merge commit: one merged into another branch
+    # says nothing about the base. A detached worktree has no name to match,
+    # so it is matched to an open pull request by its head commit.
+    head_commit="$(git -C "$worktree" rev-parse --verify --quiet HEAD 2>/dev/null || echo "")"
+    pr_open=""
+    pr_merged=""
+    pr_elsewhere=""
+    pr_outdated=""
+    pr_closed=""
+    while IFS="$(printf '\t')" read -r _ pr_number pr_state pr_head pr_merge; do
+      case "$pr_state" in
+        open | draft) [ -n "$pr_open" ] || pr_open="#$pr_number/$pr_state" ;;
+        merged)
+          if [ -z "$head_commit" ] || [ -z "$pr_head" ] ||
+            { [ "$pr_head" != "$head_commit" ] &&
+              ! git -C "$worktree" merge-base --is-ancestor "$head_commit" "$pr_head" 2>/dev/null; }; then
+            [ -n "$pr_outdated" ] || pr_outdated="#$pr_number/outdated"
+          elif [ "${pr_merge:--}" != "-" ] &&
+            git -C "$worktree" merge-base --is-ancestor "$pr_merge" "$base_commit" 2>/dev/null; then
+            [ -n "$pr_merged" ] || pr_merged="#$pr_number/merged"
+          else
+            [ -n "$pr_elsewhere" ] || pr_elsewhere="#$pr_number/not-in-base"
+          fi
+          ;;
+        *) [ -n "$pr_closed" ] || pr_closed="#$pr_number/$pr_state" ;;
+      esac
+    done < <(
+      if [ "$branch" != "(detached)" ]; then
+        awk -F '\t' -v b="$branch" '$1 == b' "$prs_open" "$prs"
+      elif [ -n "$head_commit" ]; then
+        awk -F '\t' -v h="$head_commit" '$4 == h' "$prs_open"
       fi
+    )
+    if [ -n "$pr_open" ]; then
+      pr="$pr_open"
+    elif [ "$open_capped" = yes ]; then
+      # An open pull request may sit past the cut, whatever else is listed.
+      pr="?"
+    elif [ -n "$pr_merged" ]; then
+      pr="$pr_merged"
+    elif [ -n "$pr_elsewhere" ]; then
+      pr="$pr_elsewhere"
+    elif [ -n "$pr_outdated" ]; then
+      pr="$pr_outdated"
+    elif [ -n "$pr_closed" ]; then
+      pr="$pr_closed"
+    elif [ "$pr_capped" = yes ] && [ "$branch" != "(detached)" ]; then
+      pr="?"
+    else
+      pr="-"
     fi
   fi
 

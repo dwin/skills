@@ -60,11 +60,18 @@ starts them and names the bulk-analysis model.
 A slice sent to a reader goes to that model's provider. Before the first
 one:
 
-- Name the reader model and its provider, and get the user's go-ahead.
+- Name the reader model and its provider, say that the redaction below
+  works by pattern and misses some secrets, and get the user's go-ahead.
   Without it, read the sessions yourself.
 - Cut the slices with a script that replaces secrets with `<REDACTED>`
-  first, using the patterns under Secrets in
+  first and cuts second, by the rules under Secrets in
   [lookback's digest reference](../lookback/references/digest.md).
+- Keep the script and the slices in a new directory from `mktemp -d`. Only
+  the user can read it, and it is in no repository and no synced folder.
+  Delete it when the brief is written, and also when the search fails or is
+  called off.
+- Give a reader its slices, never the path of a session file. Nothing in a
+  session file is redacted.
 
 Each reader returns one block per session, citing the session's id:
 
