@@ -25,6 +25,14 @@ or a tool put in the user's turn: tool results, system reminders, the body of
 a skill or command, and the contents of attached files. Cut a long paste to
 its first lines and a note of how many lines followed.
 
+**Secrets** stay out of digests. Have the script replace each one with
+`<REDACTED>` before it writes a message or an error: an authorization
+header, a URL with a password in it, a private key block, and any token in a
+known format, such as one that starts with `sk-`, `ghp_`, `xox`, or
+`AKIA`. Add a pattern for long random strings that follow a word like
+"token", "secret", "password", or "key". A digest goes to a model, and a
+transcript does not.
+
 **Corrections** are a heuristic flag for the triage model, not a verdict: a
 user message that opens with words like "no", "don't", "stop", "actually",
 "again", or "I said", or that comes right after a failed tool call or an

@@ -22,9 +22,10 @@
 #   TRACKED    Tracked files with uncommitted changes.
 #   UNTRACKED  Untracked entries; a new directory counts once. Ignored files
 #              are not counted.
-#   SUGGEST    main, missing, hold-changes, hold-open-pr, hold-unpushed,
-#              candidate, or review. A candidate is merged, or its pull
-#              request is, and it has no uncommitted or untracked files.
+#   SUGGEST    main, missing, hold-locked, hold-changes, hold-open-pr,
+#              hold-unpushed, candidate, or review. A candidate is merged, or
+#              its pull request is, and it has no uncommitted or untracked
+#              files. hold-locked means someone ran `git worktree lock` on it.
 #              Advice only: a worktree another session is using stays,
 #              whatever this column says.
 #   WORKTREE   The path.
@@ -56,6 +57,7 @@ while [ $# -gt 0 ]; do
   esac
 done
 
+[ $# -le 1 ] || { echo "error: expected one repository path, got $#" >&2; exit 2; }
 repo="${1:-.}"
 repo="$(git -C "$repo" rev-parse --show-toplevel 2>/dev/null)" || {
   echo "error: not a Git repository: ${1:-.}" >&2
@@ -105,6 +107,23 @@ while IFS= read -r -d '' worktree; do
   break
 done < <(worktrees)
 
+# A locked worktree is one someone asked Git to keep.
+locked_worktrees=()
+current=""
+while IFS= read -r -d '' field; do
+  case "$field" in
+    worktree\ *) current="${field#worktree }" ;;
+    locked | locked\ *) locked_worktrees+=("$current") ;;
+  esac
+done < <(git worktree list --porcelain -z)
+is_locked() {
+  local path
+  for path in ${locked_worktrees[@]+"${locked_worktrees[@]}"}; do
+    [ "$path" = "$1" ] && return 0
+  done
+  return 1
+}
+
 echo "# repository: $repo"
 echo "# base: $base (pull requests: $([ "$pr_known" = yes ] && echo gh || echo unknown))"
 printf 'SIZE\tAGE\tBRANCH\tMERGED\tPR\tUNPUSHED\tTRACKED\tUNTRACKED\tSUGGEST\tWORKTREE\n'
@@ -151,6 +170,8 @@ worktrees | while IFS= read -r -d '' worktree; do
 
   if [ "$worktree" = "$main_worktree" ]; then
     suggest=main
+  elif is_locked "$worktree"; then
+    suggest=hold-locked
   elif [ "$tracked" != 0 ]; then
     suggest=hold-changes
   else

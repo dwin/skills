@@ -87,8 +87,10 @@ a run of the real thing, by `verifying-claims`. When the check finds a problem,
 decide where it came from. The frame missed it: fix the frame and run again.
 A candidate had it right and you missed the graft: go back to Graft.
 
-Remove the candidate workspaces when the result is verified, through
-`managing-workspaces`.
+When the result is verified, tell the user which candidate workspaces remain
+and what each holds. A losing attempt has edits or commits that no kept
+branch contains, so removing its workspace deletes that work. Remove them
+through `managing-workspaces` once the user says to discard the attempts.
 
 ## Result
 

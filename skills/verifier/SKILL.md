@@ -43,6 +43,9 @@ it unless they want a second one for a different surface.
   - check side effects, such as files written, rows stored, and messages
     sent, alongside what the user sees;
   - mock only where a production boundary already isolates an outside system;
+  - before a step that writes outside the instance you started, such as to a
+    shared database, a real mailbox, or a payment or messaging service, name
+    the target and get the user's go-ahead, or point the app at a stand-in;
   - when the safe path is a dry run or a test mode, observe what it actually
     skips, such as files, network calls, and Git refs, rather than trusting
     its name.
@@ -52,15 +55,18 @@ it unless they want a second one for a different surface.
   nothing.
 - **Clean up what you started, and keep the evidence.** Stop processes by the
   id you started, never by name. Evidence survives every cleanup, at a
-  location the skill names.
+  location the skill names. Before evidence is kept or shown, replace every
+  secret in it with `<REDACTED>`: tokens, cookies, authorization headers,
+  and passwords in responses, logs, and stored rows. The generated skill
+  carries this rule too.
 
 ## Where the skill lives
 
 Put it where the project already keeps skills. In a project with none, use
 `.agents/skills/verify-<app>/`, and when the project also uses Claude Code,
-link `.claude/skills/verify-<app>` to it. Deliver it the way the project takes
-changes: as a commit, or as a pull request through `file-pr` when the user
-wants one.
+link `.claude/skills/verify-<app>` to it. Leave the files in the working
+tree unless the user asked for more: commit when they want a commit, and file
+a pull request through `file-pr` when they want one.
 
 ## Report
 

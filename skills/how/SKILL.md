@@ -53,7 +53,8 @@ open questions.
 
 ## 4. Write the explanation
 
-Write it to [references/explanation.md](references/explanation.md). Merge the
+Write the explanation in your reply, in the format
+[references/explanation.md](references/explanation.md) gives. Merge the
 angles into one picture. Where two findings disagree, read the code and settle
 it; leave neither version standing unchecked. When the findings are long,
 hand them and that reference to one fresh agent to write the explanation, and
