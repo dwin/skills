@@ -7,8 +7,9 @@ description: Write technical prose that a tired engineer understands on the firs
 
 Write so a tired engineer understands on the first read. This skill sets the
 structure and the sentences. `unslop` holds the catalog of machine-written
-patterns, and runs on every text this skill touches. Documents that agents
-read follow `writing-for-agents` instead.
+patterns, and runs on every text this skill touches. It runs on your draft,
+so a fact you took from the repository is part of its source and stays.
+Documents that agents read follow `writing-for-agents` instead.
 
 ## Three rules above the rest
 
@@ -24,6 +25,20 @@ State only what the source text or the repository shows. When the reader
 needs a step, command, or fact you cannot confirm there, ask the author, or
 mark it in the text as unconfirmed. A plausible install step that turns out
 wrong costs the reader more than a gap they can see.
+
+When you rewrite a text and show it to the user, end your reply with a list
+headed "Not in the source". The list follows the rewrite and stays outside
+it. Put in it every command, version, tool, step, check, and explanation your
+rewrite contains that the source and the repository do not give, one per
+line, and say for each whether the author should confirm it or you could cut
+it. A general fact about a tool belongs there too, such as how long an
+`export` lasts. Before you send the rewrite, compare its commands with the
+source one by one. An addition missing from the list is a defect. When you
+added nothing, say so in one line.
+
+When the rewrite is a step inside another task that takes only the final
+text, such as a pull request description about to be filed, there is no reply
+to carry the list. Add nothing the source lacks.
 
 Use the codebase's names: the real symbol, file, flag, or command, not a
 synonym or a description of it. Use the words a developer says aloud, such as
