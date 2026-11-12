@@ -122,11 +122,13 @@ the bodies.
    [DESIGN-IT-TWICE.md](DESIGN-IT-TWICE.md). Screen each against
    [RED-FLAGS.md](RED-FLAGS.md). Prefer the shape that hides more behind a
    smaller interface.
-4. Implement against the chosen sketch. When a body needs something the
-   sketch lacks, such as another parameter, decide which is true and say so:
-   the sketch was wrong, a requirement was missed, or the implementation is
-   doing too much.
-5. Discard the sketch when one kind of friction keeps returning: the same
+4. Show the chosen shape and the ones you rejected, with the reason for each.
+   A request for a design ends here.
+5. When the user asked for the change to be built, implement against the
+   chosen sketch. When a body needs something the sketch lacks, such as
+   another parameter, decide which is true and say so: the sketch was wrong,
+   a requirement was missed, or the implementation is doing too much.
+6. Discard the sketch when one kind of friction keeps returning: the same
    workaround in unrelated places, edge cases that each need their own
    branch, types that need casts or fields that are optional but always set,
    or callers that must know the module's internal rules. One or two hard
