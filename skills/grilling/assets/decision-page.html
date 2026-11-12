@@ -183,7 +183,7 @@
     <div id="root"></div>
     <details open>
       <summary>
-        <h2>Decisions to paste back</h2>
+        <h2 id="out-title">Decisions to paste back</h2>
         <span class="dim small">updates as you change things</span>
       </summary>
       <div class="body">
@@ -192,7 +192,7 @@
           <button id="reset">Reset to the recommendations</button>
           <span class="dim small" id="copied"></span>
         </div>
-        <textarea id="out" readonly></textarea>
+        <textarea id="out" readonly aria-labelledby="out-title"></textarea>
       </div>
     </details>
     <script>
