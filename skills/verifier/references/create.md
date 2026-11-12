@@ -88,18 +88,38 @@ incomplete when the map lists others.
    prove nothing. Never copy a `.git` that is a file, as a linked worktree
    has: it points at the user's repository, and a `git add` in the copy
    would land in their index. Leave it out, or use the worktree route.
+   - **Record the checkout before you create or fill either kind of copy**,
+     in a file outside it and outside the copy. The record covers everything
+     a run could change: for every path in the checkout, ignored ones
+     included and `.git` left out, its type, its permission bits, its link
+     target, and a checksum of its contents; `git ls-files -s` and
+     `git ls-files -v`, which are what is staged and how it is flagged; and
+     `git for-each-ref` with `git stash list`, which are the branches, tags,
+     and stashes. Status output alone cannot tell an overwritten file from
+     an untouched one.
+   - **Make the copy independent.** Nothing written in the copy may reach
+     the checkout. Copy file contents, never hard links. Find every symlink
+     in the copy whose target resolves outside it, and replace it with a
+     copy of the target, or stop when that is not safe. A worktree shares
+     the user's repository: in one, run no Git command that changes a
+     branch, a tag, a stash, or the configuration. Before you break a file,
+     confirm its real path is inside the copy.
    - Run the feature's steps in the copy as it is, with the copy's own
      helpers. They must pass.
    - Make the smallest change that breaks that feature for a user: a handler
      that returns early, a command that exits 0 without writing. Run the
      same steps again. They must fail, and the evidence must show what
-     broke. When they pass, the steps check the wrong thing: fix them in the
-     checkout, make a new copy, and run both again.
+     broke. When they pass, the steps check the wrong thing: finish the
+     removal and the comparison below, then fix them in the checkout, make
+     a new copy, and run both again.
    - Remove the copy whatever happened, also when a run fails or is
      interrupted: stop what was started from it, then delete it. A worktree
      with the break in it needs `git worktree remove --force`, and the break
-     is the only thing lost. Then confirm `git status` in the user's
-     checkout shows what it showed before step 4.
+     is the only thing lost. Then record the checkout again, the same way,
+     and compare it with the record made before the copy.
+     Any difference is damage to the user's work: stop and report it. Fix
+     the generated skill only after this comparison, never between the two
+     records.
 3. **Name the stand-ins.** When the proof ran somewhere other than the real
    target, such as a container standing in for a fresh machine, list every
    setup step the stand-in did that the target will not. Those steps stay
@@ -107,7 +127,8 @@ incomplete when the map lists others.
 
 The step is done when the clean run passed with its evidence intact after
 cleanup, the copy's steps passed before the break and failed after it, the
-copy is gone, and the checkout is as it was.
+copy is gone, and the checkout's state matches the record made before the
+copy.
 
 ## 5. Hand off
 
