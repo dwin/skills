@@ -31,7 +31,9 @@
 #              request cannot hold a row: look before removing a candidate.
 #   UNPUSHED   Commits on HEAD that no remote-tracking branch contains.
 #   TRACKED    Tracked files with uncommitted changes. ? when `git status`
-#              failed there; the row is then marked review.
+#              failed there, or when the index hides files from it: an entry
+#              marked assume-unchanged or skip-worktree can hold a change
+#              that status never shows. The row is then marked review.
 #   UNTRACKED  Untracked entries; a new directory counts once. Ignored files
 #              are not counted. ? when `git status` failed.
 #   SUGGEST    main, missing, hold-locked, hold-changes, hold-open-pr,
@@ -262,7 +264,11 @@ worktrees | while IFS= read -r -d '' worktree; do
 
   # A status that fails proves nothing about the worktree, so its counts are
   # unknown and it is never a candidate.
-  if ! status="$(git -C "$worktree" status --porcelain 2>/dev/null)"; then
+  # Ask for untracked files and submodule changes outright: the settings
+  # status.showUntrackedFiles=no and submodule.<name>.ignore would otherwise
+  # hide them.
+  if ! status="$(git -C "$worktree" status --porcelain --untracked-files=normal \
+    --ignore-submodules=none 2>/dev/null)"; then
     tracked="?"
     untracked="?"
   elif [ -z "$status" ]; then
@@ -272,6 +278,12 @@ worktrees | while IFS= read -r -d '' worktree; do
     untracked="$(printf '%s\n' "$status" | grep -c '^??')"
     tracked="$(printf '%s\n' "$status" | grep -vc '^??')"
   fi
+  # An entry marked assume-unchanged (a lower-case tag from ls-files -v) or
+  # skip-worktree (S) can hold a change that status never shows, and removing
+  # the worktree would delete it unseen. grep -c prints the count and fails
+  # when it is 0, so its status is not read.
+  hidden="$(git -C "$worktree" ls-files -v 2>/dev/null | grep -c '^[a-zS]' || true)"
+  [ "${hidden:-0}" = 0 ] || tracked="?"
 
   if [ "$worktree" = "$main_worktree" ]; then
     suggest=main

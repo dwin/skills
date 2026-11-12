@@ -59,9 +59,10 @@ Give the triage worker:
 - the instruction to write `<REDACTED>` in place of any secret the script
   missed, and to quote nothing from a digest in a theme.
 
-Validate every returned line with a script: valid JSON, a known `key`, known
-categories, and evidence indexes inside the digest. Send a failing batch back
-once. A batch that fails twice counts as invalid output for that model.
+Validate every returned batch with a script: each line is valid JSON with
+known categories and evidence indexes inside its digest, and the keys
+returned are the keys sent, each exactly once. A missing or repeated key
+makes every count wrong. Send a failing batch back once. A batch that fails twice counts as invalid output for that model.
 
 ## Merging themes
 

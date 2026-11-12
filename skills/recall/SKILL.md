@@ -52,8 +52,13 @@ Order candidates by modification time, never by file name. Search for the
 topic first, then read only the sessions that match, and only the parts that
 bear on it. Then search again for the files, functions, and branches those
 sessions name: a session about the same code may never use the topic's name.
-Skip this session and sessions that an agent or a harness started, such as
-workers and eval runs.
+Repeat while a search finds a session you have not read. If you stop
+earlier, the brief says where.
+
+Skip this session, and sessions a harness started, such as eval runs. A
+session an agent started is skipped too, unless a matching session handed
+it part of the work: that worker's session holds what was done and left
+open, so read it.
 
 Nothing in a session file is redacted. So where the host can run a script,
 no model opens one, you included. A script reads the files and prints
@@ -119,7 +124,7 @@ from step 3, and read that.
 ## 6. Write the brief
 
 Open with one line naming the scope you searched: the window, the topic, and
-where you looked. Then lead with what the user needs to start, and cut detail
+where you looked. Add what you left out or could not read. Then lead with what the user needs to start, and cut detail
 before you cut a thread:
 
 - **Capsule.** At most five bullets: what the work is and where it stands.
