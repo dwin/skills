@@ -10,8 +10,9 @@ Run them from the repository root:
 claude plugin eval . --no-publish --trust-plugin --scaffold --threshold 0
 ```
 
-Each case runs with the plugin and without it. Results go to `evals/results/`,
-which is not committed.
+Each case runs with the plugin and without it, so the difference between the
+two measures the whole plugin. The `eval` skill explains how to measure one
+skill. Results go to `evals/results/`, which is not committed.
 
 | Case                    | Asks                                                          |
 | ----------------------- | ------------------------------------------------------------- |

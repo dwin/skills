@@ -82,6 +82,12 @@ On Claude Code, use its built-in harness: read
 [references/claude-code.md](references/claude-code.md). It runs each case with
 the plugin and without it, in sessions that load nothing else.
 
+The arm without the plugin lacks every skill in it. When the plugin has other
+skills, that comparison measures the whole plugin, and a difference in
+correctness cannot be credited to one skill. To measure one skill, run the
+same cases against the plugin and against a copy with only that skill removed.
+The reference gives the steps.
+
 To compare two versions of a skill, check out each version in its own
 workspace and run the same cases against each.
 
