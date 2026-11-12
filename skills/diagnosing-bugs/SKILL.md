@@ -112,6 +112,8 @@ Tool preference:
 
 **Perf branch.** For performance regressions, logs are usually wrong. Instead: establish a baseline measurement (timing harness, `performance.now()`, profiler, query plan), then bisect. Measure first, fix second. Vet each number with the measurement checks in `verifying-claims` before acting on it.
 
+**Captured evidence.** When the evidence is a capture, such as a profile, a trace, a heap snapshot, or a spindump, or when the cause has to be read from a running process, follow [the forensics playbook](../whats-next/playbooks/forensics.md) to a cited diagnosis, then return here for the fix.
+
 ## Phase 5 — Fix + regression test
 
 **Fix the fault where the system first went wrong**, which is often upstream of where the symptom surfaced. Ask whether the state that triggered the symptom may legitimately exist. When it may, the code that broke on it is the cause, and handling the state there is the fix. When it should never exist, find what produced it: a guard, retry, clamp, or swallowed error at the symptom hides the bug. A bug that appears only after a restart points at persisted state first: config, caches, lock files, serialized data. Once the fault is found, search for the same fault elsewhere and fix every instance.
