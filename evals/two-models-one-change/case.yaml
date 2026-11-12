@@ -1,0 +1,5 @@
+schema_version: "1.1"
+name: two-models-one-change
+description: The user assigns one model to implement and another to review.
+context:
+  scaffold_script: scaffold.sh

@@ -61,7 +61,8 @@ skill in pstack. The `swarm` and `rollout` skills, the measurement checks in
 `opening-a-pr`, `no-comments`, and its `build-the-lever`,
 `make-operations-idempotent`, `experience-first`, `prove-it-works`,
 `sequence-verifiable-units`, and `test-behavior-not-implementation`
-principles. The upstream pstack project is provided under the following
+principles. The blinding rules in `eval` adapt pstack's `eval` playbook and
+`arena` skill. The upstream pstack project is provided under the following
 license:
 
 MIT License

@@ -37,6 +37,9 @@ User-invoked entry points:
 - `autopilot` drives a branch to a reviewed, ready PR, and with `merge`
   merges it.
 - `retro` reviews a session for fixes to the agent's environment.
+- `eval` measures whether a skill or a model does a set of tasks better, by
+  correctness, corrections needed, cost, and time. The starter cases are in
+  [`evals/`](evals/README.md).
 - `handoff`, `teach`, `to-questionnaire`, and `wait-what` cover session
   transitions, learning, asynchronous discovery, and clarification.
 

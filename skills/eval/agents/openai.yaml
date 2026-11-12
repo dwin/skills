@@ -1,0 +1,5 @@
+interface:
+  display_name: "Eval"
+  short_description: "Measure whether a skill or a model does a set of tasks better."
+policy:
+  allow_implicit_invocation: false
