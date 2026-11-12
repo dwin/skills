@@ -285,15 +285,19 @@
         );
       const root = document.getElementById("root");
 
+      // The markup names items and options by position, never by their text:
+      // an id or an option is data, and HTML parsing would alter some strings.
       function itemHtml(it) {
+        const n = items.indexOf(it);
         const choice = get(it, "choice");
         const custom = it.options.includes(choice) ? "" : choice;
         const who = it.by === "you" ? "your pick" : "my pick";
-        let h = `<div class="item" role="group" aria-labelledby="q-${esc(it.id)}" data-id="${esc(it.id)}"><div class="head"><span class="label" id="q-${esc(it.id)}">${esc(it.label)}</span>`;
+        let h = `<div class="item" role="group" aria-labelledby="q${n}" data-n="${n}"><div class="head"><span class="label" id="q${n}">${esc(it.label)}</span>`;
         h += `<span class="pill">${who}: ${esc(it.pick)}${it.field && it.field.value ? ", " + esc(it.field.value) : ""}</span>${it.done ? '<span class="pill">already done</span>' : ""}</div>`;
-        h += `<div>${esc(it.what)}</div><div class="dim">${esc(it.why)}</div><div class="opts" role="radiogroup" aria-labelledby="q-${esc(it.id)}">`;
-        for (const o of it.options)
-          h += `<label class="${o === choice ? "on" : ""}"><input type="radio" name="${esc(it.id)}" value="${esc(o)}" ${o === choice ? "checked" : ""}>${esc(o)}</label>`;
+        h += `<div>${esc(it.what)}</div><div class="dim">${esc(it.why)}</div><div class="opts" role="radiogroup" aria-labelledby="q${n}">`;
+        it.options.forEach((o, j) => {
+          h += `<label class="${o === choice ? "on" : ""}"><input type="radio" name="o${n}" value="${j}" ${o === choice ? "checked" : ""}>${esc(o)}</label>`;
+        });
         h += `</div><div class="ctl"><input type="text" data-k="custom" placeholder="another answer" value="${esc(custom)}">`;
         h += it.field
           ? `<input type="text" data-k="field" placeholder="${esc(it.field.placeholder || it.field.name || "")}" value="${esc(get(it, "field"))}">`
@@ -346,7 +350,7 @@
           `<span class="stat">${items.length} decisions</span><span class="stat">${n(changed)} changed</span><span class="stat">${n((it) => get(it, "discuss"))} to discuss</span>`;
         document.getElementById("out").value = exportText();
         for (const el of root.querySelectorAll(".item")) {
-          const it = items.find((x) => x.id === el.dataset.id);
+          const it = items[Number(el.dataset.n)];
           el.classList.toggle("changed", changed(it));
           el.classList.toggle("flag", !!get(it, "discuss"));
         }
@@ -370,22 +374,19 @@
         const host = e.target.closest(".item");
         if (!host) return;
         const t = e.target;
-        const id = host.dataset.id;
+        const it = items[Number(host.dataset.n)];
+        const id = it.id;
         if (t.type === "radio") {
-          put(id, "choice", t.value);
+          put(id, "choice", it.options[Number(t.value)]);
           host.querySelector('[data-k="custom"]').value = "";
         } else if (t.dataset.k === "custom") {
-          const it = items.find((x) => x.id === id);
           put(id, "choice", t.value.trim() || it.pick);
         } else if (t.type === "checkbox") put(id, "discuss", t.checked);
         else if (t.dataset.k) put(id, t.dataset.k, t.value);
-        const choice = get(
-          items.find((x) => x.id === id),
-          "choice",
-        );
+        const choice = get(it, "choice");
         host.querySelectorAll(".opts label").forEach((l) => {
           const radio = l.querySelector("input");
-          const on = radio.value === choice;
+          const on = it.options[Number(radio.value)] === choice;
           l.classList.toggle("on", on);
           radio.checked = on;
         });
