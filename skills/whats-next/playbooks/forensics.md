@@ -5,8 +5,15 @@ program gives: a process that spins, memory that grows, a visual glitch, a
 profile, a trace, a heap snapshot, or a spindump.
 
 The result is a diagnosis with its evidence cited. It includes no fix unless
-the user asks for one. Once the cause is known, continue with
-`diagnosing-bugs`.
+the user asks for one. Report the diagnosis and stop. When the user then asks
+for a fix, continue with `diagnosing-bugs`.
+
+A capture can hold secrets: tokens, authorization headers, and personal data.
+Redact every secret before you show a command, its output, or anything from a
+capture: write `<REDACTED>` in its place, and quote only the lines that carry
+the signal. Give a command its credential through an environment variable, so
+the value stays out of what you show. Tell a sub-agent that reads a capture to
+do the same in what it sends back.
 
 Choose the branch:
 

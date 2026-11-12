@@ -11,7 +11,10 @@ implementation. Explain the next move without requiring them to remember the
 catalog.
 
 When the user asked what to do next, recommend. When you opened this skill
-for a task of your own, follow the match yourself.
+for a task of your own, follow the match yourself when it is a playbook or a
+skill you can load. Some skills named below load only when the user types
+them, such as `implement`, `autopilot`, and `eval`. When one of those is the
+match, tell the user it exists and what it would do.
 
 ## Playbooks
 
