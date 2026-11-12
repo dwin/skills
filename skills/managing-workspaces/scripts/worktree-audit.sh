@@ -157,7 +157,13 @@ worktrees | while IFS= read -r -d '' worktree; do
   head_time="$(git -C "$worktree" log -1 --format=%ct HEAD 2>/dev/null || echo "")"
   if [ -n "$head_time" ]; then age="$(((now - head_time) / 86400))d"; else age="?"; fi
 
-  branch="$(git -C "$worktree" symbolic-ref --quiet --short HEAD 2>/dev/null || echo "(detached)")"
+  # Read the full ref and cut the prefix. The short form turns "topic" into
+  # "heads/topic" when a tag has the same name, and no pull request matches.
+  if branch="$(git -C "$worktree" symbolic-ref --quiet HEAD 2>/dev/null)"; then
+    branch="${branch#refs/heads/}"
+  else
+    branch="(detached)"
+  fi
 
   if git -C "$worktree" merge-base --is-ancestor HEAD "$base_commit" 2>/dev/null; then
     merged=yes
