@@ -32,7 +32,9 @@ same-family.
 
 - A background worker or background command re-invokes you when it exits.
 - `ScheduleWakeup` or the cron tools provide the audit tick. Mark a tick that
-  found nothing as `noop: true` so it collapses in the user's view.
+  found nothing as `noop: true` so it collapses in the user's view. End the
+  tick with `ScheduleWakeup` and `stop: true`, or with `CronDelete`, and
+  confirm with `CronList`.
 - Nothing wakes you on pull request events. Schedule one check sized to how
   long CI takes.
 

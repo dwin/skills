@@ -168,7 +168,9 @@ it, or you are waiting on it in the foreground.
 
 **Audit tick.** For a run expected to last more than an hour, schedule a check
 every 20 to 30 minutes. Judge each lane by its pushes, PR activity, and
-artifacts. Status text alone settles nothing.
+artifacts. Status text alone settles nothing. Record the schedule in the
+ledger. Cancel it when the run finishes, pauses, or stops, then list the
+host's schedules and confirm it is gone.
 
 **Quiet.** Write to the user on a state change: a lane verified done, a
 blocker, a decision needed, recovery exhausted, or the whole run finished.
@@ -201,5 +203,6 @@ one lane, stop it and report.
 ## Stop
 
 When the user says stop or pause: cancel every worker you started, including
-the workers they started, make no further writes, and record each lane's state
+the workers they started, cancel the audit schedule and every other wake you
+armed, make no further writes, and record each lane's state
 in the ledger.

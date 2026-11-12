@@ -135,6 +135,10 @@
         opacity: 0;
         pointer-events: none;
       }
+      .opts label:has(input:focus-visible) {
+        outline: 2px solid var(--on);
+        outline-offset: 2px;
+      }
       .opts label.on {
         background: var(--on);
         color: var(--on-fg);
@@ -368,16 +372,16 @@
           put(id, "choice", t.value.trim() || it.pick);
         } else if (t.type === "checkbox") put(id, "discuss", t.checked);
         else if (t.dataset.k) put(id, t.dataset.k, t.value);
-        host.querySelectorAll(".opts label").forEach((l) =>
-          l.classList.toggle(
-            "on",
-            l.querySelector("input").value ===
-              get(
-                items.find((x) => x.id === id),
-                "choice",
-              ),
-          ),
+        const choice = get(
+          items.find((x) => x.id === id),
+          "choice",
         );
+        host.querySelectorAll(".opts label").forEach((l) => {
+          const radio = l.querySelector("input");
+          const on = radio.value === choice;
+          l.classList.toggle("on", on);
+          radio.checked = on;
+        });
       }
       root.addEventListener("change", onEdit);
       root.addEventListener("input", (e) => {
