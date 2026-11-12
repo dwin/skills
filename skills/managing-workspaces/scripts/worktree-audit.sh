@@ -47,7 +47,9 @@
 #              `git worktree lock` on it.
 #              Advice only: a worktree another session is using stays,
 #              whatever this column says.
-#   WORKTREE   The path.
+#   WORKTREE   The path. A backslash, tab, carriage return, or line break in
+#              it is written as \\, \t, \r, or \n, so each row is one line
+#              and no two paths look alike.
 set -uo pipefail
 
 # Keep Git from refreshing an index while it reads one: `git status` would
@@ -178,13 +180,31 @@ is_locked() {
   return 1
 }
 
-echo "# repository: $(printf '%s' "$repo" | tr '\t\r\n' '   ')"
-echo "# base: $base (pull requests: $pr_source)"
+# Write a path on one line without losing what it was: a backslash becomes
+# two, and a tab, carriage return, or line break becomes \t, \r, or \n.
+# Showing each as a space would make two different paths look the same.
+show_path() {
+  local text="$1" bs tab cr nl
+  bs="\\"
+  tab="$(printf '\t')"
+  cr="$(printf '\r')"
+  nl='
+'
+  # No quotes around the whole expansion, and quotes around each
+  # replacement: Bash 3.2 and Bash 5 agree on that form and on no other.
+  text=${text//"$bs"/"$bs$bs"}
+  text=${text//"$tab"/"${bs}t"}
+  text=${text//"$cr"/"${bs}r"}
+  text=${text//"$nl"/"${bs}n"}
+  printf '%s' "$text"
+}
+
+echo "# repository: $(show_path "$repo")"
+echo "# base: $(show_path "$base") (pull requests: $pr_source)"
 printf 'SIZE\tAGE\tBRANCH\tMERGED\tPR\tUNPUSHED\tTRACKED\tUNTRACKED\tSUGGEST\tWORKTREE\n'
 
 worktrees | while IFS= read -r -d '' worktree; do
-  # One row per worktree: show a tab or a line break in a path as a space.
-  shown="$(printf '%s' "$worktree" | tr '\t\r\n' '   ')"
+  shown="$(show_path "$worktree")"
   if [ ! -d "$worktree" ]; then
     printf -- '-\t-\t-\t-\t-\t-\t-\t-\tmissing\t%s\n' "$shown"
     continue

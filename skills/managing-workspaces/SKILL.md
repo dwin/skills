@@ -89,7 +89,9 @@ size, age, branch, whether that branch is merged, its PR state, and its
 tracked and untracked changes. For Git worktrees,
 [`scripts/worktree-audit.sh`](scripts/worktree-audit.sh) `[-b <base>] [repo]`
 prints these columns for every worktree, plus unpushed commits, and removes
-nothing; its `--help` explains each column. Then sort the rows: merged, clean, and used by
+nothing; its `--help` explains each column. It writes a tab or a line break
+in a path as `\t` or `\n`: for such a row, take the real path from
+`git worktree list --porcelain -z` before acting on it. Then sort the rows: merged, clean, and used by
 no session may go; uncommitted tracked changes wait for the user's decision; a
 workspace another session is using stays, and so does a locked worktree. Show the table with the proposed
 action for each row before removing anything.
