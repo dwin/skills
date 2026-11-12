@@ -52,10 +52,11 @@ from a past session is the best source, and `retro` findings name them.
 
 - **Public tasks** are small invented cases. They live in the plugin's
   `evals/` directory and may be committed.
-- **Private tasks** come from real work. They live in the directory that
+- **Private tasks** come from real work. They are kept in the directory that
   `~/.config/eval/local.md` names, or in `~/Documents/agent-evals/`. A private
   task's prompt, files, output, and project name stay out of every public
-  repository, PR, and published report.
+  repository, PR, and published report. A harness that needs them inside a
+  checkout gets a temporary, untracked copy.
 
 Use both sets when the decision matters. Public tasks alone show that the
 harness works. Private tasks show whether the arm helps on real work.
