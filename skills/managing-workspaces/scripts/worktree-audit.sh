@@ -16,10 +16,14 @@
 #   BRANCH     The checked-out branch, or (detached).
 #   MERGED     yes when the base contains HEAD. A squash merge shows no here,
 #              so read PR as well.
-#   PR         #number/state of the newest pull request for the branch, - when
-#              there is none, ? when gh cannot tell or its listing was cut
-#              off before reaching the branch. With ?, an open pull request
-#              cannot hold a row: look before removing a candidate.
+#   PR         #number/state of a pull request from a branch of this name: an
+#              open or draft one first, then a merged one whose head commit
+#              contains this HEAD. outdated means a merged one exists and
+#              does not contain HEAD: the branch moved on, or the pull
+#              request came from another repository. - when there is none, ?
+#              when gh cannot tell or its listing was cut off before reaching
+#              the branch. With ?, an open pull request cannot hold a row:
+#              look before removing a candidate.
 #   UNPUSHED   Commits on HEAD that no remote-tracking branch contains.
 #   TRACKED    Tracked files with uncommitted changes. ? when `git status`
 #              failed there; the row is then marked review.
@@ -27,8 +31,9 @@
 #              are not counted. ? when `git status` failed.
 #   SUGGEST    main, missing, hold-locked, hold-changes, hold-open-pr,
 #              hold-unpushed, candidate, or review. A candidate is merged, or
-#              its pull request is, and it has no uncommitted or untracked
-#              files. hold-locked means someone ran `git worktree lock` on it.
+#              a merged pull request contains its HEAD, and it has no
+#              uncommitted or untracked files. hold-locked means someone ran
+#              `git worktree lock` on it.
 #              Advice only: a worktree another session is using stays,
 #              whatever this column says.
 #   WORKTREE   The path.
@@ -101,8 +106,8 @@ trap 'rm -f "$prs"' EXIT
 pr_known=no
 pr_capped=no
 if command -v gh >/dev/null 2>&1 &&
-  gh pr list --state all --limit "$pr_limit" --json number,state,isDraft,headRefName \
-    --jq '.[] | [.headRefName, .number, (if .isDraft then "draft" else (.state | ascii_downcase) end)] | @tsv' \
+  gh pr list --state all --limit "$pr_limit" --json number,state,isDraft,headRefName,headRefOid \
+    --jq '.[] | [.headRefName, .number, (if .isDraft then "draft" else (.state | ascii_downcase) end), .headRefOid] | @tsv' \
     >"$prs" 2>/dev/null; then
   pr_known=yes
   [ "$(wc -l <"$prs")" -ge "$pr_limit" ] && pr_capped=yes
@@ -176,8 +181,39 @@ worktrees | while IFS= read -r -d '' worktree; do
     pr="-"
     if [ "$branch" != "(detached)" ]; then
       [ "$pr_capped" = yes ] && pr="?"
-      found="$(awk -F '\t' -v b="$branch" '$1 == b { print "#" $2 "/" $3; exit }' "$prs")"
-      [ -n "$found" ] && pr="$found"
+      # A branch name is not unique: a fork can open a pull request from a
+      # branch of the same name, and a branch can gain commits after its pull
+      # request merged. So read every row for the name. An open one holds the
+      # row. A merged one counts only when its head commit contains this HEAD.
+      head_commit="$(git -C "$worktree" rev-parse --verify --quiet HEAD 2>/dev/null || echo "")"
+      pr_open=""
+      pr_merged=""
+      pr_outdated=""
+      pr_closed=""
+      while IFS="$(printf '\t')" read -r _ pr_number pr_state pr_head; do
+        case "$pr_state" in
+          open | draft) [ -n "$pr_open" ] || pr_open="#$pr_number/$pr_state" ;;
+          merged)
+            if [ -n "$head_commit" ] && [ -n "$pr_head" ] &&
+              { [ "$pr_head" = "$head_commit" ] ||
+                git -C "$worktree" merge-base --is-ancestor "$head_commit" "$pr_head" 2>/dev/null; }; then
+              [ -n "$pr_merged" ] || pr_merged="#$pr_number/merged"
+            else
+              [ -n "$pr_outdated" ] || pr_outdated="#$pr_number/outdated"
+            fi
+            ;;
+          *) [ -n "$pr_closed" ] || pr_closed="#$pr_number/$pr_state" ;;
+        esac
+      done < <(awk -F '\t' -v b="$branch" '$1 == b' "$prs")
+      if [ -n "$pr_open" ]; then
+        pr="$pr_open"
+      elif [ -n "$pr_merged" ]; then
+        pr="$pr_merged"
+      elif [ -n "$pr_outdated" ]; then
+        pr="$pr_outdated"
+      elif [ -n "$pr_closed" ]; then
+        pr="$pr_closed"
+      fi
     fi
   fi
 
