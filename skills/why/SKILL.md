@@ -41,6 +41,8 @@ Gather the seed that every later step uses:
 - the pull request numbers in those commits, and each pull request's body and
   review discussion:
   `gh pr view <number> --json title,body,author,mergedAt,labels,closingIssuesReferences,comments,reviews`;
+- the comments reviewers left on individual lines, which that command leaves
+  out: `gh api --paginate repos/{owner}/{repo}/pulls/<number>/comments`;
 - the ticket IDs named in commits and pull requests.
 
 ## 3. Search every source you can reach

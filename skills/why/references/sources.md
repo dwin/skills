@@ -32,7 +32,11 @@ git log -G '<regex>' -- <file>                # the same, by pattern
 git blame -L <start>,<end> <file>             # last change to each line
 git show <commit>                             # one commit in full
 gh pr view <number> --json body,comments,reviews
+gh api --paginate repos/{owner}/{repo}/pulls/<number>/comments
 ```
+
+The second command returns the comments left on individual lines. `gh pr view`
+gives only the conversation and each review's summary.
 
 Also search for ADRs (`docs/adr/` and similar), for `TODO`, `FIXME`, `HACK`,
 and `NOTE` near the target, for tests that name the target's symbols, since
