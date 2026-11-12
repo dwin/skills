@@ -49,5 +49,6 @@ recommendation, to discuss, notes, and accepted.
 
 - Accepted and changed items are decisions. Update the decision tree.
 - Discuss items and notes become the next round. Answer each question a note
-  asks, and add any new topic a note raises to the tree.
+  asks, and add any new topic a note raises to the tree. A Discuss item is
+  undecided, whatever choice it shows.
 - An answer that contradicts an earlier decision reopens it. Say so.

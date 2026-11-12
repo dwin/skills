@@ -298,6 +298,7 @@
       }
       function exportText() {
         const out = [];
+        const was = (it) => `${line(it)}  (was: ${it.pick})`;
         const section = (title, list, fmt) => {
           out.push(title);
           if (!list.length) out.push("- none");
@@ -306,13 +307,13 @@
         };
         section(
           "CHANGED FROM RECOMMENDATION",
-          items.filter(changed),
-          (it) => `${line(it)}  (was: ${it.pick})`,
+          items.filter((it) => changed(it) && !get(it, "discuss")),
+          was,
         );
         section(
           "DISCUSS",
           items.filter((it) => get(it, "discuss")),
-          line,
+          (it) => (changed(it) ? was(it) : line(it)),
         );
         section(
           "NOTES",
@@ -323,7 +324,7 @@
         );
         section(
           "ACCEPTED AS RECOMMENDED",
-          items.filter((it) => !changed(it) && !it.done),
+          items.filter((it) => !changed(it) && !it.done && !get(it, "discuss")),
           line,
         );
         return out.join("\n").trim();
