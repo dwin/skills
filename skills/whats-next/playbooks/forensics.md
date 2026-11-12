@@ -18,14 +18,17 @@ Choose the branch:
 1. **Capture the signal that matches the symptom**, from the process itself:
    a CPU profile for a spinning process, a heap snapshot for a leak, a
    browser trace for a visual glitch. Reasoning from the source alone is not
-   a capture.
+   a capture. A capture can pause or slow the process. On a process that
+   serves users, ask before taking one.
 2. **Reduce the capture to the cause**: the function on the hot path, the
    chain of references that keeps a leaked object alive, the loop that fires
    with no input. Parse a large capture in a sub-agent, or with a script, and
    keep only the reduced finding in this conversation.
-3. **Prove the mechanism.** Add instrumentation to the running process, or
-   patch the live code, and see the behavior change as the explanation
-   predicts.
+3. **Prove the mechanism** on an instance you may change: one you started, or
+   one the user said you may alter. Add instrumentation to it, or patch its
+   code, and see the behavior change as the explanation predicts. Leave a
+   process that serves users as it is. When no instance may be changed, report
+   the mechanism as unconfirmed.
 4. **Map the finding to source**: the file, the symbol, and the line that
    allocates or schedules.
 

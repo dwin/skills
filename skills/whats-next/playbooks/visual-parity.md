@@ -9,7 +9,9 @@ renderings match. Looking at them does not.
 
 ## Steps
 
-1. **Capture the baseline before any migration.** Build a harness that
+1. **Capture the baseline before any change.** The baseline is the rendering
+   the result must match: for a migration, the current code; for matching
+   another implementation, that implementation. Build a harness that
    screenshots each component in each of its states, at a fixed viewport,
    with animations off and fonts loaded. Without a baseline there is no
    parity claim. Check the harness by running it twice on unchanged code: the
