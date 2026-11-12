@@ -13,7 +13,8 @@
 # Columns, one row per worktree, largest first:
 #   SIZE       Disk use of the worktree directory.
 #   AGE        Days since the commit at its HEAD.
-#   BRANCH     The checked-out branch, or (detached). During a rebase or a
+#   BRANCH     The checked-out branch, or (detached), written as WORKTREE
+#              writes a path. During a rebase or a
 #              bisect, the branch it started from. While a rebase, bisect,
 #              merge, cherry-pick, or revert is in progress the row is never
 #              a candidate, because someone is working there.
@@ -48,8 +49,10 @@
 #              Advice only: a worktree another session is using stays,
 #              whatever this column says.
 #   WORKTREE   The path. A backslash, tab, carriage return, or line break in
-#              it is written as \\, \t, \r, or \n, so each row is one line
-#              and no two paths look alike.
+#              it is written as \\, \t, \r, or \n, and any other control
+#              character as \x or \u00 and two hex digits, so each row is
+#              one line, no two paths look alike, and nothing in a path can
+#              redraw the terminal.
 set -uo pipefail
 
 # Keep Git from refreshing an index while it reads one: `git status` would
@@ -58,6 +61,46 @@ export GIT_OPTIONAL_LOCKS=0
 # GH_REPO points gh at whatever repository it names. Without it, gh reads the
 # remotes of the repository being audited.
 unset GH_REPO
+
+# Text from a path, a ref name, or an argument goes to a terminal, so write
+# it on one line without losing what it was: a backslash becomes two, a tab,
+# carriage return, or line break becomes \t, \r, or \n, any other control
+# character becomes \x and its two hex digits, and a C1 control character in
+# UTF-8 becomes \u00 and its two hex digits. Showing them as spaces would
+# make two paths look the same, and printing them raw would let an escape
+# sequence redraw the terminal. Other non-ASCII text is left as it is.
+ctl_chars=()
+ctl_names=()
+for ctl_code in 1 2 3 4 5 6 7 8 11 12 14 15 16 17 18 19 20 21 22 23 24 25 26 \
+  27 28 29 30 31 127; do
+  # shellcheck disable=SC2059  # the format is the octal escape itself
+  ctl_chars+=("$(printf "\\$(printf '%03o' "$ctl_code")")")
+  ctl_names+=("$(printf 'x%02x' "$ctl_code")")
+done
+for ctl_code in 128 129 130 131 132 133 134 135 136 137 138 139 140 141 142 \
+  143 144 145 146 147 148 149 150 151 152 153 154 155 156 157 158 159; do
+  # shellcheck disable=SC2059  # the format is the two octal escapes
+  ctl_chars+=("$(printf "\\302\\$(printf '%03o' "$ctl_code")")")
+  ctl_names+=("$(printf 'u00%02x' "$ctl_code")")
+done
+show_path() {
+  local text="$1" bs tab cr nl i
+  bs="\\"
+  tab="$(printf '\t')"
+  cr="$(printf '\r')"
+  nl='
+'
+  # No quotes around the whole expansion, and quotes around each
+  # replacement: Bash 3.2 and Bash 5 agree on that form and on no other.
+  text=${text//"$bs"/"$bs$bs"}
+  text=${text//"$tab"/"${bs}t"}
+  text=${text//"$cr"/"${bs}r"}
+  text=${text//"$nl"/"${bs}n"}
+  for i in "${!ctl_chars[@]}"; do
+    text=${text//"${ctl_chars[$i]}"/"$bs${ctl_names[$i]}"}
+  done
+  printf '%s' "$text"
+}
 
 usage() { sed -n '2,/^set -uo/p' "$0" | sed '$d; s/^# \{0,1\}//'; }
 
@@ -74,7 +117,7 @@ while [ $# -gt 0 ]; do
       exit 0
       ;;
     -*)
-      echo "error: unknown option: $1" >&2
+      echo "error: unknown option: $(show_path "$1")" >&2
       exit 2
       ;;
     *) break ;;
@@ -86,7 +129,7 @@ repo="${1:-.}"
 # Command substitution drops every trailing newline, and a path may end in
 # one. The x keeps them; then remove the x and the one newline Git added.
 repo="$(git -C "$repo" rev-parse --show-toplevel 2>/dev/null && printf x)" || {
-  echo "error: not a Git repository: ${1:-.}" >&2
+  echo "error: not a Git repository: $(show_path "${1:-.}")" >&2
   exit 1
 }
 repo="${repo%x}"
@@ -109,7 +152,7 @@ fi
 # Resolve the base to one commit here. A name such as HEAD means a different
 # commit inside each worktree.
 base_commit="$(git rev-parse --verify --quiet "$base^{commit}")" || {
-  echo "error: base not found: $base" >&2
+  echo "error: base not found: $(show_path "$base")" >&2
   exit 1
 }
 # The base's full ref name, such as refs/remotes/origin/main. Empty when the
@@ -178,25 +221,6 @@ is_locked() {
     [ "$path" = "$1" ] && return 0
   done
   return 1
-}
-
-# Write a path on one line without losing what it was: a backslash becomes
-# two, and a tab, carriage return, or line break becomes \t, \r, or \n.
-# Showing each as a space would make two different paths look the same.
-show_path() {
-  local text="$1" bs tab cr nl
-  bs="\\"
-  tab="$(printf '\t')"
-  cr="$(printf '\r')"
-  nl='
-'
-  # No quotes around the whole expansion, and quotes around each
-  # replacement: Bash 3.2 and Bash 5 agree on that form and on no other.
-  text=${text//"$bs"/"$bs$bs"}
-  text=${text//"$tab"/"${bs}t"}
-  text=${text//"$cr"/"${bs}r"}
-  text=${text//"$nl"/"${bs}n"}
-  printf '%s' "$text"
 }
 
 echo "# repository: $(show_path "$repo")"
@@ -412,6 +436,6 @@ worktrees | while IFS= read -r -d '' worktree; do
   fi
 
   printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' \
-    "$size" "$age" "$branch" "$merged" "$pr" "$unpushed" \
+    "$size" "$age" "$(show_path "$branch")" "$merged" "$pr" "$unpushed" \
     "$tracked" "$untracked" "$suggest" "$shown"
 done | sort -t "$(printf '\t')" -k1,1 -rh
