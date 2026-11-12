@@ -52,7 +52,9 @@ it unless they want a second one for a different surface.
 - **Show it catching a broken change.** Before hand-off, break the behavior a
   feature file proves, in a disposable copy, and watch that feature's steps
   fail with evidence of the failure. A check never seen to fail proves
-  nothing.
+  nothing. Follow "Run it broken" in
+  [references/create.md](references/create.md) step 4 in every mode: it says
+  how to keep the user's checkout out of reach and prove it unchanged.
 - **Clean up what you started, and keep the evidence.** Stop processes by the
   id you started, never by name. Evidence survives every cleanup, at a
   location the skill names. Before evidence is kept or shown, replace every

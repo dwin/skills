@@ -71,8 +71,11 @@ the map describing the intended behavior).
      any script executable, and show its call in the skill. Drive the fixed
      path live again before it ships.
    - The app is broken: record it for the user, outside this change.
-7. **Ship or stop.** For a changed outcome, reread every changed file, then
-   ship one change the way the project takes changes. Tear down after the last
+7. **Ship or stop.** For a changed outcome, reread every changed file. When
+   the change touches a feature's steps or a helper they call, show those
+   steps catching a broken change again before it ships, by "Run it broken"
+   in step 4 of [create.md](create.md), with its record, isolation, and
+   cleanup. Then ship one change the way the project takes changes. Tear down after the last
    drive, including the re-drives from step 6. For a clean or blocked outcome,
    ship nothing and report the outcome and the coverage.
 
