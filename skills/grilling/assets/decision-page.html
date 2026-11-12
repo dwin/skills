@@ -282,9 +282,9 @@
         const choice = get(it, "choice");
         const custom = it.options.includes(choice) ? "" : choice;
         const who = it.by === "you" ? "your pick" : "my pick";
-        let h = `<div class="item" data-id="${esc(it.id)}"><div class="head"><span class="label">${esc(it.label)}</span>`;
+        let h = `<div class="item" role="group" aria-labelledby="q-${esc(it.id)}" data-id="${esc(it.id)}"><div class="head"><span class="label" id="q-${esc(it.id)}">${esc(it.label)}</span>`;
         h += `<span class="pill">${who}: ${esc(it.pick)}${it.field && it.field.value ? ", " + esc(it.field.value) : ""}</span>${it.done ? '<span class="pill">already done</span>' : ""}</div>`;
-        h += `<div>${esc(it.what)}</div><div class="dim">${esc(it.why)}</div><div class="opts">`;
+        h += `<div>${esc(it.what)}</div><div class="dim">${esc(it.why)}</div><div class="opts" role="radiogroup" aria-labelledby="q-${esc(it.id)}">`;
         for (const o of it.options)
           h += `<label class="${o === choice ? "on" : ""}"><input type="radio" name="${esc(it.id)}" value="${esc(o)}" ${o === choice ? "checked" : ""}>${esc(o)}</label>`;
         h += `</div><div class="ctl"><input type="text" data-k="custom" placeholder="another answer" value="${esc(custom)}">`;
