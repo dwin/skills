@@ -13,12 +13,15 @@
 # Columns, one row per worktree, largest first:
 #   SIZE       Disk use of the worktree directory.
 #   AGE        Days since the commit at its HEAD.
-#   BRANCH     The checked-out branch, or (detached).
+#   BRANCH     The checked-out branch, or (detached). During a rebase or a
+#              bisect, the branch it started from: the row is then marked
+#              review at most, because someone is working there.
 #   MERGED     yes when the base contains HEAD. A squash merge shows no here,
 #              so read PR as well.
-#   PR         #number/state of a pull request from a branch of this name, in
-#              the repository gh resolves from this one's remotes. The
-#              header line names it. An open or draft one comes first, then
+#   PR         #number/state of a pull request from a branch of this name, or
+#              of the name of the remote branch it tracks, in the repository
+#              gh resolves from this one's remotes. The header line names
+#              it. An open or draft one comes first, then
 #              a merged one. merged means its head commit contains this HEAD
 #              and the base contains its merge commit. not-in-base means the
 #              head matches and the base does not contain the merge commit:
@@ -106,6 +109,9 @@ base_commit="$(git rev-parse --verify --quiet "$base^{commit}")" || {
   echo "error: base not found: $base" >&2
   exit 1
 }
+# The base's full ref name, such as refs/remotes/origin/main. Empty when the
+# base is a commit id.
+base_ref="$(git rev-parse --symbolic-full-name "$base" 2>/dev/null || echo "")"
 
 # Pull request state per branch, from two gh listings of one repository: the
 # open ones, then every state, newest first. A listing that fills the limit
@@ -189,10 +195,49 @@ worktrees | while IFS= read -r -d '' worktree; do
 
   # Read the full ref and cut the prefix. The short form turns "topic" into
   # "heads/topic" when a tag has the same name, and no pull request matches.
+  busy=no
   if branch="$(git -C "$worktree" symbolic-ref --quiet HEAD 2>/dev/null)"; then
     branch="${branch#refs/heads/}"
   else
     branch="(detached)"
+    # A rebase or a bisect detaches HEAD while the branch still exists, and
+    # HEAD may then sit on a commit the base contains. The operation's own
+    # files name the branch.
+    git_dir="$(git -C "$worktree" rev-parse --absolute-git-dir 2>/dev/null || echo "")"
+    for op_file in rebase-merge/head-name rebase-apply/head-name BISECT_START; do
+      [ -n "$git_dir" ] && [ -f "$git_dir/$op_file" ] || continue
+      busy=yes
+      op_branch=""
+      IFS= read -r op_branch <"$git_dir/$op_file" || true
+      # A rebase records the full ref. A bisect records the short name.
+      case "$op_file" in rebase-*) op_branch="${op_branch#refs/heads/}" ;; esac
+      if [ -n "$op_branch" ] &&
+        git -C "$worktree" show-ref --verify --quiet "refs/heads/$op_branch"; then
+        branch="$op_branch"
+      fi
+      break
+    done
+  fi
+
+  # A branch may track a remote branch of another name, and the pull request
+  # is then listed under that name. Leave the name out when the tracked
+  # branch is the base itself: it is where the branch started, not its head.
+  upstream_name=""
+  if [ "$branch" != "(detached)" ]; then
+    up_ref=""
+    up_remote=""
+    up_name=""
+    # remotename is the remote, or "." when the upstream is a local branch.
+    # remoteref is the branch's name on that remote, whatever the remote is
+    # called here and wherever its branches are fetched to.
+    read -r up_ref up_remote up_name < <(git -C "$worktree" for-each-ref \
+      --format='%(upstream) %(upstream:remotename) %(upstream:remoteref)' \
+      "refs/heads/$branch" 2>/dev/null) || true
+    up_name="${up_name#refs/heads/}"
+    if [ -n "$up_name" ] && [ -n "$up_remote" ] && [ "$up_remote" != . ] &&
+      [ "$up_name" != "$branch" ] && [ "$up_ref" != "$base_ref" ]; then
+      upstream_name="$up_name"
+    fi
   fi
 
   if git -C "$worktree" merge-base --is-ancestor HEAD "$base_commit" 2>/dev/null; then
@@ -235,7 +280,8 @@ worktrees | while IFS= read -r -d '' worktree; do
       esac
     done < <(
       if [ "$branch" != "(detached)" ]; then
-        awk -F '\t' -v b="$branch" '$1 == b' "$prs_open" "$prs"
+        awk -F '\t' -v b="$branch" -v u="$upstream_name" \
+          '$1 == b || (u != "" && $1 == u)' "$prs_open" "$prs"
       elif [ -n "$head_commit" ]; then
         awk -F '\t' -v h="$head_commit" '$4 == h' "$prs_open"
       fi
@@ -308,6 +354,11 @@ worktrees | while IFS= read -r -d '' worktree; do
         fi
         ;;
     esac
+  fi
+
+  # A rebase or a bisect in progress means someone is working there.
+  if [ "$suggest" = candidate ] && [ "$busy" = yes ]; then
+    suggest=review
   fi
 
   # Removing a worktree discards its untracked files, so someone looks first.

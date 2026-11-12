@@ -79,19 +79,35 @@ incomplete when the map lists others.
    confirm the evidence still exists where the skill says. Fix what fails, and
    run the skill's cleanup after every failed attempt, so broken attempts
    leave no processes or ports behind.
-2. **Run it broken.** In a disposable copy of the checkout, such as a
-   worktree made through `managing-workspaces`, make the smallest change that
-   breaks that feature for a user: a handler that returns early, a command
-   that exits 0 without writing. Run the feature's steps there. They must
-   fail, and the evidence must show what broke. When they pass, the steps
-   check the wrong thing: fix them and run both again. Remove the copy.
+2. **Run it broken.** Break the product in a disposable copy, never in the
+   user's checkout. The copy holds what the checkout holds now, the skill
+   you just generated and any uncommitted changes included: copy the
+   directory to a new one from `mktemp -d`, or make a worktree through
+   `managing-workspaces` and copy those files into it. A fresh worktree
+   alone has neither, so the steps would fail there for a missing helper and
+   prove nothing. Never copy a `.git` that is a file, as a linked worktree
+   has: it points at the user's repository, and a `git add` in the copy
+   would land in their index. Leave it out, or use the worktree route.
+   - Run the feature's steps in the copy as it is, with the copy's own
+     helpers. They must pass.
+   - Make the smallest change that breaks that feature for a user: a handler
+     that returns early, a command that exits 0 without writing. Run the
+     same steps again. They must fail, and the evidence must show what
+     broke. When they pass, the steps check the wrong thing: fix them in the
+     checkout, make a new copy, and run both again.
+   - Remove the copy whatever happened, also when a run fails or is
+     interrupted: stop what was started from it, then delete it. A worktree
+     with the break in it needs `git worktree remove --force`, and the break
+     is the only thing lost. Then confirm `git status` in the user's
+     checkout shows what it showed before step 4.
 3. **Name the stand-ins.** When the proof ran somewhere other than the real
    target, such as a container standing in for a fresh machine, list every
    setup step the stand-in did that the target will not. Those steps stay
    unverified.
 
 The step is done when the clean run passed with its evidence intact after
-cleanup, the broken run failed, and the copy is gone.
+cleanup, the copy's steps passed before the break and failed after it, the
+copy is gone, and the checkout is as it was.
 
 ## 5. Hand off
 
