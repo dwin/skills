@@ -43,8 +43,10 @@ is under the `figure-it-out` skill's directory:
 `<skill directory>/scripts/work-log.sh <file> <phase> <decision> <why> <evidence> <result>`.
 It stamps the time,
 writes the header on first use, flattens tabs and newlines, and puts a single
-quote before any cell that starts with `=`, `+`, `-`, or `@`, so a spreadsheet
-reads the cell as text instead of a formula. When you append a row another
+quote before any cell that starts with `=`, `+`, `-`, `@`, or `"`, so a
+spreadsheet reads the cell as text instead of a formula. A cell wrapped in
+double quotes counts, because an importer that strips the quotes would uncover
+what is inside them. When you append a row another
 way, clean any cell built from generated or outside text the same way.
 
 Log decision points, not every action: a fork chosen, a unit landed with its

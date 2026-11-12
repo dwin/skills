@@ -19,13 +19,15 @@ if [ ! -s "$log_file" ]; then
   printf 'ts\tphase\tdecision\twhy\tevidence\tresult\n' >>"$log_file"
 fi
 
-# Flatten tabs and line breaks so each cell stays on one line, and quote a
-# leading =, +, -, or @ so a spreadsheet reads the cell as text, not a formula.
+# Flatten tabs and line breaks so each cell stays on one line, and put a single
+# quote before a leading =, +, -, or @ so a spreadsheet reads the cell as text,
+# not a formula. A leading double quote gets one too: an importer that strips
+# the quotes around a cell would otherwise uncover a formula inside them.
 clean() {
   local value
   value="$(printf '%s' "$1" | tr '\t\r\n' '   ')"
   case "$value" in
-    [=+@-]*) printf "'%s" "$value" ;;
+    [=+@\"-]*) printf "'%s" "$value" ;;
     *) printf '%s' "$value" ;;
   esac
 }
