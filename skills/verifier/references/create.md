@@ -82,8 +82,11 @@ incomplete when the map lists others.
 2. **Run it broken.** Break the product in a disposable copy, never in the
    user's checkout. The copy holds what the checkout holds now, the skill
    you just generated and any uncommitted changes included: copy the
-   directory to a new one from `mktemp -d`, or make a worktree through
-   `managing-workspaces` and copy those files into it. A fresh worktree
+   directory to a new one from `mktemp -d`, or make a detached worktree
+   with `git worktree add --detach <path> HEAD` and copy those files into
+   it. Detached matters: a worktree made on a new branch leaves that branch
+   behind when it is removed, and the comparison below would call that
+   damage. A fresh worktree
    alone has neither, so the steps would fail there for a missing helper and
    prove nothing. Never copy a `.git` that is a file, as a linked worktree
    has: it points at the user's repository, and a `git add` in the copy
