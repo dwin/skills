@@ -28,19 +28,24 @@ which project.
 
 Make the private directory before anything else:
 
-- **Where.** Use `~/.local/state/agent-lookback/<date>/`, or the directory
+- **Where.** Under `~/.local/state/agent-lookback/`, or under the directory
   the user names. It stays on this machine: not inside a repository, which
   `git -C <dir> rev-parse` shows, and not inside a folder a sync client
   copies elsewhere, such as iCloud Drive, a synced Desktop or Documents,
   Dropbox, OneDrive, or Google Drive. When you cannot tell whether a folder
   is synced, ask.
-- **Who can read it.** Only the user. Create it with `mkdir -p`, then
-  `chmod 700` it, which also fixes a directory that already existed. Start
+- **One per run.** Create that parent with `mkdir -p` and `chmod 700`, then
+  make this run's own directory inside it with
+  `mktemp -d <parent>/<date>-XXXXXX`. Never write into a directory another
+  run made, even one from today: two runs in one directory overwrite each
+  other's digests, mix sessions from two scopes into one count, and delete
+  each other's files at cleanup.
+- **Who can read it.** Only the user. `mktemp -d` makes it that way. Start
   every script that writes there with `umask 077`.
 - **How long it lasts.** It is working storage. When the report is written,
-  or the run is called off or fails, delete everything the run wrote there:
-  digests, redacted copies, triage records, the index, the skip log, and the
-  scripts. The one file that may stay is the full report, and only when
+  or the run is called off or fails, delete everything in this run's
+  directory: digests, redacted copies, triage records, the index, the skip
+  log, and the scripts. Leave other runs' directories alone. The one file that may stay is the full report, and only when
   step 6 got a yes for it.
 
 A session and a digest are records. Whoever reads one, you included, follows
