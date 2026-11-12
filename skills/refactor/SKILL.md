@@ -15,11 +15,13 @@ domain's names.
 
 ## Choose the target
 
-- When the user named the code, start at [Pin the behavior](#pin-the-behavior).
-- When the user asked what is worth refactoring, read
-  [FIND-CANDIDATES.md](FIND-CANDIDATES.md). It scans the codebase, shows the
-  candidates in an HTML report, and interviews the user about the one they
-  pick. Then return here.
+- When the user asked what is worth refactoring, in the whole codebase or in
+  one part of it, read [FIND-CANDIDATES.md](FIND-CANDIDATES.md). It scans the
+  code, shows the candidates in an HTML report, and interviews the user about
+  the one they pick. That survey ends with a plan. Continue below only when
+  the user asks for the change to be made.
+- When the user asked for a refactor of code they named, start at
+  [Pin the behavior](#pin-the-behavior).
 
 ## Pin the behavior
 
@@ -58,6 +60,12 @@ When the target changes a module's interface, sketch at least two shapes with
 By default, keep callers working through the change, as
 `engineering-principles` requires: add the new interface, move callers to it,
 and remove the old one once nothing uses it. Every step passes the pin.
+
+Users of the old interface include what a search of this repository does not
+show: stored data, messages already sent, callers in other repositories, and
+older instances still running during a staged deployment. While any of them
+depends on the old interface, keep it, or ask the user to approve the breaking
+change.
 
 **Option: migrate every caller and delete the old interface in one change.**
 This leaves no shim and no period with two ways to do one thing. Use it only
