@@ -55,8 +55,18 @@ such as workers and eval runs.
 
 For more than two sessions, hand slices of them to readers on a cheap model
 and keep the transcripts out of this conversation. `swarm` says how your host
-starts them and names the bulk-analysis model. Each reader returns one block
-per session, citing the session's id:
+starts them and names the bulk-analysis model.
+
+A slice sent to a reader goes to that model's provider. Before the first
+one:
+
+- Name the reader model and its provider, and get the user's go-ahead.
+  Without it, read the sessions yourself.
+- Cut the slices with a script that replaces secrets with `<REDACTED>`
+  first, using the patterns under Secrets in
+  [lookback's digest reference](../lookback/references/digest.md).
+
+Each reader returns one block per session, citing the session's id:
 
 - the topic and the user's goal;
 - decisions made;

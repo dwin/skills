@@ -19,9 +19,10 @@
 #   PR         #number/state of the newest pull request for the branch, - when
 #              there is none, ? when gh cannot tell.
 #   UNPUSHED   Commits on HEAD that no remote-tracking branch contains.
-#   TRACKED    Tracked files with uncommitted changes.
+#   TRACKED    Tracked files with uncommitted changes. ? when `git status`
+#              failed there; the row is then marked review.
 #   UNTRACKED  Untracked entries; a new directory counts once. Ignored files
-#              are not counted.
+#              are not counted. ? when `git status` failed.
 #   SUGGEST    main, missing, hold-locked, hold-changes, hold-open-pr,
 #              hold-unpushed, candidate, or review. A candidate is merged, or
 #              its pull request is, and it has no uncommitted or untracked
@@ -159,8 +160,12 @@ worktrees | while IFS= read -r -d '' worktree; do
 
   unpushed="$(git -C "$worktree" rev-list --count HEAD --not --remotes 2>/dev/null || echo "?")"
 
-  status="$(git -C "$worktree" status --porcelain 2>/dev/null)"
-  if [ -z "$status" ]; then
+  # A status that fails proves nothing about the worktree, so its counts are
+  # unknown and it is never a candidate.
+  if ! status="$(git -C "$worktree" status --porcelain 2>/dev/null)"; then
+    tracked="?"
+    untracked="?"
+  elif [ -z "$status" ]; then
     tracked=0
     untracked=0
   else
@@ -172,6 +177,8 @@ worktrees | while IFS= read -r -d '' worktree; do
     suggest=main
   elif is_locked "$worktree"; then
     suggest=hold-locked
+  elif [ "$tracked" = "?" ]; then
+    suggest=review
   elif [ "$tracked" != 0 ]; then
     suggest=hold-changes
   else

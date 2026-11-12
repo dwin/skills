@@ -8,16 +8,16 @@ counted together.
 
 A session can have several.
 
-| Category          | The session shows                                                                         |
-| ----------------- | ----------------------------------------------------------------------------------------- |
-| `repeated-prompt` | A request the user makes often, in the same shape, such as "review this" or "catch me up" |
-| `manual-workflow` | A sequence of steps the user drove by hand that a skill, script, or schedule could run    |
-| `correction`      | The user correcting what the agent did or how it did it                                   |
-| `skill-miss`      | An installed skill that fit the task and did not load, or loaded only when asked          |
-| `tool-friction`   | Failed tool calls, denied permissions, retries, or slow and costly calls                  |
-| `missing-access`  | Information or access the agent lacked and the user had to supply                         |
-| `environment`     | Setup, sign-in, disk space, or flaky tooling                                              |
-| `none`            | Nothing worth changing                                                                    |
+| Category          | The session shows                                                                                       |
+| ----------------- | ------------------------------------------------------------------------------------------------------- |
+| `repeated-prompt` | A request the user makes often, in the same shape, such as "review this" or "catch me up"               |
+| `manual-workflow` | A sequence of steps the user drove by hand that a skill, script, or schedule could run                  |
+| `correction`      | The user correcting what the agent did or how it did it                                                 |
+| `skill-miss`      | A skill the agent can load by itself that fit the task and did not load until the user asked, or at all |
+| `tool-friction`   | Failed tool calls, denied permissions, retries, or slow and costly calls                                |
+| `missing-access`  | Information or access the agent lacked and the user had to supply                                       |
+| `environment`     | Setup, sign-in, disk space, or flaky tooling                                                            |
+| `none`            | Nothing worth changing                                                                                  |
 
 ## Record
 
@@ -48,6 +48,8 @@ Give the triage worker:
 - the categories and the record format above;
 - the list of themes seen so far, with the instruction to reuse a theme when
   one fits and to add one only when none does;
+- the names of the installed skills that only the user can start. Typing one
+  of those is how it is meant to load, so it is never a `skill-miss`;
 - the batch of digests;
 - the instruction to return only records, one valid JSON object per line, one
   record per digest, and to judge each session by the user's messages first;
