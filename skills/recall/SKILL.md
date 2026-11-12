@@ -50,10 +50,12 @@ its own threads, use it first. Otherwise:
 
 Order candidates by modification time, never by file name. Search for the
 topic first, then read only the sessions that match, and only the parts that
-bear on it. Then search again for the files, functions, and branches those
-sessions name: a session about the same code may never use the topic's name.
-Repeat while a search finds a session you have not read. If you stop
-earlier, the brief says where.
+bear on it. Then search again for what those sessions name: files,
+functions, branches, pull request numbers, and ticket ids. A session about
+the same work may never use the topic's name, and may be tied to it only by
+a number. Steps 4 and 5 turn up more names and numbers: search for those
+here too. Repeat while a search finds a session you have not read. If you
+stop earlier, the brief says where.
 
 Skip this session, and sessions a harness started, such as eval runs. A
 session an agent started is skipped too, unless a matching session handed
