@@ -101,10 +101,12 @@ claude plugin eval . --no-publish --trust-plugin --scaffold --keep-temp \
 - `--trust-plugin` and `--scaffold` run the plugin's code and the cases'
   scripts as the user. Pass them only for a plugin and cases you have read.
 - `--keep-temp` keeps each run's directory, which holds its trace. Without it
-  the traces are deleted when the run ends, and a failing run can no longer be
-  read. The harness prints each kept directory and makes it read-only. Once
-  the eval is reported, delete each one with `chmod -R u+rwx <dir>` and then
-  `rm -rf <dir>`: they hold every prompt and output.
+  the harness deletes the directory of every run that finished, so a run whose
+  graders failed can no longer be read. It may still keep a run that ended in
+  an error. The harness prints every directory it keeps and makes it
+  read-only. Once the eval is reported, delete each one with
+  `chmod -R u+rwx <dir>` and then `rm -rf <dir>`: they hold every prompt and
+  output.
 - `--threshold 0` reports scores without failing the command. Set a threshold
   when the run gates something, as in CI.
 - `--max-cost-usd` stops the run at a spending limit and marks the result
@@ -165,6 +167,6 @@ Each run writes `evals/results/<timestamp>/` with `aggregate-result.json` and
 The harness runs one turn per run, so **corrections** are not measured here.
 
 Each run in the JSON has a `tracePath`: a JSON Lines file of every message
-and tool call in that run. The file exists only when the run was started with
-`--keep-temp`. Read the trace of the run that failed. A rerun of the same case
-is a different run and may pass.
+and tool call in that run. The file is there when the harness kept the run's
+directory, which `--keep-temp` makes it do for every run. Read the trace of
+the run that failed. A rerun of the same case is a different run and may pass.
