@@ -55,12 +55,48 @@
 #              redraw the terminal.
 set -uo pipefail
 
+# Start from known settings, whatever the caller's shell and environment
+# hold. Each of these changed a row, wrote a file, or printed a raw path:
+# - Shell options that reach a script through SHELLOPTS or a start-up file.
+#   xtrace prints paths before they are escaped, errexit stops the report,
+#   noclobber refuses the temporary files.
+set +e +x +v +C
+# - A changed IFS, which splits the fields this script reads differently.
+{ IFS=$' \t\n'; } 2>/dev/null
+# A start-up file can also make a variable read-only. Then it cannot be reset
+# here, and the only safe report is none.
+if [ "$IFS" != $' \t\n' ]; then
+  printf 'error: IFS is read-only and not the default; cannot audit safely\n' >&2
+  exit 1
+fi
+drop_var() {
+  unset "$1" 2>/dev/null
+  if [ -n "${!1+x}" ]; then
+    printf 'error: cannot clear %s from the environment; cannot audit safely\n' "$1" >&2
+    exit 1
+  fi
+}
+# - Git's trace variables, which make Git write files or extra output.
+for git_var in $(compgen -v GIT_TRACE); do
+  drop_var "$git_var"
+done
+# - A Git variable left by a hook, such as GIT_DIR or GIT_INDEX_FILE, which
+#   points every `git -C <worktree>` at one repository or one index.
+while IFS= read -r git_var; do
+  drop_var "$git_var"
+done < <(git rev-parse --local-env-vars 2>/dev/null)
+# - GREP_OPTIONS, which changes what the counts count.
+drop_var GREP_OPTIONS
+# - GH_REPO, which points gh at whatever repository it names. Without it, gh
+#   reads the remotes of the repository being audited.
+drop_var GH_REPO
 # Keep Git from refreshing an index while it reads one: `git status` would
 # otherwise rewrite the index file of each worktree it looks at.
-export GIT_OPTIONAL_LOCKS=0
-# GH_REPO points gh at whatever repository it names. Without it, gh reads the
-# remotes of the repository being audited.
-unset GH_REPO
+{ export GIT_OPTIONAL_LOCKS=0; } 2>/dev/null
+if [ "${GIT_OPTIONAL_LOCKS:-}" != 0 ]; then
+  printf 'error: cannot set GIT_OPTIONAL_LOCKS=0; cannot audit without writing\n' >&2
+  exit 1
+fi
 
 # Text from a path, a ref name, or an argument goes to a terminal, so write
 # it on one line without losing what it was: a backslash becomes two, a tab,
@@ -99,6 +135,8 @@ show_path() {
   for i in "${!ctl_chars[@]}"; do
     text=${text//"${ctl_chars[$i]}"/"$bs${ctl_names[$i]}"}
   done
+  # printf, not echo: with the xpg_echo option on, echo would read these
+  # escapes and print the raw characters again.
   printf '%s' "$text"
 }
 
@@ -117,7 +155,7 @@ while [ $# -gt 0 ]; do
       exit 0
       ;;
     -*)
-      echo "error: unknown option: $(show_path "$1")" >&2
+      printf 'error: unknown option: %s\n' "$(show_path "$1")" >&2
       exit 2
       ;;
     *) break ;;
@@ -129,7 +167,7 @@ repo="${1:-.}"
 # Command substitution drops every trailing newline, and a path may end in
 # one. The x keeps them; then remove the x and the one newline Git added.
 repo="$(git -C "$repo" rev-parse --show-toplevel 2>/dev/null && printf x)" || {
-  echo "error: not a Git repository: $(show_path "${1:-.}")" >&2
+  printf 'error: not a Git repository: %s\n' "$(show_path "${1:-.}")" >&2
   exit 1
 }
 repo="${repo%x}"
@@ -152,7 +190,7 @@ fi
 # Resolve the base to one commit here. A name such as HEAD means a different
 # commit inside each worktree.
 base_commit="$(git rev-parse --verify --quiet "$base^{commit}")" || {
-  echo "error: base not found: $(show_path "$base")" >&2
+  printf 'error: base not found: %s\n' "$(show_path "$base")" >&2
   exit 1
 }
 # The base's full ref name, such as refs/remotes/origin/main. Empty when the
@@ -223,8 +261,8 @@ is_locked() {
   return 1
 }
 
-echo "# repository: $(show_path "$repo")"
-echo "# base: $(show_path "$base") (pull requests: $pr_source)"
+printf '# repository: %s\n' "$(show_path "$repo")"
+printf '# base: %s (pull requests: %s)\n' "$(show_path "$base")" "$pr_source"
 printf 'SIZE\tAGE\tBRANCH\tMERGED\tPR\tUNPUSHED\tTRACKED\tUNTRACKED\tSUGGEST\tWORKTREE\n'
 
 worktrees | while IFS= read -r -d '' worktree; do
