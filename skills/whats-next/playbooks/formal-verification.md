@@ -36,8 +36,9 @@ unsafe code.
    the product code as they are unless the user asks for a change.
 7. **Show the result as a statechart** when the check is a model of states.
    Follow [Draw the statechart](#draw-the-statechart).
-8. **Replay each counterexample against the real code**, as a test or a live
-   reproduction, one step per action. When the bug does not occur, treat the
+8. **Replay each counterexample against the real code**, as a test or as a
+   reproduction on an instance you started, one step per action. Leave a
+   system that serves users as it is. When the bug does not occur, treat the
    model as wrong until you show otherwise.
 9. **Make it cheap to rerun.** One command, a pinned tool version, and a run
    short enough to use on every relevant change. Record which files and

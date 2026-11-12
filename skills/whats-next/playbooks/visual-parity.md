@@ -19,7 +19,7 @@ renderings match. Looking at them does not.
 2. **Hold these rules for the whole task:**
    - the harness stays as it is;
    - the baseline images stay as they are;
-   - a component is not restructured to make a diff pass.
+   - in a migration, a component is not restructured to make a diff pass.
 
    When a baseline looks wrong, stop and ask the user.
 
