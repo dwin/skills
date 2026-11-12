@@ -1,7 +1,6 @@
 ---
 name: whats-next
-description: Choose what to do next from the skills and workflows in this plugin.
-disable-model-invocation: true
+description: Match a task to the skill, flow, or playbook that fits it. Use when the user asks what to do next or which workflow applies, when a task fits no other skill, and for these kinds of work, which have playbooks here - proving a property of concurrent or stateful code with a model checker or verifier, matching a UI pixel for pixel, and diagnosing a live process or a captured profile, trace, or heap snapshot.
 ---
 
 # What's Next
@@ -10,6 +9,22 @@ Start from the user's situation, then recommend the smallest useful skill or
 flow. Prefer the user's established language: plan, docs, review, tickets, and
 implementation. Explain the next move without requiring them to remember the
 catalog.
+
+When the user asked what to do next, recommend. When you opened this skill
+for a task of your own, follow the match yourself.
+
+## Playbooks
+
+A **playbook** is a short procedure for one kind of task that has no skill of
+its own. When the task matches a row, read the file and copy its steps into
+your task list before any step of your own. A step you decide to skip stays in
+the list with a one-line reason.
+
+| The task                                                                 | Playbook                                                             |
+| ------------------------------------------------------------------------ | -------------------------------------------------------------------- |
+| Prove a property of concurrent, stateful, or parsing code for every case | [playbooks/formal-verification.md](playbooks/formal-verification.md) |
+| Make one rendering match another pixel for pixel                         | [playbooks/visual-parity.md](playbooks/visual-parity.md)             |
+| Find a cause from a live process, or from a profile, trace, or snapshot  | [playbooks/forensics.md](playbooks/forensics.md)                     |
 
 A **flow** is a path through the skills. Most paths run along one **main flow**, and two **on-ramps** merge onto it. Everything else is standalone, or a vocabulary layer that runs underneath.
 
@@ -101,6 +116,10 @@ Off the main flow entirely.
 - **`wait-what`** — the corrective for a message that didn't land. Use it mid-conversation, inside any other skill, and the agent re-pitches what it just said with the context you were missing, in plain English, using the `CONTEXT.md` vocabulary. It works after the fact; `grill-with-docs` is the upfront cure, because a shared language agreed early is what stops the jargon arriving at all.
 - **`explain`** — explain a change, a subsystem, or a concept in one sitting, or learn a topic over multiple sessions, using the current directory as a stateful workspace.
 - **`writing-for-agents`** — reference for writing documents agents consume: skills, AGENTS.md, pointed-at docs.
+- **`swarm`** — coordinate work done by other agents: size the split, brief each worker, keep a ledger, verify what they report, and stay reachable until every lane is done.
+- **`rollout`** — after a merge, follow the change until it is applied, live, and observed.
+- **`autopilot`** — drive a branch through local review to a ready pull request, and with `merge`, merge it.
+- **`eval`** — measure whether a skill or a model does a set of tasks better, by correctness, corrections needed, cost, and time.
 
 ## Precondition
 

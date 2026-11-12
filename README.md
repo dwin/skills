@@ -25,7 +25,6 @@ not create a Sprite or start a workload.
 
 User-invoked entry points:
 
-- `whats-next` chooses the smallest useful workflow for the situation.
 - `grill-with-docs`, `to-spec`, `to-tickets`, and `implement` form the main
   plan-to-delivery flow.
 - `triage` turns incoming issues and pull requests into agent-ready work.
@@ -53,6 +52,9 @@ Model-invoked skills:
 - `refactor` changes the structure of code without changing its behavior,
   and finds what in a codebase is worth refactoring.
 - `research` investigates questions against primary sources.
+- `whats-next` matches a task to the skill, flow, or playbook that fits it.
+  Its playbooks cover formal verification, visual parity, and forensics on a
+  live process or a captured artifact.
 - `rollout` follows a merged change until it is applied, live, and observed.
 - `swarm` coordinates work done by other agents: it briefs workers, tracks
   lanes in a ledger, verifies their reports, and adapts to the host's tools
