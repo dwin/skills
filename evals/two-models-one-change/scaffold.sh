@@ -24,4 +24,4 @@ JS
 
 git init -q
 git add -A
-git -c user.name=dev -c user.email=dev@example.test commit -q -m "Add invoice client"
+git -c user.name=dev -c user.email=dev@example.test -c commit.gpgsign=false commit -q -m "Add invoice client"
