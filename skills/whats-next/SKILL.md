@@ -30,7 +30,7 @@ The route most work travels. You have an idea and want it built.
    — one red-green slice at a time — then closes out by running
    **`code-review`**, a three-axis review (Standards, Spec, Behavior) of the diff. It leaves
    validated changes in the working tree. When the user wants delivery, run
-   **`file-pr`** to commit and file the pull request, then **`babysit-pr`** when
+   **`file-pr`** to commit and file the pull request, then **`babysit`** when
    they want it monitored through CI and review. Reach for **`tdd`** on its own
    to build concrete behaviour test-first, and **`code-review`** on its own to
    review a branch or pull request against a fixed point.

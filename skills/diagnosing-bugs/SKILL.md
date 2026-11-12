@@ -110,9 +110,11 @@ Tool preference:
 
 **Tag every debug log** with a unique prefix, e.g. `[DEBUG-a4f2]`. Cleanup at the end becomes a single grep. Untagged logs survive; tagged logs die.
 
-**Perf branch.** For performance regressions, logs are usually wrong. Instead: establish a baseline measurement (timing harness, `performance.now()`, profiler, query plan), then bisect. Measure first, fix second.
+**Perf branch.** For performance regressions, logs are usually wrong. Instead: establish a baseline measurement (timing harness, `performance.now()`, profiler, query plan), then bisect. Measure first, fix second. Vet each number with the measurement checks in `verifying-claims` before acting on it.
 
 ## Phase 5 — Fix + regression test
+
+**Fix the fault where the system first went wrong**, which is often upstream of where the symptom surfaced. Ask whether the state that triggered the symptom may legitimately exist. When it may, the code that broke on it is the cause, and handling the state there is the fix. When it should never exist, find what produced it: a guard, retry, clamp, or swallowed error at the symptom hides the bug. A bug that appears only after a restart points at persisted state first: config, caches, lock files, serialized data. Once the fault is found, search for the same fault elsewhere and fix every instance.
 
 Write the regression test **before the fix** — but only if there is a **correct seam** for it.
 
@@ -128,6 +130,8 @@ If a correct seam exists:
 3. Apply the fix.
 4. Watch it pass.
 5. Re-run the Phase 1 feedback loop against the original (un-minimised) scenario.
+
+**When two fixes have failed, test the premise.** Fixes that share an assumption and fail the same check are evidence against the assumption. Write that shared **premise** down as one sentence, find an observation that would come out differently if it were false, and make it before writing a third fix.
 
 ## Phase 6 — Cleanup + post-mortem
 

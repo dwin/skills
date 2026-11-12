@@ -24,12 +24,13 @@ Invoking autopilot authorizes, for this branch and its PR only:
   pushing with `--force-with-lease` when the repository requires linear
   history;
 - creating or updating the PR, and marking it ready for review;
-- replying to and resolving threads opened by review bots, and re-requesting
-  their reviews.
+- replying to reviewers, human or bot, resolving their threads, and
+  re-requesting reviews, by `babysit`'s rules under "Post for the user".
 
 `merge` adds a guarded merge of this PR, with an admin override when a missing
 human approval is the only requirement left unmet. Nothing else is implied.
-Draft replies to human reviewers for the user instead of posting them. History
+On a PR authored by someone else's account, draft replies for the user
+instead of posting them. History
 rewrites, admin overrides of any other rule, deployments, and other PRs keep
 their own authorization. Honor narrower holds the user states, such as "stay
 local", "keep it draft", or "wait for approval".
@@ -61,7 +62,7 @@ local", "keep it draft", or "wait for approval".
    converging means something structural is wrong: stop and report it.
 5. **Publish.** Push, then use `file-pr` to create or update the PR. Mark it
    ready for review.
-6. **Remote review.** Use `babysit-pr` to monitor CI and reviews, with this
+6. **Remote review.** Use `babysit` to monitor CI and reviews, with this
    skill's authority and stop condition. Work out which AI reviewers to expect
    from the PR's requested reviewers and check runs, from repository config
    such as `.cursor/BUGBOT.md`, `greptile.json`, `.coderabbit.yaml`, or a
@@ -77,9 +78,10 @@ local", "keep it draft", or "wait for approval".
    reviewer blocks, and any other missing reviewer is reported and dropped.
 7. **Iterate.** Give every new finding a disposition, then commit the batched
    fixes. Every push goes back through steps 2–4 first, so the local reviewer sees
-   every change before remote reviewers do. Reply on each bot thread with its
-   disposition in one line, and resolve the thread once it is fixed or
-   refuted. Repeat until the stop condition holds.
+   every change before remote reviewers do. Reply on each thread with its
+   disposition in one line. Resolve a thread once it is fixed or refuted,
+   when `babysit`'s rule for resolving holds. Repeat until the stop condition
+   holds.
 
 ## Dispositions
 
@@ -94,10 +96,16 @@ current head's source, deduplicate across reviewers, then give it exactly one
   path, test, or documentation that shows it.
 - **Defer**: the problem is real but outside this PR's goal. Report it to the
   user, without changing code.
+- **Ask**: the finding concerns security, privacy, authentication or
+  authorization, billing, data loss or retention, a migration or schema, or
+  concurrency, and you would otherwise refute or defer it. Put the finding,
+  your evidence, and your recommendation to the user, and continue with the
+  other findings. A similar finding dismissed on an earlier PR does not
+  settle this one.
 
 Scope is the PR's stated goal. A fix that needs new abstractions, options, or
 defensive branches for unreachable states is a sign the finding should be
-refuted or deferred. Follow `babysit-pr`'s rule on fixing real defects only.
+refuted or deferred. Follow `babysit`'s rule on fixing real defects only.
 Pass refutations to the local reviewer in the next round's reconciliation. If
 it contests with new evidence, re-evaluate. If the disagreement survives one exchange,
 keep your position and list it in the report. When a finding recurs after a
@@ -110,7 +118,7 @@ Without `merge`, stop when all of these hold on the current head:
 - the latest local review round is clean;
 - every expected AI reviewer is done or dropped, and each of its findings has
   a disposition;
-- CI passes on the current head by the check rule in `babysit-pr`'s Ready,
+- CI passes on the current head by the check rule in `babysit`'s Ready,
   which counts every check run, required or not;
 - the PR is marked ready, and a fresh fetch shows the head contains the
   base's tip. When it does not, return to step 2.
@@ -118,8 +126,10 @@ Without `merge`, stop when all of these hold on the current head:
 A bot that reviews only once, or only on request, need not re-review every
 push. The local review covers the later commits.
 
-Also stop, and report, when progress needs the user: a scope decision,
-conflicting reviewers, a human reviewer requesting changes, checks failing
+Also stop, and report, when progress needs the user: a scope decision, an
+**Ask** finding the user has not answered, conflicting reviewers, a human
+reviewer's request for changes that still stands after you addressed and
+answered its findings, checks failing
 for reasons outside this PR after three reruns, a missing required
 reviewer, or a base that moved three times in a row while waiting.
 
@@ -148,13 +158,14 @@ With `merge`, after the stop condition holds:
    head-guarded merge operation, report the blocker instead of merging.
 4. Verify that the PR shows as merged and that the base branch contains the
    resulting commit. An enqueued PR or enabled auto-merge does not count as a
-   merge.
+   merge. When the merge deploys, applies infrastructure, or changes runtime
+   behavior, continue with `rollout`.
 
 ## Report
 
 Report the PR URL, the final head SHA, the reviewer used and its model family,
 the number of local review rounds, and the AI reviewers seen and missing. List
 every finding by disposition, with a one-line reason for each refuted or
-deferred one. Include CI state, any human-reviewer replies drafted for the
-user, and whether the PR is ready, merged, queued, or blocked, along with the
+deferred one and the question for each **Ask**. Include CI state, the replies
+posted to human reviewers or drafted for the user, and whether the PR is ready, merged, queued, or blocked, along with the
 user action still needed.

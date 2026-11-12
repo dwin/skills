@@ -77,9 +77,15 @@ Use this order when no template dictates another:
 
 1. Problem and impact.
 2. What changes for the user or operator.
-3. Important implementation or compatibility notes.
-4. Validation actually completed.
-5. Known risks, follow-ups, or intentionally deferred work.
+3. Scope: what the PR covers and what it deliberately leaves out, such as a
+   follow-up or a known gap. Every PR states this.
+4. Tradeoffs: the alternatives you rejected that a reviewer would otherwise
+   ask about. Leave this out when there was no real choice.
+5. Important implementation or compatibility notes.
+6. Validation actually completed.
+7. Known risks: who or what the change could break.
+
+The reader has the diff and about a minute. Write for that reader.
 
 Keep change lists brief and secondary. Do not paste commit logs, enumerate
 every touched file, invent ticket links, or check boxes for work not completed.
@@ -118,7 +124,7 @@ the agreed activation state; use the delivery and approval process to control
 execution instead of silently disabling it in the submitted configuration.
 
 Report the PR URL, head SHA, validation, and remaining risk. Call the PR ready
-only after the Ready check in `babysit-pr` holds on that head; until then,
+only after the Ready check in `babysit` holds on that head; until then,
 report what it is waiting on.
 
-If the user also asked to monitor the PR, continue with the `babysit-pr` skill.
+If the user also asked to monitor the PR, continue with the `babysit` skill.

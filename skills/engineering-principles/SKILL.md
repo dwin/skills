@@ -22,6 +22,10 @@ directory, framework, generated-code, and user instructions take precedence.
   without turning the type system into a second program.
 - Match process and architecture to risk. Do not add coordination or ceremony
   that the task does not earn.
+- When convenience for the implementer conflicts with the experience of
+  whoever uses the work, choose their experience. That user is the end user of
+  an interface, the caller of an API, and the next maintainer of the code.
+  Prefer a few finished features to many rough ones.
 
 ## Design the change
 
@@ -35,6 +39,25 @@ directory, framework, generated-code, and user instructions take precedence.
   behavior explicit.
 - Preserve compatibility across APIs, persisted data, messages, and rolling
   deployments unless a breaking change is intentional and approved.
+- Make an operation that changes state safe to repeat. Derive each step from
+  the state that exists: read it, compare it with the goal, and apply the
+  difference. A second run, or a run after a crash at any point, then reaches
+  the same end state. Whatever a run can leave behind, such as a lock, a
+  temporary file, or a claimed job, must be recognizable as stale by the next
+  run.
+
+## Build the tool for the work
+
+When the work is more than a few obvious edits, such as a sweep, a migration,
+or an analysis, write the smallest script, codemod, or generator that does it.
+A reviewer can read and rerun a tool. Changes made by hand can only be checked
+by redoing them.
+
+- Do the first unit by hand to learn the recipe. Then run the tool on that
+  unit and compare the two results.
+- Make the tool safe to rerun.
+- Keep it where the reviewer can find it, and commit it when the work will
+  outlive the session.
 
 ## Test and explain behavior
 

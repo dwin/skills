@@ -20,9 +20,13 @@ The user has asked for a **retrospective**. You are suggesting improvements to t
    - **Global AGENTS.md**: are there any steering instructions that should be moved to coding standards (or automated checks) instead? _Use when_ the AGENTS.md file is particularly large - in the repo OR the user's global scope.
    - **Tool economy**: did the agent make expensive tool calls that could be streamlined? Is there any custom tooling (CLI's, MCP's) that is particularly token-inefficient? _Use when_ the agent made an expensive tool call.
    - **No-ops**: look for instructions in steering files that don't modify the agent's behavior. _Use when_ the steering files are large and unwieldy.
+   - **Skill triggering**: did the agent do by hand what an installed skill covers, or load the skill only after the user pushed back? The fix is the skill's description: put the missed trigger first, and check that the description still appears in the agent's skill listing. _Use when_ a skill existed for the situation and did not load.
+   - **Unenforced rules**: was a rule that is already written down broken again? A written rule with nothing enforcing it fails silently. Move it up a level, and keep a table in the agent instruction file that pairs each rule with what enforces it. _Use when_ the same correction appears a second time.
    - **Information access**: look for opportunities to increase the agent's access to information. Teeing dev server logs, readonly access to third-party services. _Use when_ a crucial piece of information was not available to the agent.
 
-4. Present these candidates to the user, in order of severity.
+4. Place each fix at the highest level that works: change the design so the mistake cannot be made, then make it a type error, then a lint or CI check whose message names the fix, then a test, and last a written rule. Prove a new check by running it against the real past mistake and watching it fail.
+
+5. Present these candidates to the user, in order of severity.
 
 ## Reference
 

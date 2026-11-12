@@ -13,6 +13,15 @@ When exploring the codebase, read `CONTEXT.md` (if it exists) so test names and 
 
 Tests verify behavior through public interfaces, not implementation details. Code can change entirely; tests shouldn't. A good test reads like a specification — "user can checkout with valid cart" tells you exactly what capability exists — and survives refactors because it doesn't care about internal structure.
 
+Judge each test against two imagined edits:
+
+- **Break the behavior.** Make the code return a wrong value, skip an effect, or do the effect twice. A test that still passes proves nothing.
+- **Change the internals.** Keep every observable result and restructure the code underneath. A test that now fails is pinned to the implementation.
+
+Keep a test that catches the first edit and survives the second. Rewrite or delete the rest.
+
+The contract decides what counts as behavior. The payload a mocked external service receives is behavior, because that service observes it. A call to an internal helper is implementation, because no user can see it. The error type callers branch on is contract. The exact wording of its message usually is not.
+
 See [tests.md](tests.md) for examples and [mocking.md](mocking.md) for mocking guidelines.
 
 ## Seams — where tests go
@@ -35,4 +44,6 @@ When the shape of that interface is itself in question — how deep the module i
 
 - **Red before green.** Write the failing test first, then only enough code to pass it. Don't anticipate future tests or add speculative features.
 - **One slice at a time.** One seam, one test, one minimal implementation per cycle.
+- **Green before the next slice.** Run the check after each change and move on only when it passes. A break caught at the slice that caused it is cheap to find. A break caught after a batch is buried under the work built on top of it.
+- **Commit in the order that proves the work.** Put the failing test in one commit and the fix in the next, so a reviewer can watch the test go red and then green. Each commit stands on its own.
 - **Refactoring is not part of the loop.** It belongs to the review stage (see the `code-review` skill), not the red → green implementation cycle.

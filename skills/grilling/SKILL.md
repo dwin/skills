@@ -36,6 +36,12 @@ Separate unknowns into:
 5. Update the decision tree from the answers, surface newly ready decisions,
    and repeat.
 
+A numbered round suits a handful of questions. When a round holds more than
+about eight ready decisions, or its decisions each have a fixed set of
+answers, put it on a **decision page** instead: read
+[references/decision-page.md](references/decision-page.md) and build one, with
+your recommendation selected for every item.
+
 Prefer a few substantial questions over many trivial ones. Challenge vague
 language, hidden scope, contradictory constraints, unowned failure modes, and
 claims that lack evidence. Revisit an earlier answer when a later decision

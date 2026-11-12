@@ -64,6 +64,10 @@ Each smell reads _what it is_ → _how to fix_; match it against the diff:
 - **Middle Man** — a class or function that mostly just delegates onward. → cut it, call the real target direct.
 - **Refused Bequest** — a subclass or implementer that ignores or overrides most of what it inherits. → drop the inheritance, use composition.
 
+The baseline carries one item that is not a Fowler smell, under the same two rules:
+
+- **Unenforced Constraint** — a comment in the diff that states a rule the code must keep: `do not remove`, `keep in sync with`, `ask X before changing`. → propose the cheapest type, test, or lint that enforces the rule, and keep the comment until that check exists. A comment about something the repo cannot change, such as an external API's quirk, stays as it is.
+
 ### 4. Spawn the sub-agents in parallel
 
 Issue the sub-agent calls together, in the foreground, and aggregate the reports they return. Background sub-agents can finish without their reports reaching you.

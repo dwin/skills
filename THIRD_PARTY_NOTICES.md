@@ -51,7 +51,17 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 The Behavior axis of the `code-review` skill is adapted from the `interrogate`
-skill in pstack. The upstream pstack project is provided under the following
+skill in pstack. The `swarm` and `rollout` skills, the measurement checks in
+`verifying-claims`, and parts of `babysit`, `autopilot`, `retro`,
+`diagnosing-bugs`, `handoff`, `managing-workspaces`, `engineering-principles`,
+`tdd`, `file-pr`, and `code-review` adapt ideas from pstack's `orchestrate`,
+`swarm`, `feature`, `shipping`, `benchmark-checklist`, `babysit`,
+`bugbot-triage`, `correct`, `reflect`, `attack-the-premise`,
+`fix-root-causes`, `pause-safely`, `session-pickup`, `worktree-cleanup`,
+`opening-a-pr`, `no-comments`, and its `build-the-lever`,
+`make-operations-idempotent`, `experience-first`, `prove-it-works`,
+`sequence-verifiable-units`, and `test-behavior-not-implementation`
+principles. The upstream pstack project is provided under the following
 license:
 
 MIT License

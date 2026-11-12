@@ -8,7 +8,9 @@ family catches more of the implementer's mistakes. Families include Claude
 ## Choose
 
 1. If the user names a reviewer model or effort, use it. If it is
-   unavailable, ask before substituting another.
+   unavailable, use the next reviewer for that implementer in `swarm`'s
+   [roles table](../../swarm/references/roles.md), keep the family rule
+   below, and say in the report which model reviewed and why.
 2. Identify your own model family.
 3. Use the first route that reaches a model from another family. On that
    route, pick the most capable model from that family:
