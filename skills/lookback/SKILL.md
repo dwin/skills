@@ -109,7 +109,10 @@ List the changes, sorted by how many sessions showed the pattern. For each:
 Count a pattern only when it shows up in more than one session. A preference
 stated once, or stated once and contradicted later, is noise. When an existing
 skill already covers a pattern and did not load, the change is to that
-skill's description, as `retro` describes.
+skill's description, as `retro` describes. A skill only the user can type
+is the exception, because no description makes it load by itself: suggest
+that the user type it, or that a skill the agent does load tell them it
+exists.
 
 Write the report through `unslop`. Write the full version, with evidence, to
 the private directory, and give the user the general version here. Make no

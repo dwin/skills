@@ -17,7 +17,8 @@
 #   MERGED     yes when the base contains HEAD. A squash merge shows no here,
 #              so read PR as well.
 #   PR         #number/state of the newest pull request for the branch, - when
-#              there is none, ? when gh cannot tell.
+#              there is none, ? when gh cannot tell. With ?, an open pull
+#              request cannot hold a row: look before removing a candidate.
 #   UNPUSHED   Commits on HEAD that no remote-tracking branch contains.
 #   TRACKED    Tracked files with uncommitted changes. ? when `git status`
 #              failed there; the row is then marked review.
