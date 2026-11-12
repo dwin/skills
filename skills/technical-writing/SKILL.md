@@ -7,8 +7,9 @@ description: Write technical prose that a tired engineer understands on the firs
 
 Write so a tired engineer understands on the first read. This skill sets the
 structure and the sentences. `unslop` holds the catalog of machine-written
-patterns, and runs on every text this skill touches. Documents that agents
-read follow `writing-for-agents` instead.
+patterns, and runs on every text this skill touches. It runs on your draft,
+so a fact you took from the repository is part of its source and stays.
+Documents that agents read follow `writing-for-agents` instead.
 
 ## Three rules above the rest
 
