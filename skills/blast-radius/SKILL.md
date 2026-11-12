@@ -59,7 +59,10 @@ application ships and calls the exact function in question.
 5. **Prove the safety fact.** Write the script or test that runs the real
    code, run it, and keep its output. Put it in a temporary directory outside
    the checkout, or in a disposable copy of the checkout when it has to sit
-   inside the tree.
+   inside the tree. Run it against a fake, a local instance, or a disposable
+   copy of the data. A proof that would write to a shared database, a
+   service, or a cloud account needs the user's go-ahead first. Without it,
+   report the fact as unproven.
 6. **Get a second reading on a wide change.** When the change spans many
    modules or services, have an agent on a different model family answer the
    same question without seeing your answer, then merge the two. Different

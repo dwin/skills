@@ -105,6 +105,8 @@ Revise until each holds:
 5. A hypothesis embedded in the question was checked against the evidence.
 6. No claim cites the code as evidence of its own intent.
 7. The tone matches the evidence.
+8. No quote carries a secret or personal data the reason does not need. Each
+   one reads `<REDACTED>`.
 
 The answer is worth what its honesty is worth. A reader who takes it to the
 author, a lead, or a product owner should know what is known, what is
