@@ -52,8 +52,9 @@ clipped, no view anywhere, nothing specific.
   thoughts, and keep a long sentence that holds one.
 - Take a position where the mode allows one. An explanation weighs
   trade-offs, so say what you make of them. Reference stays dry.
-- Be specific. Write "renaming a column fails the build", not "schema changes
-  can cause issues".
+- Be specific, with what the source or the repository shows. Write "renaming
+  a column fails the build", not "schema changes can cause issues". When you
+  do not have the specific fact, find it or leave the claim out.
 
 ## Write to the reader
 
@@ -133,5 +134,5 @@ Before:
 After:
 
 > The client retries a failed request with exponential backoff, up to
-> `RETRY_MAX` attempts. Raise `RETRY_MAX` only for an upstream that fails
-> intermittently. Each extra attempt adds its wait to the request's latency.
+> `RETRY_MAX` attempts. Raise `RETRY_MAX` only when the upstream is known to
+> fail intermittently. Otherwise the extra attempts may add latency.

@@ -62,8 +62,10 @@ their own rules:
    still makes this read as machine-written?" and "Does it state any fact,
    name, number, date, or citation that the source lacks?" A fabrication is a
    defect even when it reads better than the vague original.
-4. Revise into the final text. Search it for `—` and `–`. A hit means it is
-   unfinished, unless a voice sample uses them.
+4. Revise into the final text. Search it for `—` and `–`. A hit used as a
+   break in a sentence you may edit means it is unfinished, unless a voice
+   sample uses them. A dash inside a quotation, a title, a name, code, or a
+   range of numbers stays.
 
 ## Output by mode
 
