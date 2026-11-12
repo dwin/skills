@@ -1,9 +1,9 @@
 ---
-name: codebase-design
-description: Shared vocabulary for designing deep modules. Use when the user wants to design or improve a module's interface, find deepening opportunities, decide where a seam goes, make code more testable or AI-navigable, or when another skill needs the deep-module vocabulary.
+name: design
+description: Design modules, interfaces, and seams before writing code. Use when the user wants to design or sketch a change, improve a module's interface, decide where a seam goes, or make code more testable or AI-navigable, or when another skill needs the deep-module vocabulary.
 ---
 
-# Codebase Design
+# Design
 
 Design **deep modules**: a lot of behaviour behind a small interface, placed at a clean seam, testable through that interface. Use this language and these principles wherever code is being designed or restructured. The aim is leverage for callers, locality for maintainers, and testability for everyone.
 
@@ -108,7 +108,38 @@ Good interfaces make testing natural:
 - **"Interface" as the TypeScript `interface` keyword or a class's public methods**: too narrow — interface here includes every fact a caller must know.
 - **"Boundary"**: overloaded with DDD's bounded context. Say **seam** or **interface**.
 
+## Sketch before code
+
+For a change that adds or reshapes a module, settle the shape before writing
+the bodies.
+
+1. Write the caller's code first: how the module is used at its two or three
+   most common call sites. Derive the interface from that usage.
+2. Sketch the types and signatures with unimplemented bodies. For larger work,
+   add a map of the modules and what each one owns.
+3. Produce at least two structurally different shapes before choosing, even
+   when the first looks sufficient: see
+   [DESIGN-IT-TWICE.md](DESIGN-IT-TWICE.md). Screen each against
+   [RED-FLAGS.md](RED-FLAGS.md). Prefer the shape that hides more behind a
+   smaller interface.
+4. Show the chosen shape and the ones you rejected, with the reason for each.
+   A request for a design ends here.
+5. When the user asked for the change to be built, implement against the
+   chosen sketch. When a body needs something the sketch lacks, such as
+   another parameter, decide which is true and say so: the sketch was wrong,
+   a requirement was missed, or the implementation is doing too much.
+6. Discard the sketch when one kind of friction keeps returning: the same
+   workaround in unrelated places, edge cases that each need their own
+   branch, types that need casts or fields that are optional but always set,
+   or callers that must know the module's internal rules. One or two hard
+   cases do not condemn a design. When you discard it, redesign as if the new
+   constraints had been known from the start, and make the new sketch smaller
+   than the old one before it grows.
+
 ## Going deeper
+
+- **Screening a candidate shape** — see [RED-FLAGS.md](RED-FLAGS.md): the
+  signs of a shape that will cost more to change than it saves.
 
 - **Deepening a cluster given its dependencies** — see [DEEPENING.md](DEEPENING.md): dependency categories, seam discipline, and replace-don't-layer testing.
 - **Exploring alternative interfaces** — see [DESIGN-IT-TWICE.md](DESIGN-IT-TWICE.md): spin up parallel sub-agents to design the interface several radically different ways, then compare on depth, locality, and seam placement.

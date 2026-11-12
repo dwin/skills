@@ -30,7 +30,6 @@ User-invoked entry points:
   plan-to-delivery flow.
 - `triage` turns incoming issues and pull requests into agent-ready work.
 - `wayfinder` maps efforts too large or uncertain for a single session.
-- `improve-codebase-architecture` surfaces deepening opportunities.
 - `setup-dwin-skills` configures a repository's tracker and domain docs.
 - `grill-me` explicitly starts a rigorous decision interview before action.
 - `focus-output` keeps session responses action-first and low-distraction.
@@ -40,7 +39,7 @@ User-invoked entry points:
 - `eval` measures whether a skill or a model does a set of tasks better, by
   correctness, corrections needed, cost, and time. The starter cases are in
   [`evals/`](evals/README.md).
-- `handoff`, `teach`, `to-questionnaire`, and `wait-what` cover session
+- `handoff`, `explain`, `to-questionnaire`, and `wait-what` cover session
   transitions, learning, asynchronous discovery, and clarification.
 
 Model-invoked skills:
@@ -49,8 +48,10 @@ Model-invoked skills:
   delivery.
 - `diagnosing-bugs`, `tdd`, and `prototype` provide evidence-driven ways to
   investigate and build.
-- `codebase-design`, `domain-modeling`, and `engineering-principles` guide
+- `design`, `domain-modeling`, and `engineering-principles` guide
   design and implementation.
+- `refactor` changes the structure of code without changing its behavior,
+  and finds what in a codebase is worth refactoring.
 - `research` investigates questions against primary sources.
 - `rollout` follows a merged change until it is applied, live, and observed.
 - `swarm` coordinates work done by other agents: it briefs workers, tracks
