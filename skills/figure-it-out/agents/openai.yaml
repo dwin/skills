@@ -1,0 +1,4 @@
+interface:
+  display_name: "Figure It Out"
+  short_description: "Drive a large task to a checkable finish unattended"
+  default_prompt: "Use $figure-it-out to define done for this task, design the route, and work to it while I am away."

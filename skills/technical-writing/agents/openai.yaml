@@ -1,0 +1,4 @@
+interface:
+  display_name: "Technical Writing"
+  short_description: "Write technical prose that reads right the first time"
+  default_prompt: "Use $technical-writing to write or revise this so an engineer understands it on the first read."

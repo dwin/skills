@@ -1,0 +1,5 @@
+schema_version: "1.1"
+name: stricter-date-parse
+description: The user asks what a small parsing change could break before shipping it.
+context:
+  scaffold_script: scaffold.sh

@@ -1,0 +1,5 @@
+schema_version: "1.1"
+name: away-for-the-afternoon
+description: The user hands over a multi-file migration and leaves.
+context:
+  scaffold_script: scaffold.sh

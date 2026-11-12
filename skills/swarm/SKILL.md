@@ -101,6 +101,10 @@ You are its only writer. Record:
 Read the ledger at the start of every turn and after any compaction. Trust the
 decisions it records. Refresh the state it records by observing it again.
 
+When the user will audit the run after stepping away, also keep a work log
+beside the ledger, in the format of
+[the work log reference](../figure-it-out/references/work-log.md).
+
 ## Kick off a lane
 
 Every kickoff carries:

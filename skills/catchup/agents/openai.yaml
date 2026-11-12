@@ -1,0 +1,4 @@
+interface:
+  display_name: "Catchup"
+  short_description: "Catch up on work in flight and pending decisions"
+  default_prompt: "Use $catchup to tell me what changed since my last message and what is waiting on me."

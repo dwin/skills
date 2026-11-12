@@ -68,12 +68,42 @@ playbook, its `architect` and `teach` skills, and its
 `migrate-callers-then-delete-legacy-apis` principles. The playbooks in
 `whats-next` adapt its `create-formal-verification-skill` and `statechart`
 skills and its `visual-parity`, `runtime-forensics`, and `trace-forensics`
-playbooks. The upstream pstack project is provided under the following
-license:
+playbooks. `blast-radius`, `why`, `unslop`, and `technical-writing` adapt
+pstack's skills of the same names, including the references of `why`.
+`catchup` adapts its `ketchup` skill. `figure-it-out` adapts its
+`figure-it-out` skill and its `autonomous-run` playbook, and the work log
+format in `figure-it-out` adapts its `show-me-your-work` skill. The upstream
+pstack project is provided under the following license:
 
 MIT License
 
 Copyright (c) 2026 Lauren Tan
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+The `unslop` skill also adapts Siqi Chen's `humanizer` skill
+(<https://github.com/blader/humanizer>). The upstream `humanizer` project is
+provided under the following license:
+
+MIT License
+
+Copyright (c) 2025 Siqi Chen
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
