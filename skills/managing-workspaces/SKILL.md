@@ -86,7 +86,10 @@ When the user asks to reclaim space or clear out old workspaces, audit first.
 Build the list from the tools' own listings, such as `git worktree list`,
 because paths recalled from memory miss workspaces. For each one, record its
 size, age, branch, whether that branch is merged, its PR state, and its
-tracked and untracked changes. Then sort the rows: merged, clean, and used by
+tracked and untracked changes. For Git worktrees,
+[`scripts/worktree-audit.sh`](scripts/worktree-audit.sh) `[-b <base>] [repo]`
+prints these columns for every worktree, plus unpushed commits, and removes
+nothing; its `--help` explains each column. Then sort the rows: merged, clean, and used by
 no session may go; uncommitted tracked changes wait for the user's decision; a
 workspace another session is using stays. Show the table with the proposed
 action for each row before removing anything.

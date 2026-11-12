@@ -1,0 +1,5 @@
+interface:
+  display_name: "Arena"
+  short_description: "Run several attempts at one task and merge the best into one artifact."
+policy:
+  allow_implicit_invocation: false

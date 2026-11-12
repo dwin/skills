@@ -1,0 +1,5 @@
+interface:
+  display_name: "Recall"
+  short_description: "Rebuild what earlier sessions decided and left open on a topic."
+policy:
+  allow_implicit_invocation: false

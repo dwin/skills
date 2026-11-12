@@ -34,7 +34,18 @@ User-invoked entry points:
 - `focus-output` keeps session responses action-first and low-distraction.
 - `autopilot` drives a branch to a reviewed, ready PR, and with `merge`
   merges it.
-- `retro` reviews a session for fixes to the agent's environment.
+- `retro` reviews a session for fixes to the agent's environment, and
+  `lookback` reviews many sessions for repeated prompts, workflows, and
+  corrections, and turns them into changes to skills, instructions, checks,
+  or automations.
+- `how` explains how a subsystem works from reading its code, and `recall`
+  rebuilds what earlier sessions decided and left open on a piece of work.
+- `arena` has several agents attempt one task, then merges the best of their
+  attempts into one result.
+- `sharpen` rewrites a prompt into a deeper version of the same task before
+  it is sent.
+- `verifier` writes a project's own skill for proving changes by driving the
+  real app, and brings an existing one back in line with the code.
 - `eval` measures whether a skill or a model does a set of tasks better, by
   correctness, corrections needed, cost, and time. The starter cases are in
   [`evals/`](evals/README.md).
@@ -200,7 +211,12 @@ The Behavior axis of `code-review` is adapted from the `interrogate` skill in
 Lauren Tan's [pstack](https://github.com/cursor/plugins/tree/main/pstack), and
 `swarm`, `rollout`, and several other skills adapt ideas from it.
 `blast-radius`, `catchup`, `figure-it-out`, `why`, `unslop`, and
-`technical-writing` are adapted from its skills of similar names. The
+`technical-writing` are adapted from its skills of similar names. `how`,
+`recall`, `arena`, and `sharpen` are adapted from its skills of the same
+names, `verifier` from its `create-verification-skill` and
+`maintain-verification-skill` skills, `lookback` from its `automate-me` skill,
+and the worktree audit script in `managing-workspaces` from its
+`worktree-audit.sh`. The
 upstream project is MIT licensed; see
 [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) for its license text.
 

@@ -1,0 +1,5 @@
+interface:
+  display_name: "Sharpen"
+  short_description: "Rewrite a prompt into a deeper version of the same task."
+policy:
+  allow_implicit_invocation: false

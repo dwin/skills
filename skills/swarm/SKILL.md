@@ -56,7 +56,9 @@ the answers in the ledger when there is one:
 
 Coupled work, such as one feature or one migration, goes to a single
 implementer. Parallel lanes suit work whose results stand alone: audits,
-investigations across subsystems, competing experiments. When one script can
+investigations across subsystems, competing experiments. When the user wants
+several attempts at one artifact merged into one, tell them that typing
+`arena` runs that from start to finish. When one script can
 process every unit in a single pass, one lane writes and runs it.
 
 ## Roles
