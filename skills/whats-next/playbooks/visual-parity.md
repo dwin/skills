@@ -9,7 +9,9 @@ renderings match. Looking at them does not.
 
 ## Steps
 
-1. **Capture the baseline before any migration.** Build a harness that
+1. **Capture the baseline before any change.** The baseline is the rendering
+   the result must match: for a migration, the current code; for matching
+   another implementation, that implementation. Build a harness that
    screenshots each component in each of its states, at a fixed viewport,
    with animations off and fonts loaded. Without a baseline there is no
    parity claim. Check the harness by running it twice on unchanged code: the
@@ -17,7 +19,7 @@ renderings match. Looking at them does not.
 2. **Hold these rules for the whole task:**
    - the harness stays as it is;
    - the baseline images stay as they are;
-   - a component is not restructured to make a diff pass.
+   - in a migration, a component is not restructured to make a diff pass.
 
    When a baseline looks wrong, stop and ask the user.
 
@@ -28,7 +30,8 @@ renderings match. Looking at them does not.
    the same browser, the same device size. Any nonzero diff is a failure.
    Find the cause of the pixel difference, fix it, and diff again until the
    diff is zero.
-6. **File a PR per component or per safe batch** with `file-pr`.
+6. **When the user wants pull requests, file one per component or per safe
+   batch** with `file-pr`. Otherwise keep each component's change separate.
 
 ## Report
 
