@@ -54,22 +54,29 @@ Replace each of these with `<REDACTED>`:
   which is where a signed link keeps its signature;
 - a private key block, from its `BEGIN` line to its `END` line;
 - a token in a known format: one that starts with `sk-`, `ghp_`, `gho_`,
-  `github_pat_`, `xox`, `AKIA`, or `AIza`, and a JSON Web Token, which
-  starts with `eyJ` and has three parts joined by dots;
+  `github_pat_`, `xox`, `AKIA`, or `AIza`, and a JSON Web Token, which is
+  three runs of letters, digits, `_`, and `-` joined by two dots, the first
+  starting with `ey`;
 - the value of an assignment, a `name=value` pair, or a JSON or YAML field
   whose name contains `token`, `secret`, `password`, `passwd`, `pwd`,
   `credential`, `auth`, `cookie`, `session`, or `key`, in any letter case
   and whatever the value's length. That covers `export API_KEY=...`,
   `Pwd=...;` in a connection string, and `"client_secret": "..."` inside an
   error;
+- the value of a command-line option whose name contains one of those
+  words, written with a space or with `=`, such as `--password x` and
+  `--token=x`; and the value after `-u`, `--user`, `-p`, or `-P`, with or
+  without a space, which is where `curl -u name:pw` and `mysql -pSecret`
+  keep a password. A short value counts;
 - a long opaque value: an unbroken run of 32 or more letters, digits, and
   `+`, `/`, `=`, `_`, `-` characters that holds both letters and digits,
   such as a hex digest, a base64 blob, or the path of a webhook URL.
 
-Then check the output before any of it goes to a model: search
-`digests.jsonl` for the patterns above, for `BEGIN`, for `Bearer`, and for
-`://` followed by `@`. A match is a bug in the script. Fix it and run the
-extraction again.
+Then check the output. Run the patterns again over every file that will go
+to a model: `digests.jsonl`, the redacted copies of a deep run, and the
+slices `recall` cuts. A value they find that is not already `<REDACTED>` is
+a bug in the script. Fix it and run the extraction again. Nothing goes to a
+model before the check passes.
 
 `index.tsv` maps keys to session paths. It stays in the private directory and
 goes to no model.
