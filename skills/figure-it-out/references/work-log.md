@@ -33,9 +33,10 @@ words. `unslop` applies to log text.
 
 ## Add a row
 
-Run [`scripts/work-log.sh`](../scripts/work-log.sh), in the `figure-it-out`
-skill's directory, as
-`work-log.sh <file> <phase> <decision> <why> <evidence> <result>`. It stamps the time,
+Run [`scripts/work-log.sh`](../scripts/work-log.sh) by its full path, which
+is under the `figure-it-out` skill's directory:
+`<skill directory>/scripts/work-log.sh <file> <phase> <decision> <why> <evidence> <result>`.
+It stamps the time,
 writes the header on first use, flattens tabs and newlines, and puts a single
 quote before any cell that starts with `=`, `+`, `-`, or `@`, so a spreadsheet
 reads the cell as text instead of a formula. When you append a row another

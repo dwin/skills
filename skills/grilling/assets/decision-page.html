@@ -135,6 +135,10 @@
         opacity: 0;
         pointer-events: none;
       }
+      .opts label:has(input:focus-visible) {
+        outline: 2px solid var(--on);
+        outline-offset: 2px;
+      }
       .opts label.on {
         background: var(--on);
         color: var(--on-fg);
@@ -179,7 +183,7 @@
     <div id="root"></div>
     <details open>
       <summary>
-        <h2>Decisions to paste back</h2>
+        <h2 id="out-title">Decisions to paste back</h2>
         <span class="dim small">updates as you change things</span>
       </summary>
       <div class="body">
@@ -188,7 +192,7 @@
           <button id="reset">Reset to the recommendations</button>
           <span class="dim small" id="copied"></span>
         </div>
-        <textarea id="out" readonly></textarea>
+        <textarea id="out" readonly aria-labelledby="out-title"></textarea>
       </div>
     </details>
     <script>
@@ -278,9 +282,9 @@
         const choice = get(it, "choice");
         const custom = it.options.includes(choice) ? "" : choice;
         const who = it.by === "you" ? "your pick" : "my pick";
-        let h = `<div class="item" data-id="${esc(it.id)}"><div class="head"><span class="label">${esc(it.label)}</span>`;
+        let h = `<div class="item" role="group" aria-labelledby="q-${esc(it.id)}" data-id="${esc(it.id)}"><div class="head"><span class="label" id="q-${esc(it.id)}">${esc(it.label)}</span>`;
         h += `<span class="pill">${who}: ${esc(it.pick)}${it.field && it.field.value ? ", " + esc(it.field.value) : ""}</span>${it.done ? '<span class="pill">already done</span>' : ""}</div>`;
-        h += `<div>${esc(it.what)}</div><div class="dim">${esc(it.why)}</div><div class="opts">`;
+        h += `<div>${esc(it.what)}</div><div class="dim">${esc(it.why)}</div><div class="opts" role="radiogroup" aria-labelledby="q-${esc(it.id)}">`;
         for (const o of it.options)
           h += `<label class="${o === choice ? "on" : ""}"><input type="radio" name="${esc(it.id)}" value="${esc(o)}" ${o === choice ? "checked" : ""}>${esc(o)}</label>`;
         h += `</div><div class="ctl"><input type="text" data-k="custom" placeholder="another answer" value="${esc(custom)}">`;
@@ -368,16 +372,16 @@
           put(id, "choice", t.value.trim() || it.pick);
         } else if (t.type === "checkbox") put(id, "discuss", t.checked);
         else if (t.dataset.k) put(id, t.dataset.k, t.value);
-        host.querySelectorAll(".opts label").forEach((l) =>
-          l.classList.toggle(
-            "on",
-            l.querySelector("input").value ===
-              get(
-                items.find((x) => x.id === id),
-                "choice",
-              ),
-          ),
+        const choice = get(
+          items.find((x) => x.id === id),
+          "choice",
         );
+        host.querySelectorAll(".opts label").forEach((l) => {
+          const radio = l.querySelector("input");
+          const on = radio.value === choice;
+          l.classList.toggle("on", on);
+          radio.checked = on;
+        });
       }
       root.addEventListener("change", onEdit);
       root.addEventListener("input", (e) => {
