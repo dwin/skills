@@ -10,16 +10,16 @@ where they cluster.
   point or reflects a broader trend: "a testament to", "a pivotal moment",
   "marks a shift", "sets the stage for", "the evolving landscape", "an
   indelible mark". State the fact and drop the claim.
-  Before: "The 2.0 release marked a pivotal moment in the project's evolving
-  journey." After: "Version 2.0 replaced the plugin loader."
+  Before: "The 2.0 release, which replaced the plugin loader, marked a
+  pivotal moment in the project's evolving journey." After: "Version 2.0
+  replaced the plugin loader."
 - **Notability claims.** Lists of outlets, follower counts, or "widely
   recognized" without context. Keep one source with what it said, or cut.
 - **Tacked-on "-ing" analysis.** A participle phrase added for depth:
   "highlighting", "ensuring", "reflecting", "showcasing", "contributing to".
   Cut it, or make it a sentence with its own evidence.
   Before: "The cache stores sessions in memory, ensuring a seamless
-  experience." After: "The cache stores sessions in memory, so a page load
-  skips the database."
+  experience." After: "The cache stores sessions in memory."
 - **Promotional words.** "Boasts", "vibrant", "rich", "stunning",
   "renowned", "groundbreaking", "nestled", "in the heart of", "seamless",
   "powerful". Use neutral words, or a number.
@@ -49,7 +49,7 @@ where they cluster.
   and a clipped negation tacked onto a sentence ("..., no guessing"). State
   the point directly.
   Before: "The flag picks the region for you, no guessing." After: "The flag
-  picks the region, so you do not have to look it up."
+  picks the region for you."
 - **Forced threes.** Ideas grouped in threes to sound complete. Use the number
   there really is.
 - **Synonym cycling.** One thing called by four names in one paragraph:
@@ -82,8 +82,7 @@ where they cluster.
   ("wire it or delete it"), rhetorical fragments, code described as a person
   ("the plan holds it"), figurative verbs ("rides along", "stands on"). Say
   what is meant.
-  Before: "A dial worth turning." After: "A setting worth trying at a few
-  values."
+  Before: "A dial worth turning." After: "A setting worth changing."
 - **Aphorism formulas.** "X is the language of Y", "X becomes a trap", "not a
   tool but a mirror". Replace with the plain claim behind it.
 - **Authority tropes.** "The real question is", "at its core", "what really
@@ -104,7 +103,8 @@ where they cluster.
 - **Colons as connectors.** A colon used to set up a reveal or a comparison
   mid-sentence. A colon before a list, an example, or an explanation is fine.
   Before: "If you're used to event handlers: here you describe conditions."
-  After: "Describe the conditions under which the job runs."
+  After: "If you are used to event handlers, note that here you describe
+  conditions."
 - **Bold everywhere.** Bold on every name, acronym, or phrase. Bold what the
   reader must not miss, and little else.
 - **Inline-header lists.** Bullets that open with a bold label and colon and
