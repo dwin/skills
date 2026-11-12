@@ -9,7 +9,10 @@ they disagree with and pastes a text summary back into the thread.
 1. Copy [../assets/decision-page.html](../assets/decision-page.html) to a
    path the user can reopen, outside temporary directories.
 2. Replace the `PAGE` object with this round's decisions. The comment above it
-   describes each field. Leave the rest of the file as it is.
+   describes each field. Leave the rest of the file as it is. The object sits
+   inside a script element, so in any string write `<\/` where the text has
+   `</`: a literal `</script>` would end the script and the page would not
+   render.
 3. Write every item for a reader who has not seen your working notes:
    - `label`: what is being decided, in a few words;
    - `what`: one plain sentence describing the thing;

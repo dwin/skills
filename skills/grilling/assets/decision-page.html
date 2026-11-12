@@ -210,6 +210,9 @@
       //   by       "you" when the reader already stated this pick; otherwise leave out
       //   field    optional extra text answer: { name, value, placeholder }
       //   done     true when the item is already carried out and is shown for confirmation
+      //
+      // This object sits inside a script element. In any string, write "<\/" where
+      // the text has "</": a literal closing script tag would end the script here.
       const PAGE = {
         id: "example-round",
         intro:
