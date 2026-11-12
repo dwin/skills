@@ -108,8 +108,18 @@ claude plugin eval . --no-publish --trust-plugin --scaffold \
 - `--ablation none` runs only the with-arm, at half the cost. Use it while
   fixing graders.
 
-For private tasks, pass `--eval-dir` or run from a private plugin checkout, and
-write results outside any public repository.
+### Private cases
+
+The harness reads cases only from a real directory inside the plugin. It
+rejects an absolute `--eval-dir`, a symbolic link that points outside the
+plugin, and a case outside the plugin that names it. To run private cases:
+
+1. Copy them into an untracked directory in a checkout of the plugin, such as
+   `private-evals/`, and list that directory in `.git/info/exclude`.
+2. Run with `--eval-dir private-evals` and
+   `--output-dir <a directory outside every public repository>`.
+3. Delete the copy after the run, and confirm `git status` shows nothing from
+   it.
 
 ## Compare models
 
