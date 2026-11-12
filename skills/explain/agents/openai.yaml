@@ -1,0 +1,5 @@
+interface:
+  display_name: "Explain"
+  short_description: "Explain a change or concept, or run a learning workspace"
+policy:
+  allow_implicit_invocation: false

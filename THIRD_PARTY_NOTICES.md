@@ -62,7 +62,10 @@ skill in pstack. The `swarm` and `rollout` skills, the measurement checks in
 `make-operations-idempotent`, `experience-first`, `prove-it-works`,
 `sequence-verifiable-units`, and `test-behavior-not-implementation`
 principles. The blinding rules in `eval` adapt pstack's `eval` playbook and
-`arena` skill. The upstream pstack project is provided under the following
+`arena` skill. `refactor`, `design`, and `explain` adapt its `refactoring`
+playbook, its `architect` and `teach` skills, and its
+`redesign-from-first-principles` and
+`migrate-callers-then-delete-legacy-apis` principles. The upstream pstack project is provided under the following
 license:
 
 MIT License

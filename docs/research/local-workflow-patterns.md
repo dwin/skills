@@ -37,7 +37,7 @@ discarded after verifying that prior `/advisor` usage invoked Claude's built-in
 functionality rather than expressing a naming preference. The imported setup
 command is named `setup-dwin-skills`.
 
-`teach`, `to-questionnaire`, and `wait-what` had little explicit historical
+`explain`, `to-questionnaire`, and `wait-what` had little explicit historical
 demand. They remain available for completeness but should not dominate the
 router or marketplace description.
 

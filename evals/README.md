@@ -19,5 +19,6 @@ which is not committed.
 | `green-means-live`      | Is a merged PR with a green deploy run reported as live?      |
 | `two-models-one-change` | Does `swarm` load when the user assigns models to roles?      |
 | `plain-edit`            | Does `swarm` stay out of a request that needs no other agent? |
+| `tidy-without-changing` | Is behavior captured in a rerunnable check before a cleanup?  |
 
 Cases built from real work stay out of this repository.
