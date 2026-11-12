@@ -65,7 +65,10 @@ principles. The blinding rules in `eval` adapt pstack's `eval` playbook and
 `arena` skill. `refactor`, `design`, and `explain` adapt its `refactoring`
 playbook, its `architect` and `teach` skills, and its
 `redesign-from-first-principles` and
-`migrate-callers-then-delete-legacy-apis` principles. The upstream pstack project is provided under the following
+`migrate-callers-then-delete-legacy-apis` principles. The playbooks in
+`whats-next` adapt its `create-formal-verification-skill` and `statechart`
+skills and its `visual-parity`, `runtime-forensics`, and `trace-forensics`
+playbooks. The upstream pstack project is provided under the following
 license:
 
 MIT License

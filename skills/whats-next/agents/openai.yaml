@@ -1,5 +1,3 @@
 interface:
   display_name: "What's Next"
-  short_description: "Choose the next skill or workflow"
-policy:
-  allow_implicit_invocation: false
+  short_description: "Match a task to the skill, flow, or playbook that fits"
