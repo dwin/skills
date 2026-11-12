@@ -23,8 +23,10 @@
 #   UNTRACKED  Untracked entries; a new directory counts once. Ignored files
 #              are not counted.
 #   SUGGEST    main, missing, hold-changes, hold-open-pr, hold-unpushed,
-#              candidate, or review. Advice only: a worktree another session
-#              is using stays, whatever this column says.
+#              candidate, or review. A candidate is merged, or its pull
+#              request is, and it has no uncommitted or untracked files.
+#              Advice only: a worktree another session is using stays,
+#              whatever this column says.
 #   WORKTREE   The path.
 set -uo pipefail
 
@@ -166,6 +168,11 @@ worktrees | while IFS= read -r -d '' worktree; do
         fi
         ;;
     esac
+  fi
+
+  # Removing a worktree discards its untracked files, so someone looks first.
+  if [ "$suggest" = candidate ] && [ "$untracked" != 0 ]; then
+    suggest=review
   fi
 
   printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' \
