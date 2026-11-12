@@ -12,10 +12,13 @@ The goal is that the user understands the thing. Change nothing in the code.
 ## Choose the mode
 
 - **One explanation** is the default: a change, a subsystem, a design, or a
-  concept, explained in this conversation. Follow the steps below.
+  concept, explained in this conversation. Follow the steps below. A request
+  for a single answer gets this mode in every directory, including a learning
+  workspace.
 - **A learning workspace** is for a topic the user wants to learn over several
-  sessions. Use it when the user asks for lessons or a course, or when the
-  current directory already holds a `MISSION.md`. Read
+  sessions. Use it when the user asks for lessons or a course, or asks to
+  continue them. When the request could be either, an existing `MISSION.md`
+  in the current directory decides for the workspace. Read
   [WORKSPACE.md](WORKSPACE.md) and follow it instead of the steps below.
 
 ## Explain once
