@@ -14,7 +14,11 @@ they disagree with and pastes a text summary back into the thread.
    `</`: a literal `</script>` would end the script and the page would not
    render.
 3. Write every item for a reader who has not seen your working notes:
-   - `label`: what is being decided, in a few words;
+   - `id`: a short slug, different for every item on the page. Answers are
+     saved under it, so two items with one id share their answers;
+   - `label`: what is being decided, in a few words. The pasted summary names
+     each decision by its label alone, so give every item on the page a
+     different one;
    - `what`: one plain sentence describing the thing;
    - `why`: the reason for your pick, with its cost;
    - `options`: the answers on offer, each with different text, and your
