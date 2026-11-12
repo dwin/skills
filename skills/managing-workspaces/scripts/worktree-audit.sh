@@ -14,8 +14,9 @@
 #   SIZE       Disk use of the worktree directory.
 #   AGE        Days since the commit at its HEAD.
 #   BRANCH     The checked-out branch, or (detached). During a rebase or a
-#              bisect, the branch it started from: the row is then marked
-#              review at most, because someone is working there.
+#              bisect, the branch it started from. While a rebase, bisect,
+#              merge, cherry-pick, or revert is in progress the row is never
+#              a candidate, because someone is working there.
 #   MERGED     yes when the base contains HEAD. A squash merge shows no here,
 #              so read PR as well.
 #   PR         #number/state of a pull request from a branch of this name, or
@@ -195,7 +196,25 @@ worktrees | while IFS= read -r -d '' worktree; do
 
   # Read the full ref and cut the prefix. The short form turns "topic" into
   # "heads/topic" when a tag has the same name, and no pull request matches.
-  busy=no
+  # The worktree's own Git directory, where an operation in progress keeps
+  # its files. The x keeps a trailing newline in the path, as for the
+  # repository above.
+  git_dir="$(git -C "$worktree" rev-parse --absolute-git-dir 2>/dev/null && printf x)" || git_dir=""
+  git_dir="${git_dir%x}"
+  git_dir="${git_dir%$'\n'}"
+
+  # A rebase, bisect, merge, cherry-pick, or revert in progress means someone
+  # is working there, whether or not it detached HEAD. A Git directory that
+  # cannot be found proves nothing, so that worktree counts as busy too.
+  busy=yes
+  if [ -n "$git_dir" ]; then
+    busy=no
+    for op_path in rebase-merge rebase-apply BISECT_START BISECT_LOG MERGE_HEAD \
+      CHERRY_PICK_HEAD REVERT_HEAD sequencer; do
+      [ -e "$git_dir/$op_path" ] && busy=yes
+    done
+  fi
+
   if branch="$(git -C "$worktree" symbolic-ref --quiet HEAD 2>/dev/null)"; then
     branch="${branch#refs/heads/}"
   else
@@ -203,10 +222,8 @@ worktrees | while IFS= read -r -d '' worktree; do
     # A rebase or a bisect detaches HEAD while the branch still exists, and
     # HEAD may then sit on a commit the base contains. The operation's own
     # files name the branch.
-    git_dir="$(git -C "$worktree" rev-parse --absolute-git-dir 2>/dev/null || echo "")"
     for op_file in rebase-merge/head-name rebase-apply/head-name BISECT_START; do
       [ -n "$git_dir" ] && [ -f "$git_dir/$op_file" ] || continue
-      busy=yes
       op_branch=""
       IFS= read -r op_branch <"$git_dir/$op_file" || true
       # A rebase records the full ref. A bisect records the short name.
@@ -359,7 +376,7 @@ worktrees | while IFS= read -r -d '' worktree; do
     esac
   fi
 
-  # A rebase or a bisect in progress means someone is working there.
+  # An operation in progress means someone is working there.
   if [ "$suggest" = candidate ] && [ "$busy" = yes ]; then
     suggest=review
   fi
