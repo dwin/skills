@@ -235,10 +235,14 @@ worktrees | while IFS= read -r -d '' worktree; do
     done
   fi
 
+  # on_branch says whether a branch was found. The text (detached) is only
+  # what the column shows: a branch may be named exactly that.
   if branch="$(git -C "$worktree" symbolic-ref --quiet HEAD 2>/dev/null)"; then
     branch="${branch#refs/heads/}"
+    on_branch=yes
   else
     branch="(detached)"
+    on_branch=no
     # A rebase or a bisect detaches HEAD while the branch still exists, and
     # HEAD may then sit on a commit the base contains. The operation's own
     # files name the branch.
@@ -251,6 +255,7 @@ worktrees | while IFS= read -r -d '' worktree; do
       if [ -n "$op_branch" ] &&
         git -C "$worktree" show-ref --verify --quiet "refs/heads/$op_branch"; then
         branch="$op_branch"
+        on_branch=yes
       fi
       break
     done
@@ -260,7 +265,7 @@ worktrees | while IFS= read -r -d '' worktree; do
   # is then listed under that name. Leave the name out when the tracked
   # branch is the base itself: it is where the branch started, not its head.
   upstream_name=""
-  if [ "$branch" != "(detached)" ]; then
+  if [ "$on_branch" = yes ]; then
     up_ref=""
     up_remote=""
     up_name=""
@@ -316,7 +321,7 @@ worktrees | while IFS= read -r -d '' worktree; do
         *) [ -n "$pr_closed" ] || pr_closed="#$pr_number/$pr_state" ;;
       esac
     done < <(
-      if [ "$branch" != "(detached)" ]; then
+      if [ "$on_branch" = yes ]; then
         # The "" makes awk compare text. Left alone, it compares two names
         # that look like numbers as numbers, and 10 equals 1e1 and 010.
         awk -F '\t' -v b="$branch" -v u="$upstream_name" \
@@ -338,7 +343,7 @@ worktrees | while IFS= read -r -d '' worktree; do
       pr="$pr_outdated"
     elif [ -n "$pr_closed" ]; then
       pr="$pr_closed"
-    elif [ "$pr_capped" = yes ] && [ "$branch" != "(detached)" ]; then
+    elif [ "$pr_capped" = yes ] && [ "$on_branch" = yes ]; then
       pr="?"
     else
       pr="-"
