@@ -97,7 +97,7 @@ action for each row before removing anything.
 Before removing anything, confirm all three:
 
 - The tree is clean: `git status --porcelain --untracked-files=all --ignore-submodules=none` prints
-  nothing, and so does `git ls-files -v | grep '^[a-zS]'`, which lists the
+  nothing, and so does `git ls-files -v | LC_ALL=C grep '^[a-zS]'`, which lists the
   files the index hides from status. Discarding
   uncommitted files needs the user's explicit authorization. Check ignored
   files with `git status --ignored`, move anything worth keeping out first,

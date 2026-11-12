@@ -280,10 +280,12 @@ worktrees | while IFS= read -r -d '' worktree; do
       esac
     done < <(
       if [ "$branch" != "(detached)" ]; then
+        # The "" makes awk compare text. Left alone, it compares two names
+        # that look like numbers as numbers, and 10 equals 1e1 and 010.
         awk -F '\t' -v b="$branch" -v u="$upstream_name" \
-          '$1 == b || (u != "" && $1 == u)' "$prs_open" "$prs"
+          '($1 "") == (b "") || ((u "") != "" && ($1 "") == (u ""))' "$prs_open" "$prs"
       elif [ -n "$head_commit" ]; then
-        awk -F '\t' -v h="$head_commit" '$4 == h' "$prs_open"
+        awk -F '\t' -v h="$head_commit" '($4 "") == (h "")' "$prs_open"
       fi
     )
     if [ -n "$pr_open" ]; then
@@ -327,8 +329,9 @@ worktrees | while IFS= read -r -d '' worktree; do
   # An entry marked assume-unchanged (a lower-case tag from ls-files -v) or
   # skip-worktree (S) can hold a change that status never shows, and removing
   # the worktree would delete it unseen. grep -c prints the count and fails
-  # when it is 0, so its status is not read.
-  hidden="$(git -C "$worktree" ls-files -v 2>/dev/null | grep -c '^[a-zS]' || true)"
+  # when it is 0, so its status is not read. In some locales [a-z] also
+  # matches upper-case letters, hence LC_ALL=C.
+  hidden="$(git -C "$worktree" ls-files -v 2>/dev/null | LC_ALL=C grep -c '^[a-zS]' || true)"
   [ "${hidden:-0}" = 0 ] || tracked="?"
 
   if [ "$worktree" = "$main_worktree" ]; then
