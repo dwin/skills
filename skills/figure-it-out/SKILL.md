@@ -54,9 +54,12 @@ Treat each unit as an experiment:
 
 1. State the hypothesis.
 2. Make the smallest change the evidence justifies.
-3. Check it against the exit condition on the real artifact.
-4. Keep it if the predicate moved. Revert it if it did not, including changes
-   you were keeping because they might help.
+3. Run the unit's own check on the real artifact, and rerun the checks of
+   the units that already landed.
+4. Keep it when its check passes and no earlier check broke. Revert it
+   otherwise, including changes you were keeping because they might help. The
+   exit condition is for the whole result, at Hand back: one unit rarely makes
+   it true.
 5. Log a row, then start the next unit.
 
 While the loop runs:
