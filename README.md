@@ -52,6 +52,17 @@ Model-invoked skills:
 - `refactor` changes the structure of code without changing its behavior,
   and finds what in a codebase is worth refactoring.
 - `research` investigates questions against primary sources.
+- `why` finds out why code is the way it is from its history and other
+  records, and says how sure each answer is.
+- `blast-radius` finds what a change can break outside its diff, and proves
+  the fact its safety rests on by running real code.
+- `figure-it-out` drives a large or unclear task to a checkable finish while
+  the user is away, and keeps a work log they can audit.
+- `catchup` tells the user what changed since their last message and lays out
+  every decision waiting on them.
+- `technical-writing` writes docs, PR descriptions, design notes, and messages
+  that read right the first time, and `unslop` removes the marks of
+  machine-written prose.
 - `whats-next` matches a task to the skill, flow, or playbook that fits it.
   Its playbooks cover formal verification, visual parity, and forensics on a
   live process or a captured artifact.
@@ -187,6 +198,13 @@ is MIT licensed; see [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) for its 
 
 The Behavior axis of `code-review` is adapted from the `interrogate` skill in
 Lauren Tan's [pstack](https://github.com/cursor/plugins/tree/main/pstack), and
-`swarm`, `rollout`, and several other skills adapt ideas from it. The
+`swarm`, `rollout`, and several other skills adapt ideas from it.
+`blast-radius`, `catchup`, `figure-it-out`, `why`, `unslop`, and
+`technical-writing` are adapted from its skills of similar names. The
 upstream project is MIT licensed; see
 [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) for its license text.
+
+`unslop` also adapts Siqi Chen's
+[humanizer](https://github.com/blader/humanizer) skill, which is based on
+Wikipedia's "Signs of AI writing" guide. The upstream project is MIT licensed;
+see [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) for its license text.

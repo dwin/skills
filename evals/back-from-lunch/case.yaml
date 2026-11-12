@@ -1,0 +1,5 @@
+schema_version: "1.1"
+name: back-from-lunch
+description: The user returns and asks where a piece of work stands.
+context:
+  scaffold_script: scaffold.sh

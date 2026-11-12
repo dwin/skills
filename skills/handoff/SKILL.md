@@ -33,6 +33,10 @@ its authorization; it does not make old observations current.
 
 Do not duplicate content already captured in other artifacts (specs, plans, ADRs, issues, commits, diffs). Reference them by path or URL instead.
 
+When the work keeps a work log, link it, and tell the receiving agent to open
+its first row with a `start` row, as
+[the work log reference](../figure-it-out/references/work-log.md) describes.
+
 Redact any sensitive information, such as API keys, passwords, or personally identifiable information.
 
 If the user passed arguments, treat them as a description of what the next session will focus on and tailor the doc accordingly.

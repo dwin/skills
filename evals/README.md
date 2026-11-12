@@ -19,14 +19,20 @@ Each case runs with the plugin and without it, so the difference between the
 two measures the whole plugin. The `eval` skill explains how to measure one
 skill. Results go to `evals/results/`, which is not committed.
 
-| Case                    | Asks                                                                  |
-| ----------------------- | --------------------------------------------------------------------- |
-| `absent-or-renamed`     | Is the thing found when the code names it differently?                |
-| `green-means-live`      | Is a merged PR with a green deploy run reported as live?              |
-| `two-models-one-change` | Does `swarm` load when the user assigns models to roles?              |
-| `plain-edit`            | Do `swarm` and `whats-next` stay out of a request that needs neither? |
-| `tidy-without-changing` | Is behavior captured in a rerunnable check before a cleanup?          |
-| `heap-snapshot-in-hand` | Does the agent reach the forensics playbook from a leak report?       |
-| `two-holders-one-lease` | Does the agent reach the formal-verification playbook?                |
+| Case                      | Asks                                                                  |
+| ------------------------- | --------------------------------------------------------------------- |
+| `absent-or-renamed`       | Is the thing found when the code names it differently?                |
+| `green-means-live`        | Is a merged PR with a green deploy run reported as live?              |
+| `two-models-one-change`   | Does `swarm` load when the user assigns models to roles?              |
+| `plain-edit`              | Do `swarm` and `whats-next` stay out of a request that needs neither? |
+| `tidy-without-changing`   | Is behavior captured in a rerunnable check before a cleanup?          |
+| `heap-snapshot-in-hand`   | Does the agent reach the forensics playbook from a leak report?       |
+| `two-holders-one-lease`   | Does the agent reach the formal-verification playbook?                |
+| `stricter-date-parse`     | Are the inputs a small change now rejects found before it ships?      |
+| `back-from-lunch`         | Does a status catch-up lead with the decision waiting on the user?    |
+| `away-for-the-afternoon`  | Is a checkable finish stated before an unattended migration?          |
+| `four-retries-not-three`  | Is a constant explained from the record, not the user's guess?        |
+| `before-i-post-it`        | Is machine-written prose rewritten with every fact kept?              |
+| `setup-doc-for-new-hires` | Does a setup doc become steps a new engineer can follow alone?        |
 
 Cases built from real work stay out of this repository.

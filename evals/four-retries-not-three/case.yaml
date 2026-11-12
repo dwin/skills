@@ -1,0 +1,5 @@
+schema_version: "1.1"
+name: four-retries-not-three
+description: The user asks why a constant differs from the rest of the codebase.
+context:
+  scaffold_script: scaffold.sh

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Why"
+  short_description: "Find out why code is the way it is"
+  default_prompt: "Use $why to find out why this code is the way it is, citing the evidence and how sure each answer is."

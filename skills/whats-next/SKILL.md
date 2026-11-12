@@ -123,6 +123,12 @@ Off the main flow entirely.
 - **`rollout`** — after a merge, follow the change until it is applied, live, and observed.
 - **`autopilot`** — drive a branch through local review to a ready pull request, and with `merge`, merge it.
 - **`eval`** — measure whether a skill or a model does a set of tasks better, by correctness, corrections needed, cost, and time.
+- **`figure-it-out`** — drive a large or unclear task to a checkable finish while the user is away, without stopping to ask, and keep a work log they can audit on return.
+- **`catchup`** — when the user asks where things stand, tell them what changed since their last message and lay out every decision waiting on them.
+- **`why`** — find out why code is the way it is from its history, reviews, tickets, docs, and runtime data, with how sure each answer is.
+- **`blast-radius`** — before a change ships, find what it can break outside its diff, and prove the fact its safety rests on by running real code.
+- **`technical-writing`** — write docs, READMEs, design notes, PR descriptions, and messages that a tired engineer understands on the first read.
+- **`unslop`** — remove the marks of machine-written prose from text people will read, keeping every fact and the author's voice.
 
 ## Precondition
 

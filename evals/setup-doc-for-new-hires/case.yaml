@@ -1,0 +1,5 @@
+schema_version: "1.1"
+name: setup-doc-for-new-hires
+description: The user asks for a setup doc a new engineer can follow alone.
+context:
+  scaffold_script: scaffold.sh

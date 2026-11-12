@@ -1,0 +1,4 @@
+interface:
+  display_name: "Unslop"
+  short_description: "Remove the marks of machine-written prose"
+  default_prompt: "Use $unslop to make this text read as a person wrote it without changing its facts."
