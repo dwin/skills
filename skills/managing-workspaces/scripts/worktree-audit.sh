@@ -28,6 +28,10 @@
 #   WORKTREE   The path.
 set -uo pipefail
 
+# Keep Git from refreshing an index while it reads one: `git status` would
+# otherwise rewrite the index file of each worktree it looks at.
+export GIT_OPTIONAL_LOCKS=0
+
 usage() { sed -n '2,/^set -uo/p' "$0" | sed '$d; s/^# \{0,1\}//'; }
 
 base=""
@@ -87,19 +91,31 @@ if command -v gh >/dev/null 2>&1 &&
 fi
 
 now="$(date +%s)"
-main_worktree="$(git worktree list --porcelain | sed -n '1s/^worktree //p')"
+# Records end in NUL, so a path may hold any other character.
+worktrees() {
+  git worktree list --porcelain -z | while IFS= read -r -d '' field; do
+    case "$field" in worktree\ *) printf '%s\0' "${field#worktree }" ;; esac
+  done
+}
+main_worktree=""
+while IFS= read -r -d '' worktree; do
+  main_worktree="$worktree"
+  break
+done < <(worktrees)
 
 echo "# repository: $repo"
 echo "# base: $base (pull requests: $([ "$pr_known" = yes ] && echo gh || echo unknown))"
 printf 'SIZE\tAGE\tBRANCH\tMERGED\tPR\tUNPUSHED\tTRACKED\tUNTRACKED\tSUGGEST\tWORKTREE\n'
 
-git worktree list --porcelain | sed -n 's/^worktree //p' | while IFS= read -r worktree; do
+worktrees | while IFS= read -r -d '' worktree; do
+  # One row per worktree: show a tab or a line break in a path as a space.
+  shown="$(printf '%s' "$worktree" | tr '\t\r\n' '   ')"
   if [ ! -d "$worktree" ]; then
-    printf -- '-\t-\t-\t-\t-\t-\t-\t-\tmissing\t%s\n' "$worktree"
+    printf -- '-\t-\t-\t-\t-\t-\t-\t-\tmissing\t%s\n' "$shown"
     continue
   fi
 
-  size="$(du -sh "$worktree" 2>/dev/null | cut -f1)"
+  size="$(du -sh "$worktree" 2>/dev/null | awk 'NR == 1 { print $1 }')"
   head_time="$(git -C "$worktree" log -1 --format=%ct HEAD 2>/dev/null || echo "")"
   if [ -n "$head_time" ]; then age="$(((now - head_time) / 86400))d"; else age="?"; fi
 
@@ -154,5 +170,5 @@ git worktree list --porcelain | sed -n 's/^worktree //p' | while IFS= read -r wo
 
   printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' \
     "$size" "$age" "$branch" "$merged" "$pr" "$unpushed" \
-    "$tracked" "$untracked" "$suggest" "$worktree"
+    "$tracked" "$untracked" "$suggest" "$shown"
 done | sort -t "$(printf '\t')" -k1,1 -rh
