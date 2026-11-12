@@ -30,7 +30,8 @@ renderings match. Looking at them does not.
    the same browser, the same device size. Any nonzero diff is a failure.
    Find the cause of the pixel difference, fix it, and diff again until the
    diff is zero.
-6. **File a PR per component or per safe batch** with `file-pr`.
+6. **When the user wants pull requests, file one per component or per safe
+   batch** with `file-pr`. Otherwise keep each component's change separate.
 
 ## Report
 
