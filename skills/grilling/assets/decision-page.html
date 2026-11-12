@@ -247,11 +247,18 @@
       };
 
       const KEY = "decision-page:" + PAGE.id;
-      let state = {};
+      // Item ids are data. On a plain object, an id such as "constructor" or
+      // "__proto__" would resolve to an inherited member, and that item's
+      // answers would never be saved. An object with no prototype has none.
+      const blank = () => Object.create(null);
+      let state = blank();
       try {
-        state = JSON.parse(localStorage.getItem(KEY) || "{}") || {};
+        const saved = JSON.parse(localStorage.getItem(KEY) || "{}");
+        if (saved && typeof saved === "object")
+          for (const [id, answers] of Object.entries(saved))
+            if (answers && typeof answers === "object") state[id] = answers;
       } catch (e) {
-        state = {};
+        state = blank();
       }
       const save = () => {
         try {
@@ -400,7 +407,7 @@
         }
       });
       document.getElementById("reset").addEventListener("click", () => {
-        state = {};
+        state = blank();
         save();
         render();
       });
