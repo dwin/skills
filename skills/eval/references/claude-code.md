@@ -5,8 +5,9 @@ documentation is at <https://code.claude.com/docs/en/plugin-evals>. Read
 `claude plugin eval --help` for the flags of the installed version.
 
 Status: run on Claude Code 2.1.322 against this plugin's own `evals/`
-directory, on the default model and on Haiku. Mocked MCP servers, resumed
-transcripts, and the `baseline` grader were not tried.
+directory, on the default model and on Haiku. The one-skill comparison was
+run once, on one case. Mocked MCP servers, resumed transcripts, and the
+`baseline` grader were not tried.
 
 ## What a run is
 
@@ -90,7 +91,7 @@ the command passes `--scaffold`.
 From the plugin's root:
 
 ```bash
-claude plugin eval . --no-publish --trust-plugin --scaffold \
+claude plugin eval . --no-publish --trust-plugin --scaffold --keep-temp \
   --runs 3 -j 4 --threshold 0 --max-cost-usd 15 --json results.json
 ```
 
@@ -99,6 +100,13 @@ claude plugin eval . --no-publish --trust-plugin --scaffold \
   only when the user asks, and never for private tasks.
 - `--trust-plugin` and `--scaffold` run the plugin's code and the cases'
   scripts as the user. Pass them only for a plugin and cases you have read.
+- `--keep-temp` keeps each run's directory, which holds its trace. Without it
+  the harness deletes the directory of every run that finished, so a run whose
+  graders failed can no longer be read. It may still keep a run that ended in
+  an error. The harness prints every directory it keeps and makes it
+  read-only. Once the eval is reported, delete each one with
+  `chmod -R u+rwx <dir>` and then `rm -rf <dir>`: they hold every prompt and
+  output.
 - `--threshold 0` reports scores without failing the command. Set a threshold
   when the run gates something, as in CI.
 - `--max-cost-usd` stops the run at a spending limit and marks the result
@@ -107,6 +115,20 @@ claude plugin eval . --no-publish --trust-plugin --scaffold \
   `--tag`, which reads the words after it as tags.
 - `--ablation none` runs only the with-arm, at half the cost. Use it while
   fixing graders.
+
+### One skill in a plugin of several
+
+The arm without the plugin has none of its skills, so the two-arm score
+compares the whole plugin with no plugin. To measure one skill:
+
+1. Make a second checkout of the plugin and remove the skill from it: its
+   directory, its entry in any manifest that lists skills, and any link to it.
+2. Run the same cases against each checkout with `--ablation none`, and write
+   each result to its own file.
+3. Compare the two checkouts grader by grader, on the graders that check the
+   result. With one arm, a "the skill loaded" grader counts in the case score,
+   and the checkout without the skill always fails it, so the case scores are
+   not comparable.
 
 ### Private cases
 
@@ -117,9 +139,11 @@ plugin, and a case outside the plugin that names it. To run private cases:
 1. Copy them into an untracked directory in a checkout of the plugin, such as
    `private-evals/`, and list that directory in `.git/info/exclude`.
 2. Run with `--eval-dir private-evals` and
-   `--output-dir <a directory outside every public repository>`.
-3. Delete the copy after the run, and confirm `git status` shows nothing from
-   it.
+   `--output-dir <a directory outside every public repository>`. Give `--json`
+   a path in that same directory: its file holds every prompt, and a bare file
+   name is written to the checkout.
+3. Delete the copy and the kept run directories after the run, and confirm
+   `git status` shows nothing from the copy.
 
 ## Compare models
 
@@ -144,6 +168,10 @@ Each run writes `evals/results/<timestamp>/` with `aggregate-result.json` and
 
 The harness runs one turn per run, so **corrections** are not measured here.
 
-Traces are deleted when the run ends. To read what a failing run did, rerun
-its case with `--keep-temp --case <name>` and open the `tracePath` in the
-result.
+Each run in the JSON has a `tracePath`: a JSON Lines file of every message
+and tool call in that run. The file is there when the harness kept the run's
+directory, which `--keep-temp` makes it do for every run. Read the trace of
+the run that failed. A rerun of the same case is a different run and may pass.
+A run that stopped before the agent started, as when its scaffold script
+fails, has an empty `tracePath`: read its `error` field and the harness's
+output.
