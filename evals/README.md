@@ -7,8 +7,13 @@ run, and read them.
 Run them from the repository root:
 
 ```bash
-claude plugin eval . --no-publish --trust-plugin --scaffold --threshold 0
+claude plugin eval . --no-publish --trust-plugin --scaffold --keep-temp \
+  --threshold 0
 ```
+
+`--keep-temp` keeps each run's directory, so a failing run's trace can be
+read. The harness prints the directories; the `eval` skill's reference says
+how to delete them.
 
 Each case runs with the plugin and without it, so the difference between the
 two measures the whole plugin. The `eval` skill explains how to measure one
