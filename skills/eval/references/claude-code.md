@@ -139,7 +139,9 @@ plugin, and a case outside the plugin that names it. To run private cases:
 1. Copy them into an untracked directory in a checkout of the plugin, such as
    `private-evals/`, and list that directory in `.git/info/exclude`.
 2. Run with `--eval-dir private-evals` and
-   `--output-dir <a directory outside every public repository>`.
+   `--output-dir <a directory outside every public repository>`. Give `--json`
+   a path in that same directory: its file holds every prompt, and a bare file
+   name is written to the checkout.
 3. Delete the copy and the kept run directories after the run, and confirm
    `git status` shows nothing from the copy.
 
