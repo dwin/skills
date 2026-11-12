@@ -17,8 +17,9 @@
 #   MERGED     yes when the base contains HEAD. A squash merge shows no here,
 #              so read PR as well.
 #   PR         #number/state of the newest pull request for the branch, - when
-#              there is none, ? when gh cannot tell. With ?, an open pull
-#              request cannot hold a row: look before removing a candidate.
+#              there is none, ? when gh cannot tell or its listing was cut
+#              off before reaching the branch. With ?, an open pull request
+#              cannot hold a row: look before removing a candidate.
 #   UNPUSHED   Commits on HEAD that no remote-tracking branch contains.
 #   TRACKED    Tracked files with uncommitted changes. ? when `git status`
 #              failed there; the row is then marked review.
@@ -61,10 +62,14 @@ done
 
 [ $# -le 1 ] || { echo "error: expected one repository path, got $#" >&2; exit 2; }
 repo="${1:-.}"
-repo="$(git -C "$repo" rev-parse --show-toplevel 2>/dev/null)" || {
+# Command substitution drops every trailing newline, and a path may end in
+# one. The x keeps them; then remove the x and the one newline Git added.
+repo="$(git -C "$repo" rev-parse --show-toplevel 2>/dev/null && printf x)" || {
   echo "error: not a Git repository: ${1:-.}" >&2
   exit 1
 }
+repo="${repo%x}"
+repo="${repo%$'\n'}"
 cd "$repo" || exit 1
 
 if [ -z "$base" ]; then
@@ -80,21 +85,31 @@ if [ -z "$base" ]; then
     exit 1
   }
 fi
-git rev-parse --verify --quiet "$base^{commit}" >/dev/null || {
+# Resolve the base to one commit here. A name such as HEAD means a different
+# commit inside each worktree.
+base_commit="$(git rev-parse --verify --quiet "$base^{commit}")" || {
   echo "error: base not found: $base" >&2
   exit 1
 }
 
-# Pull request state per branch, newest first, from one gh call.
+# Pull request state per branch, newest first, from one gh call. A listing
+# that fills the limit may have left older pull requests out, so a branch it
+# does not name is then unknown, not free of pull requests.
+pr_limit=1000
 prs="$(mktemp)"
 trap 'rm -f "$prs"' EXIT
 pr_known=no
+pr_capped=no
 if command -v gh >/dev/null 2>&1 &&
-  gh pr list --state all --limit 1000 --json number,state,isDraft,headRefName \
+  gh pr list --state all --limit "$pr_limit" --json number,state,isDraft,headRefName \
     --jq '.[] | [.headRefName, .number, (if .isDraft then "draft" else (.state | ascii_downcase) end)] | @tsv' \
     >"$prs" 2>/dev/null; then
   pr_known=yes
+  [ "$(wc -l <"$prs")" -ge "$pr_limit" ] && pr_capped=yes
 fi
+pr_source=unknown
+[ "$pr_known" = yes ] && pr_source=gh
+[ "$pr_capped" = yes ] && pr_source="gh, newest $pr_limit only"
 
 now="$(date +%s)"
 # Records end in NUL, so a path may hold any other character.
@@ -126,8 +141,8 @@ is_locked() {
   return 1
 }
 
-echo "# repository: $repo"
-echo "# base: $base (pull requests: $([ "$pr_known" = yes ] && echo gh || echo unknown))"
+echo "# repository: $(printf '%s' "$repo" | tr '\t\r\n' '   ')"
+echo "# base: $base (pull requests: $pr_source)"
 printf 'SIZE\tAGE\tBRANCH\tMERGED\tPR\tUNPUSHED\tTRACKED\tUNTRACKED\tSUGGEST\tWORKTREE\n'
 
 worktrees | while IFS= read -r -d '' worktree; do
@@ -144,7 +159,7 @@ worktrees | while IFS= read -r -d '' worktree; do
 
   branch="$(git -C "$worktree" symbolic-ref --quiet --short HEAD 2>/dev/null || echo "(detached)")"
 
-  if git -C "$worktree" merge-base --is-ancestor HEAD "$base" 2>/dev/null; then
+  if git -C "$worktree" merge-base --is-ancestor HEAD "$base_commit" 2>/dev/null; then
     merged=yes
   else
     merged=no
@@ -154,6 +169,7 @@ worktrees | while IFS= read -r -d '' worktree; do
   if [ "$pr_known" = yes ]; then
     pr="-"
     if [ "$branch" != "(detached)" ]; then
+      [ "$pr_capped" = yes ] && pr="?"
       found="$(awk -F '\t' -v b="$branch" '$1 == b { print "#" $2 "/" $3; exit }' "$prs")"
       [ -n "$found" ] && pr="$found"
     fi
