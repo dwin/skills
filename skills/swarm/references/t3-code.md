@@ -41,7 +41,9 @@ agent's own subagent tool for short foreground work on your own model family.
 - For the audit tick, `schedule_task` with an interval. Bound to this thread,
   every run posts here. For a quiet tick, set `bindToCurrentThread: false`,
   give the task the ledger path, and have it message this thread with
-  `t3_thread_send` only when a lane's state changed.
+  `t3_thread_send` only when a lane's state changed. Write the task's id in
+  the ledger. Remove it with `delete_scheduled_task` when the run finishes,
+  pauses, or stops, and confirm with `list_scheduled_tasks`.
 
 ## Follow up and cancel
 
