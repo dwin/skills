@@ -1,0 +1,4 @@
+interface:
+  display_name: "Swarm"
+  short_description: "Coordinate work done by other agents"
+  default_prompt: "Use $swarm to split this work into lanes, brief a worker for each, and verify what they report."

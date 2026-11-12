@@ -26,7 +26,7 @@ The primary flow should be:
 3. `to-tickets` for multi-session work.
 4. `implement`, using `tdd` and ending with `code-review`.
 5. `file-pr` when the user requests a pull request.
-6. `babysit-pr` when the user requests persistent monitoring.
+6. `babysit` when the user requests persistent monitoring.
 
 Use `handoff` at a true harness, directory, colleague, or side-task boundary.
 Use `wayfinder` only when an effort is too foggy for one planning session.

@@ -9,9 +9,15 @@ Write a handoff document summarising the current conversation so a fresh agent c
 
 Include a "suggested skills" section in the document, which suggests skills that the agent should invoke.
 
+Before writing, bring the work to a safe boundary: finish the current step or
+back it out. Stop everything you left running, or name it in the document as
+something the next session inherits: workers, watchers, background commands.
+
 Capture the state needed to resume without repeating decisions:
 
 - The active objective, acceptance criteria, and next executable step.
+- What is finished and verified, so the next session resumes at the next step
+  and leaves completed work alone.
 - Repository and worktree paths, branch, head SHA, PR links, and local changes.
 - Decisions and permissions already given, their scope, and explicit holds or
   actions still awaiting approval.

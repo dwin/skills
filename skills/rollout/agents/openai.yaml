@@ -1,0 +1,4 @@
+interface:
+  display_name: "Rollout"
+  short_description: "Follow a merged change until it is live"
+  default_prompt: "Use $rollout to follow this merged change through its apply or deploy and confirm what is live."

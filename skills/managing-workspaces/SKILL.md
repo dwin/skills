@@ -82,6 +82,15 @@ for.
 task did not create always need the user's approval. List them with their
 paths and sizes and ask.
 
+When the user asks to reclaim space or clear out old workspaces, audit first.
+Build the list from the tools' own listings, such as `git worktree list`,
+because paths recalled from memory miss workspaces. For each one, record its
+size, age, branch, whether that branch is merged, its PR state, and its
+tracked and untracked changes. Then sort the rows: merged, clean, and used by
+no session may go; uncommitted tracked changes wait for the user's decision; a
+workspace another session is using stays. Show the table with the proposed
+action for each row before removing anything.
+
 Before removing anything, confirm all three:
 
 - The tree is clean: `git status --porcelain` prints nothing. Discarding
@@ -98,6 +107,12 @@ consistent: the `rift` skill's removal steps for a Rift,
 `git worktree remove <path>` for a worktree, and the build tool's clean command
 for the task's lane. Delete a directory directly only for a standalone clone
 the task created, after all three checks pass.
+
+`git worktree remove --force` discards uncommitted and untracked files. Use
+it only with the user's approval for that one workspace, given after you
+showed what it would discard: the `git status --porcelain` output and the
+diff of the tracked changes. Approval for one workspace does not carry to the
+next.
 
 ## Hand off
 

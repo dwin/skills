@@ -1,0 +1,405 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Decisions</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+        --fg: var(--foreground, CanvasText);
+        --dim: var(
+          --muted-foreground,
+          color-mix(in srgb, CanvasText 62%, transparent)
+        );
+        --line: var(--border, color-mix(in srgb, CanvasText 18%, transparent));
+        --on: var(--primary, Highlight);
+        --on-fg: var(--primary-foreground, HighlightText);
+        --r: var(--radius, 8px);
+        --mono: var(--font-mono, ui-monospace, monospace);
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font: 14px/1.45 var(--font-sans, system-ui, sans-serif);
+        color: var(--fg);
+      }
+      h2 {
+        font-size: 15px;
+        margin: 0;
+      }
+      p {
+        margin: 0 0 8px;
+      }
+      .dim {
+        color: var(--dim);
+      }
+      .small {
+        font-size: 12px;
+      }
+      .bar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+        margin: 0 0 12px;
+      }
+      .stat {
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 1px 10px;
+        font-size: 12px;
+      }
+      button,
+      select,
+      input[type="text"],
+      textarea {
+        font: inherit;
+        color: inherit;
+        background: transparent;
+        border: 1px solid var(--line);
+        border-radius: var(--r);
+        padding: 4px 8px;
+      }
+      button {
+        cursor: pointer;
+      }
+      button.primary {
+        background: var(--on);
+        color: var(--on-fg);
+        border-color: transparent;
+      }
+      details {
+        border: 1px solid var(--line);
+        border-radius: var(--r);
+        margin-bottom: 10px;
+      }
+      summary {
+        cursor: pointer;
+        padding: 10px 12px;
+        display: flex;
+        gap: 8px;
+        align-items: baseline;
+        flex-wrap: wrap;
+      }
+      .body {
+        padding: 0 12px 4px;
+      }
+      .item {
+        border-top: 1px solid var(--line);
+        padding: 10px 0;
+      }
+      .item.changed {
+        box-shadow: inset 3px 0 0 var(--warning, orange);
+        padding-left: 10px;
+      }
+      .item.flag {
+        box-shadow: inset 3px 0 0 var(--info, dodgerblue);
+        padding-left: 10px;
+      }
+      .head {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px 8px;
+        align-items: baseline;
+      }
+      .label {
+        font-family: var(--mono);
+        font-size: 12.5px;
+        font-weight: 600;
+      }
+      .pill {
+        font-size: 11px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 0 8px;
+        white-space: nowrap;
+      }
+      .opts {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin: 6px 0;
+      }
+      .opts label {
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 2px 10px;
+        cursor: pointer;
+        font-size: 13px;
+      }
+      .opts input {
+        position: absolute;
+        opacity: 0;
+        pointer-events: none;
+      }
+      .opts label.on {
+        background: var(--on);
+        color: var(--on-fg);
+        border-color: transparent;
+      }
+      .ctl {
+        display: grid;
+        grid-template-columns: 1fr 1fr auto;
+        gap: 6px;
+        align-items: center;
+      }
+      .ctl input[type="text"],
+      .ctl select {
+        width: 100%;
+        min-width: 0;
+      }
+      .ctl .wide {
+        grid-column: 1 / -1;
+      }
+      .chk {
+        display: flex;
+        gap: 4px;
+        align-items: center;
+        white-space: nowrap;
+        font-size: 13px;
+      }
+      textarea {
+        width: 100%;
+        min-height: 160px;
+        font: 12px var(--mono);
+      }
+      @media (max-width: 520px) {
+        .ctl {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <p class="dim" id="intro"></p>
+    <div class="bar" id="bar"></div>
+    <div id="root"></div>
+    <details open>
+      <summary>
+        <h2>Decisions to paste back</h2>
+        <span class="dim small">updates as you change things</span>
+      </summary>
+      <div class="body">
+        <div class="bar">
+          <button class="primary" id="copy">Copy</button>
+          <button id="reset">Reset to the recommendations</button>
+          <span class="dim small" id="copied"></span>
+        </div>
+        <textarea id="out" readonly></textarea>
+      </div>
+    </details>
+    <script>
+      // Replace PAGE with the decisions for this round. Leave the rest of the file as it is.
+      //
+      // PAGE.id      a short slug, unique to this round; saved choices are stored under it
+      // PAGE.intro   one or two sentences telling the reader what to do
+      // PAGE.groups  [{ title, note, open, items }]; put settled or already-done items last
+      // item         { id, label, what, why, options, pick, by, field, done }
+      //   label    what is being decided, a few words
+      //   what     one plain sentence describing the thing
+      //   why      the reason for the pick, with its cost or tradeoff
+      //   options  the answers on offer, 2 or more; the reader can also type another
+      //   pick     the option selected to begin with
+      //   by       "you" when the reader already stated this pick; otherwise leave out
+      //   field    optional extra text answer: { name, value, placeholder }
+      //   done     true when the item is already carried out and is shown for confirmation
+      const PAGE = {
+        id: "example-round",
+        intro:
+          "Each row shows my recommendation, already selected. Change what you disagree with, tick Discuss where you want to talk it through, then copy the decisions at the bottom and paste them into the thread.",
+        groups: [
+          {
+            title: "Example group",
+            note: "replace this data",
+            open: true,
+            items: [
+              {
+                id: "example-name",
+                label: "Name for the new command",
+                what: "The command that follows a merged change until it is live.",
+                why: "It names what happens after the merge, which no other command owns.",
+                options: ["rollout", "ship", "release"],
+                pick: "rollout",
+              },
+              {
+                id: "example-place",
+                label: "Where the checklist lives",
+                what: "Seven checks to run before reporting a performance number.",
+                why: "A reference file costs nothing until an agent needs it.",
+                options: ["Own skill", "Reference file", "Leave out"],
+                pick: "Reference file",
+                field: {
+                  name: "in",
+                  value: "verifying-claims",
+                  placeholder: "which skill",
+                },
+              },
+            ],
+          },
+        ],
+      };
+
+      const KEY = "decision-page:" + PAGE.id;
+      let state = {};
+      try {
+        state = JSON.parse(localStorage.getItem(KEY) || "{}") || {};
+      } catch (e) {
+        state = {};
+      }
+      const save = () => {
+        try {
+          localStorage.setItem(KEY, JSON.stringify(state));
+        } catch (e) {}
+      };
+      const esc = (s) =>
+        String(s ?? "").replace(
+          /[&<>"]/g,
+          (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c],
+        );
+      const items = PAGE.groups.flatMap((g) => g.items);
+      const get = (it, k) => {
+        const s = state[it.id] || {};
+        if (s[k] !== undefined) return s[k];
+        if (k === "choice") return it.pick;
+        if (k === "field") return it.field ? it.field.value || "" : "";
+        return k === "discuss" ? false : "";
+      };
+      const changed = (it) =>
+        Boolean(
+          get(it, "choice") !== it.pick ||
+          (it.field && get(it, "field") !== (it.field.value || "")),
+        );
+      const root = document.getElementById("root");
+
+      function itemHtml(it) {
+        const choice = get(it, "choice");
+        const custom = it.options.includes(choice) ? "" : choice;
+        const who = it.by === "you" ? "your pick" : "my pick";
+        let h = `<div class="item" data-id="${esc(it.id)}"><div class="head"><span class="label">${esc(it.label)}</span>`;
+        h += `<span class="pill">${who}: ${esc(it.pick)}${it.field && it.field.value ? ", " + esc(it.field.value) : ""}</span>${it.done ? '<span class="pill">already done</span>' : ""}</div>`;
+        h += `<div>${esc(it.what)}</div><div class="dim">${esc(it.why)}</div><div class="opts">`;
+        for (const o of it.options)
+          h += `<label class="${o === choice ? "on" : ""}"><input type="radio" name="${esc(it.id)}" value="${esc(o)}" ${o === choice ? "checked" : ""}>${esc(o)}</label>`;
+        h += `</div><div class="ctl"><input type="text" data-k="custom" placeholder="another answer" value="${esc(custom)}">`;
+        h += it.field
+          ? `<input type="text" data-k="field" placeholder="${esc(it.field.placeholder || it.field.name || "")}" value="${esc(get(it, "field"))}">`
+          : "<span></span>";
+        h += `<label class="chk"><input type="checkbox" data-k="discuss" ${get(it, "discuss") ? "checked" : ""}>Discuss</label>`;
+        h += `<input type="text" class="wide" data-k="note" placeholder="note" value="${esc(get(it, "note"))}"></div></div>`;
+        return h;
+      }
+      function line(it) {
+        const f = it.field ? get(it, "field") : "";
+        const n = get(it, "note");
+        return `- ${it.label}: ${get(it, "choice")}${f ? " (" + (it.field.name || "detail") + ": " + f + ")" : ""}${n ? "  note: " + n : ""}`;
+      }
+      function exportText() {
+        const out = [];
+        const section = (title, list, fmt) => {
+          out.push(title);
+          if (!list.length) out.push("- none");
+          list.forEach((it) => out.push(fmt(it)));
+          out.push("");
+        };
+        section(
+          "CHANGED FROM RECOMMENDATION",
+          items.filter(changed),
+          (it) => `${line(it)}  (was: ${it.pick})`,
+        );
+        section(
+          "DISCUSS",
+          items.filter((it) => get(it, "discuss")),
+          line,
+        );
+        section(
+          "NOTES",
+          items.filter(
+            (it) => get(it, "note") && !changed(it) && !get(it, "discuss"),
+          ),
+          line,
+        );
+        section(
+          "ACCEPTED AS RECOMMENDED",
+          items.filter((it) => !changed(it) && !it.done),
+          line,
+        );
+        return out.join("\n").trim();
+      }
+      function refresh() {
+        const n = (f) => items.filter(f).length;
+        document.getElementById("bar").innerHTML =
+          `<span class="stat">${items.length} decisions</span><span class="stat">${n(changed)} changed</span><span class="stat">${n((it) => get(it, "discuss"))} to discuss</span>`;
+        document.getElementById("out").value = exportText();
+        for (const el of root.querySelectorAll(".item")) {
+          const it = items.find((x) => x.id === el.dataset.id);
+          el.classList.toggle("changed", changed(it));
+          el.classList.toggle("flag", !!get(it, "discuss"));
+        }
+      }
+      function render() {
+        document.getElementById("intro").textContent = PAGE.intro || "";
+        root.innerHTML = PAGE.groups
+          .map(
+            (g) =>
+              `<details ${g.open ? "open" : ""}><summary><h2>${esc(g.title)}</h2><span class="dim small">${g.items.length}${g.note ? " · " + esc(g.note) : ""}</span></summary><div class="body">${g.items.map(itemHtml).join("")}</div></details>`,
+          )
+          .join("");
+        refresh();
+      }
+      const put = (id, k, v) => {
+        (state[id] = state[id] || {})[k] = v;
+        save();
+        refresh();
+      };
+      function onEdit(e) {
+        const host = e.target.closest(".item");
+        if (!host) return;
+        const t = e.target;
+        const id = host.dataset.id;
+        if (t.type === "radio") {
+          put(id, "choice", t.value);
+          host.querySelector('[data-k="custom"]').value = "";
+        } else if (t.dataset.k === "custom") {
+          const it = items.find((x) => x.id === id);
+          put(id, "choice", t.value.trim() || it.pick);
+        } else if (t.type === "checkbox") put(id, "discuss", t.checked);
+        else if (t.dataset.k) put(id, t.dataset.k, t.value);
+        host.querySelectorAll(".opts label").forEach((l) =>
+          l.classList.toggle(
+            "on",
+            l.querySelector("input").value ===
+              get(
+                items.find((x) => x.id === id),
+                "choice",
+              ),
+          ),
+        );
+      }
+      root.addEventListener("change", onEdit);
+      root.addEventListener("input", (e) => {
+        if (e.target.type === "text") onEdit(e);
+      });
+      document.getElementById("copy").addEventListener("click", async () => {
+        const out = document.getElementById("out");
+        const msg = document.getElementById("copied");
+        try {
+          await navigator.clipboard.writeText(out.value);
+          msg.textContent = "Copied.";
+        } catch (e) {
+          out.focus();
+          out.select();
+          msg.textContent = "Select the text and copy it.";
+        }
+      });
+      document.getElementById("reset").addEventListener("click", () => {
+        state = {};
+        save();
+        render();
+      });
+      render();
+    </script>
+  </body>
+</html>

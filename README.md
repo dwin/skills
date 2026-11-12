@@ -42,13 +42,17 @@ User-invoked entry points:
 
 Model-invoked skills:
 
-- `code-review`, `babysit-pr`, and `file-pr` cover review and pull request
+- `code-review`, `babysit`, and `file-pr` cover review and pull request
   delivery.
 - `diagnosing-bugs`, `tdd`, and `prototype` provide evidence-driven ways to
   investigate and build.
 - `codebase-design`, `domain-modeling`, and `engineering-principles` guide
   design and implementation.
 - `research` investigates questions against primary sources.
+- `rollout` follows a merged change until it is applied, live, and observed.
+- `swarm` coordinates work done by other agents: it briefs workers, tracks
+  lanes in a ledger, verifies their reports, and adapts to the host's tools
+  (T3 Code, Claude Code, Codex, Cursor).
 - `managing-workspaces` owns a task's workspace from isolation through storage
   and cleanup, and loads `rift` for Rift commands.
 - `rift` installs Rift when needed and isolates tasks in snapshot workspaces.
@@ -176,6 +180,7 @@ original `ask-matt` and `setup-matt-pocock-skills` entry points are named
 is MIT licensed; see [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) for its license text.
 
 The Behavior axis of `code-review` is adapted from the `interrogate` skill in
-Lauren Tan's [pstack](https://github.com/cursor/plugins/tree/main/pstack). The
+Lauren Tan's [pstack](https://github.com/cursor/plugins/tree/main/pstack), and
+`swarm`, `rollout`, and several other skills adapt ideas from it. The
 upstream project is MIT licensed; see
 [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) for its license text.

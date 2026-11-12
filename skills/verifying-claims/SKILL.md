@@ -28,6 +28,14 @@ and they never collapse into each other:
   command exists. Report it as unverified and continue. Do not substitute an
   inference for the observation you could not make.
 
+Observe the thing itself. A file's modification time, a cached page, a
+derived status, and "it compiles" are proxies: read the actual value, or run
+the feature. When an observation contradicts what you expected, check how you
+observed it before concluding the system is wrong.
+
+When a check will run again, after your next change or by a reviewer, write
+it as a script and keep the script with its output.
+
 Reporting a conclusion as observed when the command never ran is the failure
 this skill exists to prevent. An unverified claim costs the user a moment. A
 fabricated observation costs them the decision they made on top of it.
@@ -75,6 +83,12 @@ nothing leaves the old code in place: confirm the change landed, then run.
 
 When a prior observation and a current one disagree, the current one wins and
 the disagreement is itself worth reporting.
+
+## Measure before reporting a number
+
+A speedup, a regression, or a "no difference" is a claim. Before reporting a
+performance number or choosing between options on one, apply
+[references/measurements.md](references/measurements.md).
 
 ## Report
 
