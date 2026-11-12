@@ -72,15 +72,24 @@ Replace each of these with `<REDACTED>`:
   `+`, `/`, `=`, `_`, `-` characters that holds both letters and digits,
   such as a hex digest, a base64 blob, or the path of a webhook URL.
 
-The patterns apply to text taken from a session, never to what the script
-itself adds: a digest's field names, and the `key` it assigns, are not
-session text. A field named `key` inside session text is still redacted.
+The patterns apply to **session text**: every string the script took from a
+session. What the script adds itself is not session text: a digest's field
+names, the `key` it assigns, and the counts it computes. A field named `key`
+inside session text is still redacted.
 
 Then check the output. Run the patterns again over every file that will go
 to a model: `digests.jsonl`, the redacted copies of a deep run, and the
-slices `recall` cuts. Parse each file and test the string values that came
-from a session, so the check does not trip on the script's own field names
-and keys. A value it finds that is not already `<REDACTED>` is a bug in the
+slices `recall` cuts. Parse each file, and give the check what the redaction
+saw:
+
+- every string of session text, including one used as a member name, such
+  as the tool and command names that `tools` and `commands` count by;
+- a name and a value that came from a session together, tested as a pair,
+  so the value under a name such as `api_key` must be `<REDACTED>`, however
+  short it is;
+- nothing the script added: its field names, its ids, and its counts.
+
+A string the check finds that is not already `<REDACTED>` is a bug in the
 script. Fix it and run the extraction again. Nothing goes to a model before
 the check passes. Check also that every `key` in `digests.jsonl` is in
 `index.tsv`.
