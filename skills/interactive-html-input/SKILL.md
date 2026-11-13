@@ -1,6 +1,6 @@
 ---
 name: interactive-html-input
-description: Preserve user answers in generated interactive HTML. Use when building or fixing HTML forms, decision reviews, or surveys that collect choices or notes, or recovering input from a live view.
+description: Collect choices and notes in long browser questionnaires with a local durable runner, or protect and recover answers in generated interactive HTML forms, decision reviews, and surveys.
 ---
 
 # Interactive HTML Input
@@ -8,6 +8,33 @@ description: Preserve user answers in generated interactive HTML. Use when build
 Keep the requested interactive experience while protecting the user's work.
 Static charts, filters, navigation, and disposable demo state do not need a
 persistence subsystem. Choices and notes the user expects to keep do.
+
+## Long questionnaires: prefer the local runner
+
+When a local Python process and a regular or T3 browser are available, use the
+bundled [questionnaire runner](references/local-runner.md) for substantial
+questionnaires. It uses Python 3 standard library, SQLite, and vanilla browser
+controls; no package install or remote service. Write a declarative form with
+stable IDs, choose an explicit task-owned state path, launch the runner, and
+open its reported loopback URL. Keep its process available while the user works.
+Choices and notes commit to disk; CLI export works after the server or browser
+stops. Verify recovery with synthetic input before collecting real answers.
+
+In T3, open the actual browser pane with `preview_open` using
+`target: {kind: "environment-port", port: <reported port>, path: "/#token=<reported token>"}`.
+Preserve the reported loopback origin. Some T3 versions rewrite that target to
+`localhost`, which this runner rejects. On a local desktop host, retry with
+`preview_open` and `url: <exact reported 127.0.0.1 URL>`; verify it loads and saves.
+If the host proxies to another origin or cannot reach that address, report the
+limitation and open the exact URL in a browser on the machine running the helper.
+Do not loosen Origin checks, CORS, or sandbox permissions. `html_render` is
+not a verified persistence/network host; inline rendering is optional and must
+be tested separately. The runner intentionally rejects embedding in frames.
+
+For a few questions, or when a local runner/browser is unavailable, use native
+questions or chat and record submitted answers through a verified durable write.
+Unsubmitted native-question drafts have no assumed recovery guarantee. Keep
+long-form browser collection as the preferred experience when available.
 
 ## Before collecting answers
 

@@ -5,9 +5,10 @@
   "description": "Validation toolchain for the dwin/skills marketplace",
   "scripts": {
     "audit": "npm audit --audit-level=high",
-    "check": "npm run audit && npm run lint && npm run test:codex-marketplace",
+    "check": "npm run audit && npm run lint && npm run test:questionnaire && npm run test:codex-marketplace",
     "lint": "./scripts/validate.sh",
-    "test:codex-marketplace": "./scripts/smoke-test-codex.sh"
+    "test:codex-marketplace": "./scripts/smoke-test-codex.sh",
+    "test:questionnaire": "python3 -m unittest discover -s skills/interactive-html-input/tests -v"
   },
   "devDependencies": {
     "@anthropic-ai/claude-code": "2.1.311",
