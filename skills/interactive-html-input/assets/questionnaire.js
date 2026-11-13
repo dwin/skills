@@ -206,6 +206,7 @@ async function start() {
     const card = node("article", undefined, el("questions"));
     d.card = card;
     d.heading = node("h2", `${index + 1}. ${q.title}`, card);
+    d.heading.id = "question-" + q.id;
     d.heading.tabIndex = -1;
     node("p", q.description || "", card);
     for (const link of q.links || []) {
@@ -229,7 +230,9 @@ async function start() {
       anchor.rel = "noopener noreferrer";
     }
     const field = node("fieldset", undefined, card);
-    node("legend", "Your answer", field);
+    const legend = node("legend", "Your answer", field);
+    legend.id = "answer-label-" + q.id;
+    field.setAttribute("aria-labelledby", d.heading.id + " " + legend.id);
     if (q.type === "choice") {
       d.radios = [];
       for (const option of [{ value: "", label: "Undecided" }, ...q.options]) {
@@ -249,7 +252,9 @@ async function start() {
       }
     } else {
       const label = node("label", "Answer (empty means undecided)", field);
+      label.id = "text-label-" + q.id;
       d.input = node("textarea", undefined, label);
+      d.input.setAttribute("aria-labelledby", label.id + " " + d.heading.id);
       d.input.rows = 3;
       d.input.maxLength = 20000;
       d.controls.push(d.input);
@@ -259,7 +264,9 @@ async function start() {
       });
     }
     const label = node("label", "Notes", card);
+    label.id = "notes-label-" + q.id;
     d.notesInput = node("textarea", undefined, label);
+    d.notesInput.setAttribute("aria-labelledby", label.id + " " + d.heading.id);
     d.notesInput.rows = 3;
     d.notesInput.maxLength = 20000;
     d.controls.push(d.notesInput);

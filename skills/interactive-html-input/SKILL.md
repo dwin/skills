@@ -17,8 +17,10 @@ questionnaires. It uses Python 3 standard library, SQLite, and vanilla browser
 controls; no package install or remote service. Write a declarative form with
 stable IDs, choose an explicit task-owned state path, launch the runner, and
 open its reported loopback URL. Keep its process available while the user works.
-Choices and notes commit to disk; CLI export works after the server or browser
-stops. Verify recovery with synthetic input before collecting real answers.
+Choices and notes commit to disk; CLI export works after normal shutdown. A crash
+during a write can require restarting the runner for SQLite journal recovery
+before read-only export; follow the reference's recovery steps. Verify recovery
+with synthetic input before collecting real answers.
 
 In T3, open the actual browser pane with `preview_open` using
 `target: {kind: "environment-port", port: <reported port>, path: "/#token=<reported token>"}`.

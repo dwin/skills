@@ -33,7 +33,7 @@ form and database. After a crash, restart with the same files; opening or render
 does not write new answer timestamps. Keep state on a local filesystem with
 SQLite locking/durability support, not a network share or synced folder.
 
-To read committed values even after the browser or server dies:
+To read committed values with the browser or server stopped:
 
 ```bash
 python3 "$SKILL_DIR/scripts/questionnaire.py" export \
@@ -43,7 +43,16 @@ python3 "$SKILL_DIR/scripts/questionnaire.py" export \
 ```
 
 Omit `--output` for stdout. Export opens the database read-only and refuses to
-overwrite an existing output file. Browser export shows selectable committed
+overwrite an existing output file. A crash during an unfinished write may leave
+a hot rollback journal. Read-only export cannot perform SQLite's recovery and
+will fail with recovery instructions. With all runners using that state stopped,
+preserve a copy of the database and its adjacent `-journal` file together. Never
+delete the journal or copy only the database. Restart `serve` with the original
+form/state so SQLite rolls back the interrupted transaction, stop normally, then
+retry export. Previously acknowledged answers survive this recovery. If startup
+fails, preserve both files and investigate rather than resetting the state.
+
+Browser export shows selectable committed
 JSON and offers a download request; verify the actual downloaded file in the
 delivery host. Neither export includes unsaved drafts. On a failed write, the
 recovery panel shows all pending drafts as selectable JSON, explicitly marked

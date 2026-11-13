@@ -125,6 +125,38 @@ class QuestionnaireTests(unittest.TestCase):
         status, _, _ = self.save("m1", 2, "defer")
         self.assertEqual(status, 400)  # Mutation ID cannot acquire a new meaning.
 
+    def test_hot_journal_export_explains_recovery_and_restart_preserves_ack(self):
+        self.assertEqual(self.save(notes="acknowledged before interrupted write")[0], 200)
+        before = self.export()
+        self.stop()
+        crash = subprocess.run([sys.executable, "-c", """
+import os, sqlite3, sys
+db = sqlite3.connect(sys.argv[1])
+db.execute('PRAGMA cache_size=1')
+db.execute('BEGIN IMMEDIATE')
+db.execute("UPDATE answers SET notes='uncommitted overwrite'")
+for i in range(64):
+    db.execute('INSERT INTO mutations VALUES (?, ?, ?)', ('crash-'+str(i), 'x'*16384, '{}'))
+os._exit(0)
+""", str(self.state)], capture_output=True, timeout=10)
+        self.assertEqual(crash.returncode, 0, crash.stderr)
+        journal = Path(str(self.state) + "-journal")
+        self.assertTrue(journal.exists())
+        original = self.state.read_bytes()
+        original_journal = journal.read_bytes()
+        (self.work / "before-recovery.sqlite3").write_bytes(original)
+        (self.work / "before-recovery.sqlite3-journal").write_bytes(original_journal)
+        result = self.cli("export")
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("restart", result.stderr.lower())
+        self.assertIn("journal", result.stderr.lower())
+        self.assertEqual(self.state.read_bytes(), original)
+        self.assertEqual(journal.read_bytes(), original_journal)
+        self.start()  # Normal writable startup lets SQLite roll back the interrupted write.
+        self.assertEqual(self.export(), before)
+        self.stop()
+        self.assertEqual(self.export(), before)
+
     def test_latest_edit_and_export(self):
         for revision in range(8):
             status, latest, _ = self.save("edit-" + str(revision), revision, "defer", "draft " + str(revision))

@@ -335,6 +335,12 @@ def main():
             store.close()
     except (OSError, ValueError, sqlite3.Error) as exc:
         print("questionnaire: " + str(exc), file=sys.stderr)
+        if (args.command == "export" and isinstance(exc, sqlite3.Error)
+                and Path(str(Path(args.state).resolve()) + "-journal").exists()):
+            print("A rollback journal is present. If the runner crashed, preserve the database and "
+                  "its -journal file together while stopped, restart serve with the same form/state "
+                  "to let SQLite recover, stop it normally, then retry export. Do not delete the journal.",
+                  file=sys.stderr)
         return 1
     return 0
 
