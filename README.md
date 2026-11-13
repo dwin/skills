@@ -74,6 +74,9 @@ Model-invoked skills:
 - `technical-writing` writes docs, PR descriptions, design notes, and messages
   that read right the first time, and `unslop` removes the marks of
   machine-written prose.
+- `visual-explainer` compresses multi-option comparisons, request or auth flows,
+  blast-radius maps, and rollout plans into interactive visuals on the host's
+  native surface (T3 Code, Cursor, Claude, ChatGPT, Codex, and Notion).
 - `whats-next` matches a task to the skill, flow, or playbook that fits it.
   Its playbooks cover formal verification, visual parity, and forensics on a
   live process or a captured artifact.

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Visual Explainer"
+  short_description: "Render interactive architecture, tradeoff, and blast-radius visuals across hosts"
+  default_prompt: "Use $visual-explainer to turn this comparison or system flow into an interactive visual."

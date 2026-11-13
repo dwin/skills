@@ -135,6 +135,7 @@ Off the main flow entirely.
 - **`blast-radius`** — before a change ships, find what it can break outside its diff, and prove the fact its safety rests on by running real code.
 - **`technical-writing`** — write docs, READMEs, design notes, PR descriptions, and messages that a tired engineer understands on the first read.
 - **`unslop`** — remove the marks of machine-written prose from text people will read, keeping every fact and the author's voice.
+- **`visual-explainer`** — render multi-option comparisons, multi-gate flows, permission or blast-radius maps, and rollout plans as interactive visuals on the host's native surface.
 
 ## Precondition
 
