@@ -50,7 +50,9 @@
 #              whatever this column says.
 #   WORKTREE   The path. A backslash, tab, carriage return, or line break in
 #              it is written as \\, \t, \r, or \n, and any other control
-#              character as \x or \u00 and two hex digits, so each row is
+#              character as \x or \u00 and two hex digits, and in a path
+#              that is not valid UTF-8 every byte above 0x7f as \x and two
+#              hex digits, so each row is
 #              one line, no two paths look alike, and nothing in a path can
 #              redraw the terminal.
 set -uo pipefail
@@ -119,8 +121,17 @@ for ctl_code in 128 129 130 131 132 133 134 135 136 137 138 139 140 141 142 \
   ctl_chars+=("$(printf "\\302\\$(printf '%03o' "$ctl_code")")")
   ctl_names+=("$(printf 'u00%02x' "$ctl_code")")
 done
+# Every byte from 0x80 to 0xff, for text that is not valid UTF-8. There a
+# lone byte such as 0x9b is a control character to a terminal in 8-bit mode.
+high_bytes=()
+high_names=()
+for ctl_code in $(seq 128 255); do
+  # shellcheck disable=SC2059  # the format is the octal escape itself
+  high_bytes+=("$(printf "\\$(printf '%03o' "$ctl_code")")")
+  high_names+=("$(printf 'x%02x' "$ctl_code")")
+done
 show_path() {
-  local text="$1" bs tab cr nl i
+  local text="$1" bs tab cr nl i round LC_ALL=C
   bs="\\"
   tab="$(printf '\t')"
   cr="$(printf '\r')"
@@ -132,6 +143,17 @@ show_path() {
   text=${text//"$tab"/"${bs}t"}
   text=${text//"$cr"/"${bs}r"}
   text=${text//"$nl"/"${bs}n"}
+  # Text that is not valid UTF-8, or that cannot be checked, has every byte
+  # above 0x7f escaped. The check is a round trip through UTF-16: macOS's
+  # iconv can report success for malformed UTF-8, but it cannot carry it
+  # back unchanged. The x keeps a trailing newline, as elsewhere.
+  round="$(printf '%s' "$text" | iconv -f UTF-8 -t UTF-16LE 2>/dev/null |
+    iconv -f UTF-16LE -t UTF-8 2>/dev/null && printf x)" || round=""
+  if [ "$round" != "${text}x" ]; then
+    for i in "${!high_bytes[@]}"; do
+      text=${text//"${high_bytes[$i]}"/"$bs${high_names[$i]}"}
+    done
+  fi
   for i in "${!ctl_chars[@]}"; do
     text=${text//"${ctl_chars[$i]}"/"$bs${ctl_names[$i]}"}
   done
