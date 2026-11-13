@@ -84,6 +84,8 @@ Not feature work — upkeep.
 
 - **`refactor`** — restructures code against pinned behaviour. Asked what is worth refactoring, it surveys the codebase to keep it good for agents to operate in, and surfaces **deepening opportunities**; picking one _generates an idea_ you can take into the main flow at `grill-with-docs`. It's the survey that finds the candidates; **`design`** (below) is the bench you design the chosen one on.
 - **`retro`** — after a session that went badly or slowly, review it for fixes to the agent's **environment**: navigation pointers, automated checks, reviewer rules, steering-file bloat, tool cost, and missing information access. Prefer a deterministic check over a written rule.
+- **`lookback`** — `retro` across many sessions: find the prompts the user repeats, the workflows they drive by hand, and the corrections they keep making, and turn each into a change to a skill, an instruction, a check, or a scheduled automation. Session content stays private.
+- **`verifier`** — give a project its own skill for proving changes by driving the real app the way a user does, with a feature map; run it again later to bring that skill back in line with the code.
 
 ## Vocabulary underneath
 
@@ -118,6 +120,10 @@ Off the main flow entirely.
 - **`wizard`** — for the steps only a **human** can take: provisioning infrastructure, setting up credentials or CI secrets, clicking through an unfamiliar third-party dashboard, running a one-off migration or cutover. It generates an interactive bash script that opens each URL, captures each value, and writes it into `.env` and GitHub secrets — so the procedure stops being something you re-explain to an agent every time. Model-invoked, so the agent reaches for it the moment it hits a wall only you can pass. If the agent could just do it itself, it should; this is for where a human is genuinely in the loop.
 - **`wait-what`** — the corrective for a message that didn't land. Use it mid-conversation, inside any other skill, and the agent re-pitches what it just said with the context you were missing, in plain English, using the `CONTEXT.md` vocabulary. It works after the fact; `grill-with-docs` is the upfront cure, because a shared language agreed early is what stops the jargon arriving at all.
 - **`explain`** — explain a change, a subsystem, or a concept in one sitting, or learn a topic over multiple sessions, using the current directory as a stateful workspace.
+- **`how`** — map how a subsystem works from its code, for an engineer about to change it: the parts, the flow, where things live, and the traps. Also answers where new code should live.
+- **`recall`** — before resuming work, rebuild what earlier sessions said, decided, and left open on it, checked against the current state of its pull requests and branches.
+- **`arena`** — have several agents attempt one task, pick the strongest attempt as the base, and graft the best parts of the others into it. Use when one attempt would lock in the wrong shape.
+- **`sharpen`** — before sending a prompt, rewrite it into a deeper version of the same task: the expert's method, the raw material, and an outside check, with the user's choices left open.
 - **`writing-for-agents`** — reference for writing documents agents consume: skills, AGENTS.md, pointed-at docs.
 - **`swarm`** — coordinate work done by other agents: size the split, brief each worker, keep a ledger, verify what they report, and stay reachable until every lane is done.
 - **`rollout`** — after a merge, follow the change until it is applied, live, and observed.

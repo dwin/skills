@@ -72,8 +72,13 @@ playbooks. `blast-radius`, `why`, `unslop`, and `technical-writing` adapt
 pstack's skills of the same names, including the references of `why`.
 `catchup` adapts its `ketchup` skill. `figure-it-out` adapts its
 `figure-it-out` skill and its `autonomous-run` playbook, and the work log
-format in `figure-it-out` adapts its `show-me-your-work` skill. The upstream
-pstack project is provided under the following license:
+format in `figure-it-out` adapts its `show-me-your-work` skill. `how`,
+`recall`, `arena`, and `sharpen` adapt its skills of the same names, including
+the references of `how`. `verifier` adapts its `create-verification-skill`
+and `maintain-verification-skill` skills, including the feature map example.
+`lookback` adapts its `automate-me` skill. The worktree audit script in
+`managing-workspaces` adapts the `worktree-audit.sh` script of its
+`poteto-mode` skill. The upstream pstack project is provided under the following license:
 
 MIT License
 

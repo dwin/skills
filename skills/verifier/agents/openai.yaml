@@ -1,0 +1,5 @@
+interface:
+  display_name: "Verifier"
+  short_description: "Create or maintain a project skill that proves changes by driving the real app."
+policy:
+  allow_implicit_invocation: false

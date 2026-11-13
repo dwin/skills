@@ -1,0 +1,5 @@
+interface:
+  display_name: "Lookback"
+  short_description: "Find patterns across many past sessions and turn them into changes."
+policy:
+  allow_implicit_invocation: false

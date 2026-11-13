@@ -1,0 +1,5 @@
+schema_version: "1.1"
+name: verify-skill-for-a-cli
+description: The user asks for a verification skill for a small command-line app, and wants the plan first.
+context:
+  scaffold_script: scaffold.sh

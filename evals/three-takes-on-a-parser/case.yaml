@@ -1,0 +1,5 @@
+schema_version: "1.1"
+name: three-takes-on-a-parser
+description: The user wants several attempts at a small parser merged into one, and asks for the setup first.
+context:
+  scaffold_script: scaffold.sh

@@ -86,14 +86,21 @@ When the user asks to reclaim space or clear out old workspaces, audit first.
 Build the list from the tools' own listings, such as `git worktree list`,
 because paths recalled from memory miss workspaces. For each one, record its
 size, age, branch, whether that branch is merged, its PR state, and its
-tracked and untracked changes. Then sort the rows: merged, clean, and used by
+tracked and untracked changes. For Git worktrees,
+[`scripts/worktree-audit.sh`](scripts/worktree-audit.sh) `[-b <base>] [repo]`
+prints these columns for every worktree, plus unpushed commits, and removes
+nothing; its `--help` explains each column. It writes a control character in a path as an escape such as `\t`, `\n`,
+or `\x1b`: for such a row, take the real path from
+`git worktree list --porcelain -z` before acting on it. Then sort the rows: merged, clean, and used by
 no session may go; uncommitted tracked changes wait for the user's decision; a
-workspace another session is using stays. Show the table with the proposed
+workspace another session is using stays, and so does a locked worktree. Show the table with the proposed
 action for each row before removing anything.
 
 Before removing anything, confirm all three:
 
-- The tree is clean: `git status --porcelain` prints nothing. Discarding
+- The tree is clean: `git status --porcelain --untracked-files=all --ignore-submodules=none` prints
+  nothing, and so does `git ls-files -v | LC_ALL=C grep '^[a-zS]'`, which lists the
+  files the index hides from status. Discarding
   uncommitted files needs the user's explicit authorization. Check ignored
   files with `git status --ignored`, move anything worth keeping out first,
   and ask before removing evidence or anything whose disposability is unclear.

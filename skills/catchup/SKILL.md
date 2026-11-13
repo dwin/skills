@@ -14,6 +14,9 @@ Assume the user remembers their last message and nothing after it.
 Notifications, tool results, and reports from other agents are not their
 messages.
 
+When the user wants to pick up work from earlier sessions rather than this
+thread, tell them that typing `recall` rebuilds it across sessions.
+
 ## Gather
 
 Keep this turn read-only: change no code, start no job or application, and

@@ -1,0 +1,5 @@
+schema_version: "1.1"
+name: csv-export-pickup
+description: The user resumes a feature after several sessions, one of which shipped a fix that was reverted.
+context:
+  scaffold_script: scaffold.sh
