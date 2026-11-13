@@ -78,12 +78,16 @@ function edited(d) {
   d.generation++;
   refresh();
   clearTimeout(d.timer);
-  d.readyAt = Date.now() + 300;
-  d.timer = setTimeout(pump, 310);
+  d.ready = false;
+  d.timer = setTimeout(() => {
+    d.ready = true;
+    pump();
+  }, 300);
 }
 function choiceEdited(d) {
   edited(d);
-  d.readyAt = 0;
+  clearTimeout(d.timer);
+  d.ready = true;
   pump();
 }
 function pause(error) {
@@ -132,9 +136,7 @@ async function sendActive() {
 }
 function pump() {
   if (stopped || active) return;
-  const d = [...drafts.values()].find(
-    (d) => pending(d) && d.readyAt <= Date.now(),
-  );
+  const d = [...drafts.values()].find((d) => pending(d) && d.ready);
   if (!d) return;
   active = {
     draft: d,
@@ -170,7 +172,7 @@ function resumeConflict(keep) {
   active = null;
   conflict = null;
   stopped = false;
-  d.readyAt = 0;
+  d.ready = true;
   el("recovery").hidden = true;
   refresh();
   pump();
@@ -199,7 +201,7 @@ async function start() {
       notes: a.notes,
       generation: 0,
       savedGeneration: 0,
-      readyAt: 0,
+      ready: true,
       controls: [],
     };
     drafts.set(q.id, d);

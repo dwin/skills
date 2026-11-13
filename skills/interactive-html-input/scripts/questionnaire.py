@@ -216,7 +216,8 @@ class Server(ThreadingHTTPServer):
         self.store = store
         self.token = secrets.token_urlsafe(32)
         super().__init__(("127.0.0.1", port), Handler)
-        self.origin = "http://127.0.0.1:" + str(self.server_port)
+        # Browsers omit the default HTTP port in serialized Host/Origin values.
+        self.origin = "http://127.0.0.1" + ("" if self.server_port == 80 else ":" + str(self.server_port))
 
 
 class Handler(BaseHTTPRequestHandler):

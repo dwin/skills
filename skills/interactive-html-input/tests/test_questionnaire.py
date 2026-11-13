@@ -3,11 +3,13 @@ from contextlib import closing
 import json
 import os
 from pathlib import Path
+import runpy
 import signal
 import sqlite3
 import subprocess
 import sys
 import tempfile
+import threading
 import unittest
 from urllib.error import HTTPError
 from urllib.request import Request, urlopen
@@ -230,6 +232,41 @@ os._exit(0)
         self.assertEqual(headers["Referrer-Policy"], "no-referrer")
         self.assertNotIn("Access-Control-Allow-Origin", headers)
         self.assertIn("frame-ancestors 'none'", headers["Content-Security-Policy"])
+
+    def test_browser_default_port_headers(self):
+        self.stop()
+        module = runpy.run_path(str(SCRIPT))
+
+        class DefaultPortServer(module["Server"]):
+            def server_bind(self):
+                super().server_bind()
+                # Exercise HTTP default-port metadata/headers on a real ephemeral
+                # socket; CI must not require access to privileged or occupied :80.
+                self.server_port = 80
+
+        store = module["Store"](self.state, module["load_form"](self.form))
+        server = DefaultPortServer(store, 0)
+        thread = threading.Thread(target=server.serve_forever)
+        thread.start()
+        try:
+            self.origin = "http://127.0.0.1:" + str(server.server_address[1])
+            self.token = server.token
+            headers = {"Host": "127.0.0.1", "Origin": "http://127.0.0.1"}
+            self.assertEqual(self.request(headers=headers)[0], 200)
+            body = {"question_id": "sample-choice", "value": "investigate", "notes": "default-port save", "expected_revision": 0, "mutation_id": "default-port"}
+            self.assertEqual(self.request("/api/answer", body, headers)[0], 200)
+            self.assertEqual(self.export()["answers"][0]["notes"], "default-port save")
+            self.assertEqual(self.request(headers=dict(headers, Origin="http://127.0.0.1:81"))[0], 403)
+        finally:
+            server.shutdown()
+            thread.join(timeout=5)
+            server.server_close()
+            store.close()
+
+    def test_ui_saves_after_wall_clock_moves_backward(self):
+        result = subprocess.run(["node", str(ROOT / "tests" / "ui_clock_probe.cjs"), self.origin, self.token], capture_output=True, text=True, timeout=10)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertEqual(self.export()["answers"][0]["notes"], "Draft before clock correction")
 
     def test_bounded_validated_input(self):
         before = self.export()
