@@ -242,18 +242,34 @@ os._exit(0)
         self.assertEqual(self.request("/api/answer", base, {"Content-Type": "text/plain"})[0], 415)
         self.assertEqual(self.export(), before)
 
-    def test_form_validation_safe_links_and_identity(self):
+    def test_form_validation_rejects_unsafe_links(self):
         self.stop()
         original = self.form.read_text()
+        original_state = self.state.read_bytes()
+        self.assertEqual(self.cli("export").returncode, 0)  # Valid HTTPS link.
         for unsafe in ("javascript:alert(1)", "https://user:pass@example.com", "https://example.com/\nunsafe"):
-            form = json.loads(original)
-            form["questions"][0]["links"][0]["url"] = unsafe
-            self.form.write_text(json.dumps(form))
-            self.assertNotEqual(self.cli("export").returncode, 0)
-        form = json.loads(original)
+            with self.subTest(url=unsafe):
+                form = json.loads(original)
+                form["questions"][0]["links"][0]["url"] = unsafe
+                self.form.write_text(json.dumps(form))
+                result = self.cli("export")
+                self.assertEqual(result.returncode, 1)
+                self.assertEqual(result.stderr, "questionnaire: Links require absolute HTTP(S) URLs without credentials\n")
+                self.assertEqual(result.stdout, "")
+                self.assertEqual(self.state.read_bytes(), original_state)
+
+    def test_form_validation_rejects_duplicate_question_ids(self):
+        self.stop()
+        original_state = self.state.read_bytes()
+        self.assertEqual(self.cli("export").returncode, 0)  # Distinct stable IDs.
+        form = json.loads(self.form.read_text())
         form["questions"].append(form["questions"][0])
         self.form.write_text(json.dumps(form))
-        self.assertNotEqual(self.cli("export").returncode, 0)
+        result = self.cli("export")
+        self.assertEqual(result.returncode, 1)
+        self.assertEqual(result.stderr, "questionnaire: Duplicate question ID\n")
+        self.assertEqual(result.stdout, "")
+        self.assertEqual(self.state.read_bytes(), original_state)
 
     def test_export_does_not_overwrite(self):
         target = self.work / "backup.json"
