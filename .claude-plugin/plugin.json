@@ -40,6 +40,7 @@
     "./skills/handoff",
     "./skills/how",
     "./skills/implement",
+    "./skills/interactive-html-input",
     "./skills/lookback",
     "./skills/managing-workspaces",
     "./skills/prototype",

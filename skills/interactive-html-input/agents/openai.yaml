@@ -1,0 +1,3 @@
+interface:
+  display_name: "Interactive HTML Input"
+  short_description: "Preserve form answers and verify usable exports"

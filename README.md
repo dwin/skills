@@ -86,6 +86,8 @@ Model-invoked skills:
 - `rift` installs Rift when needed and isolates tasks in snapshot workspaces.
 - `rust-build` configures, diagnoses, and shares Rust compilation caches (sccache, shared target directories, container and CI reuse).
 - `wizard` turns manual procedures into resumable shell walkthroughs.
+- `interactive-html-input` preserves answers in generated HTML forms and
+  verifies saving, export fallbacks, and recovery in the delivery host.
 - `writing-for-agents` improves durable instructions written for agents.
 - `grilling` provides reusable interview discipline for agents and other
   skills.
