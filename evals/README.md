@@ -44,5 +44,6 @@ grades what the skill does rather than whether it loads.
 | `conversion-drop-summary` | Does `sharpen` deepen a prompt without doing the task?                     |
 | `verify-skill-for-a-cli`  | Does `verifier` plan with the app's real commands and a broken-change run? |
 | `what-should-i-automate`  | Does `lookback` ask for its scope before reading any session?              |
+| `four-options-one-choice` | Does `visual-explainer` load and compress a 4-option comparison cleanly?   |
 
 Cases built from real work stay out of this repository.

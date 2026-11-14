@@ -1,0 +1,4 @@
+interface:
+  display_name: "Visual Explainer"
+  short_description: "Render interactive visuals for flows, options, and maps"
+  default_prompt: "Use $visual-explainer to turn this comparison or system flow into an interactive visual."
