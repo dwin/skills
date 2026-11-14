@@ -51,9 +51,9 @@ Cursor provides two distinct visual surfaces. Pick by lifetime:
   with `Artifact` so it opens as a live, interactive `claude.ai` artifact
   (`Ctrl+]` reopens it, and subsequent publishes update it in place).
 - **Without `Artifact` (or when signed out):** Keep a compact fenced `mermaid`
-  diagram and Markdown table inline in the terminal reply, and write the
-  interactive `.html` file to `/tmp/<slug>.html` with its path when the user
-  asked for `viz` or an interactive simulator.
+  diagram and Markdown table inline in the terminal reply. When file-writing
+  tools are available and the user asked for `viz` or an interactive simulator,
+  also write the interactive `.html` file to `/tmp/<slug>.html` with its path.
 
 Support both `@media (prefers-color-scheme: dark)` and `:root[data-theme="dark"]`
 (`#fcfcfb` light surface, `#1a1a19` dark surface).
@@ -75,8 +75,9 @@ chat message to the direct recommendation and open questions.
   preview was retired in 2026).
 - **Codex CLI and desktop app (outside T3 Code):** Codex transcripts render
   Markdown, so lead with a concise Markdown matrix and fenced `mermaid` diagram
-  inline, and write a standalone `/tmp/<slug>.html` page linked by path when the
-  user requests `viz` or a stateful explorer.
+  inline, and when file-writing tools are available, write a standalone
+  `/tmp/<slug>.html` page linked by path if the user requests `viz` or a
+  stateful explorer.
 
 ## 6. Notion pages (`create_attachment` + `<embed>`)
 

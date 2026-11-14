@@ -26,8 +26,13 @@ or CI checks, and one-decision answers.
 
 ## 1. Pick the host surface
 
-Identify the host this session runs in and read the matching section in
-[references/surfaces.md](references/surfaces.md):
+Check what rendering or file-writing tools this session actually exposes before
+choosing a surface. In a read-only session with neither a host visual tool nor
+file-write access, deliver a compact Markdown comparison matrix and a fenced
+`mermaid` diagram inline without attempting unavailable writes.
+
+Otherwise, identify the host this session runs in and read the matching section
+in [references/surfaces.md](references/surfaces.md):
 
 | Host                                                     | Surface to render on                                                                                                                                                 |
 | -------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -71,8 +76,9 @@ Every visual must make its first paint useful before any click or hover.
 3. **Responsive and keyboard-accessible.** Compose for ~728px desktop width
    down to 360px mobile width so grids stack cleanly (`2` or `1` columns on
    narrow screens) and code badges wrap instead of clipping. Use `<button>`
-   with `aria-pressed` or `aria-selected`, and pair hover handlers with
-   `tabindex="0"` and `focus`/`blur`.
+   with `aria-pressed` for toggles, or `role="tab"` with `aria-selected` (and
+   arrow-key navigation) inside a `role="tablist"`, and pair hover handlers
+   with `tabindex="0"` and `focus`/`blur`.
 4. **Truthful data only.** Every role, file, metric, limit, and status comes
    from verified session evidence. Mark unverified items explicitly as open
    questions rather than inventing values.
