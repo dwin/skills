@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "form_id": "synthetic-review-v1",
+  "title": "Synthetic review",
+  "description": "Disposable example only. No external actions are performed.",
+  "questions": [
+    {
+      "id": "sample-choice",
+      "title": "Which direction do you prefer?",
+      "description": "Choose an option or leave undecided; notes can explain your reasoning.",
+      "type": "choice",
+      "links": [
+        { "label": "Python documentation", "url": "https://docs.python.org/3/" }
+      ],
+      "options": [
+        { "value": "investigate", "label": "Investigate further" },
+        { "value": "defer", "label": "Defer" }
+      ]
+    },
+    {
+      "id": "sample-text",
+      "title": "What context should we retain?",
+      "type": "text"
+    }
+  ]
+}

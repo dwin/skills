@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Local questionnaire</title>
+    <link rel="stylesheet" href="/style.css" />
+    <script src="/app.js" defer></script>
+  </head>
+  <body>
+    <header>
+      <h1 id="title">Local questionnaire</h1>
+      <p id="description"></p>
+      <p>
+        Answers save to disk. Keep the runner available while answering. Pending
+        drafts need this tab until saved.
+      </p>
+      <p id="status" role="status" aria-live="polite">Loading…</p>
+      <p id="progress"></p>
+      <nav aria-label="Question navigation">
+        <label>Search <input id="search" type="search" /></label>
+        <label
+          >Go to question
+          <select id="jump"></select
+        ></label>
+        <button id="next" type="button">Next unanswered</button>
+        <button id="export" type="button">Show committed JSON</button>
+      </nav>
+    </header>
+    <main id="questions"></main>
+    <section id="recovery" hidden aria-label="Save recovery">
+      <h2>Collection paused</h2>
+      <p id="error" role="alert"></p>
+      <pre id="conflict"></pre>
+      <p>
+        Your drafts stay visible. Copy the text below before closing or
+        reloading this tab. These drafts are not confirmed saved; the committed
+        JSON export is separate.
+      </p>
+      <label
+        >Unsaved drafts (JSON)<textarea
+          id="draft-json"
+          readonly
+          rows="5"
+        ></textarea>
+      </label>
+      <button id="retry" type="button">Retry same save</button>
+      <button id="keep" type="button" hidden>
+        Save my draft against this revision
+      </button>
+      <button id="accept" type="button" hidden>
+        Use committed answer, discard this draft
+      </button>
+    </section>
+    <section id="backup" hidden aria-label="Committed answer export">
+      <h2>Committed JSON backup</h2>
+      <p>
+        Only acknowledged database values appear here. Select and copy this text
+        if downloads are unavailable. A download request alone does not confirm
+        a saved file.
+      </p>
+      <label>JSON <textarea id="json" readonly rows="12"></textarea></label>
+      <button id="download" type="button">Request JSON download</button>
+      <p id="download-status" role="status"></p>
+    </section>
+  </body>
+</html>
