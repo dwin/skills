@@ -41,10 +41,12 @@ exhausted, report the blocker before launching the round.
 
 Launch three independent `delegate_task` calls in parallel, one per seat.
 Set `target.providerInstanceId`, `target.model`, and any selected effort
-field in `target.options`. Use the shared checkout for read-only reviews so
+field in `target.options`. For provider default, set `target.options` to `{}`
+to clear inherited effort. Use the shared checkout for read-only reviews so
 each child can see pending edits.
 Track each task and follow its returned `next` instruction. If a provider rejects the third seat as unavailable at dispatch,
-refresh capabilities and continue down the list for that seat only. For other failures,
+refresh capabilities, exclude the rejected provider/model pair, and resolve
+that seat again from the top of its priority list. For other failures,
 report the affected seat and keep the round marked incomplete.
 
 ## Native harnesses
