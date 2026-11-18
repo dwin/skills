@@ -66,7 +66,9 @@ Use these priorities from left to right:
 Fill up to three seats with distinct current models first. For open seats,
 consider the preceding generation of each listed family in the same order.
 Count aliases for the same model once. For example, Codex can select current
-Sol, current Astra, and the previous Sol. If seats remain, cycle through the selected models
+Sol, current Astra, and the previous Sol. If no preferred family is available,
+use the other-harness priority above. If the host offers no usable child model,
+report that blocker. If seats remain, cycle through the selected models
 in priority order until there are three independent reviewers. With one
 available model, run three fresh sessions using that model.
 
