@@ -1,0 +1,5 @@
+interface:
+  display_name: "Panel"
+  short_description: "Review one change with three independent model reviewers."
+policy:
+  allow_implicit_invocation: false
