@@ -44,8 +44,9 @@ Set `target.providerInstanceId`, `target.model`, and any selected effort
 field in `target.options`. For provider default, set `target.options` to `{}`
 to clear inherited effort. Use the shared checkout for read-only reviews so
 each child can see pending edits.
-Track each task and follow its returned `next` instruction. If a provider rejects the third seat as unavailable at dispatch,
-refresh capabilities, exclude the rejected provider/model pair, and resolve
+
+Track each task and follow its returned `next` instruction. If a provider
+rejects the third seat as unavailable at dispatch, refresh capabilities, exclude the rejected provider/model pair, and resolve
 that seat again from the top of its priority list. For other failures,
 report the affected seat and keep the round marked incomplete.
 
@@ -91,12 +92,15 @@ recommendations you accept or decline. Keep changes within the original scope.
 When edits are authorized, apply accepted fixes, rerun relevant checks, and
 start three fresh tasks with the updated snapshot, earlier findings and any
 unresolved objections. Count each full pass as one round. For `panel N`, stop
-when every reviewer reaches N in the same round. Otherwise stop when all three
-are satisfied. If further progress needs a user decision, report the blocker.
+when every reviewer reaches N in the same round. Otherwise stop when no
+reviewer reports a blocking finding. Stop early after three rounds, or when a
+round yields no fix you accept, and report the remaining gap. If further
+progress needs a user decision, report the blocker.
 For feedback only, return the findings after the requested review.
 
 Report the round count and a table with one row per reviewer seat and one
-column per round. Identify the actual model for each score, including repeats. Transcribe each score or write `no score` when omitted.
+column per round. Identify the actual model for each score, including repeats.
+Transcribe each score or write `no score` when omitted.
 A missing score cannot meet a numeric target. When maintaining an open PR
 within the user's authorization, update a single `## Panel review` section
 of its description with the same results, preserving the surrounding text.
