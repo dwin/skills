@@ -17,7 +17,8 @@ wrote the code has proven it, and the landing follows
 3. **Start one owner per pull request.** Each owner works in its own checkout
    and follows `autopilot` without `merge`, so it ends at a reviewed, green,
    ready pull request. Its kickoff gives the absolute path of `autopilot`'s
-   `SKILL.md`, because that skill loads only when typed. It also names the
+   `SKILL.md` on the owner's machine, because that skill loads only when
+   typed. An owner whose machine lacks it reports `BLOCKED`. It also names the
    pull request's base branch (the trunk, or its parent's branch in a stack),
    and says to push each finished unit to its feature branch while building,
    so a replacement owner can resume from the branch. From the first local

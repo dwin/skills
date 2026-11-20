@@ -24,8 +24,10 @@ branch in a stack.
    onto the trunk and land alone, after a fresh verdict there.
 3. **Check that each verdict still describes the code.** Rebasing a pull
    request gives it a new SHA even when its patch did not change. Compare
-   `git diff <base>...<head> | git patch-id --stable` at the verdict's SHAs
-   with the same command at the pull request's current base and head. A
+   `git diff <base>...<head> | git patch-id --verbatim` at the verdict's
+   SHAs with the same command at the pull request's current base and head.
+   `--verbatim` keeps whitespace, which can change behavior in Python, YAML,
+   or a Makefile. A
    verdict survives only when the patch is the same and the base gained
    nothing but the verified layers below it, which the verifier already ran
    beneath it. New base commits from anywhere else get a fresh verdict,
