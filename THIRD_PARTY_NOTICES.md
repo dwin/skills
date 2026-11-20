@@ -78,7 +78,10 @@ the references of `how`. `verifier` adapts its `create-verification-skill`
 and `maintain-verification-skill` skills, including the feature map example.
 `lookback` adapts its `automate-me` skill. The worktree audit script in
 `managing-workspaces` adapts the `worktree-audit.sh` script of its
-`poteto-mode` skill. The upstream pstack project is provided under the following license:
+`poteto-mode` skill. `nike-mode` adapts its `poteto-mode` skill, including
+the worker rules and its `perf-issue`, `hillclimb`, `shipping`,
+`autopilot-full`, and `autopilot-stack` playbooks. The upstream pstack
+project is provided under the following license:
 
 MIT License
 

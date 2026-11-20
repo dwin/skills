@@ -1,0 +1,68 @@
+# Shipping
+
+You own what lands. Verify each pull request on its own, land only the
+verified run from the bottom, and keep your hands off the stack while it
+lands. The user's word to land these pull requests is the merge approval.
+Nothing else is.
+
+The **trunk** is the branch the work lands on, such as `main`. A pull
+request's **base** is the branch it targets now: the trunk, or its parent's
+branch in a stack.
+
+1. **Get a verdict for each pull request.** One verifier per pull request,
+   started through `swarm`, runs the change the way a user would, verifying
+   the pull request's head against its base, and reports `PASS`, `PASS+NOTES`,
+   or `FAIL` with the base and head SHAs. Only an agent that did not write the
+   code gives a verdict. Green CI and an approving bot review are not
+   verdicts, because neither exercises the change the way a user would.
+2. **Find what can land.** A standalone pull request with `PASS` or
+   `PASS+NOTES` lands on its own. For a stack, walk up from the lowest
+   unmerged pull request and stop at the first one without `PASS` or
+   `PASS+NOTES`. The pull requests below it are the run, and the highest
+   pull request in the run is the ceiling. A verified pull request above an
+   unverified one waits. One that does not need the code below it can move
+   onto the trunk and land alone, after a fresh verdict there.
+3. **Check that each verdict still describes the code.** Rebasing a pull
+   request gives it a new SHA even when its patch did not change. Compare
+   `git diff <base>...<head> | git patch-id --verbatim` at the verdict's
+   SHAs with the same command at the pull request's current base and head.
+   `--verbatim` keeps whitespace, which can change behavior in Python, YAML,
+   or a Makefile. A
+   verdict survives only when the patch is the same and the base gained
+   nothing but the verified layers below it, which the verifier already ran
+   beneath it. New base commits from anywhere else get a fresh verdict,
+   because they can change code the patch calls. A patch that differs only in
+   tests, docs, or lint config keeps its verdict when those files are not what
+   the pull request delivers and the same checks pass on both heads. Any other
+   change gets a new verdict.
+4. **Land one at a time, from the bottom, and leave the stack alone.** The
+   retarget and branch update below are the only changes to a branch or a
+   base while the run lands, because a merge lands whatever its branch holds
+   at that moment.
+   - **Before each merge,** the pull request targets the trunk (in a native
+     stack, the bottom layer targets the trunk and each layer above targets
+     the one below it), its verdict holds by step 3, `babysit`'s Ready check
+     holds on its head, and the repository's conversation-resolution rules are
+     met.
+   - **Merge** with a guard on the head, such as
+     `gh pr merge <number> --squash --match-head-commit <sha>`, and read the
+     pull request back. It must show merged into the trunk. A queued merge or
+     enabled auto-merge is not a merge.
+   - **For a stack built by hand,** retarget the next pull request to the
+     trunk, move its patch onto the merge result, and push with
+     `--force-with-lease`. When step 3 voids its verdict, stop and get a new
+     one at step 1. Otherwise run the before-merge checks on the new head,
+     then merge it.
+   - **For a native GitHub stack,** follow the merge rules in `file-pr`'s
+     stack reference. Its stack-aware merge lands every layer below the one
+     you select, so select the ceiling only after the before-merge checks hold
+     for every layer in the run. Then sync the stack and read each pull
+     request back.
+   - `babysit` watches each pull request, watch only. When a merge stalls,
+     find out why before changing anything.
+5. **Stop at the ceiling.** Landing more takes new verdicts, which is a new
+   pass through step 1.
+
+Reply with what landed and the ceiling, each pull request's verdict and who
+gave it, any notes from `PASS+NOTES`, how you confirmed each merge, and what
+the next pull request needs.
