@@ -12,17 +12,17 @@ wrote the code has proven it, and the landing follows
    plan is not a go.
 2. **Size the program with `swarm`.** Its four questions decide what runs
    first and what runs in parallel. Pull requests that stand alone branch
-   from the base and run in parallel. Stack one on another only when it
+   from the trunk and run in parallel. Stack one on another only when it
    builds on that one's code. `file-pr` covers stacks.
-3. **Start one owner per pull request.** Each owner works in its own
-   checkout and follows `autopilot` without `merge`, so it ends at a reviewed,
-   green, ready pull request. Its kickoff gives the absolute path of
-   `autopilot`'s `SKILL.md`, because that skill loads only when typed. It
-   also names the base branch, or the parent branch for a stacked pull
-   request, and says to push each finished unit to its feature branch while
-   building, so a replacement owner can resume from the branch. From the
-   first local review on, `autopilot` decides when to push. Keep the
-   program's ledger and work log as `swarm` describes.
+3. **Start one owner per pull request.** Each owner works in its own checkout
+   and follows `autopilot` without `merge`, so it ends at a reviewed, green,
+   ready pull request. Its kickoff gives the absolute path of `autopilot`'s
+   `SKILL.md`, because that skill loads only when typed. It also names the
+   pull request's base branch (the trunk, or its parent's branch in a stack),
+   and says to push each finished unit to its feature branch while building,
+   so a replacement owner can resume from the branch. From the first local
+   review on, `autopilot` decides when to push. Keep the program's ledger and
+   work log as `swarm` describes.
 4. **Verify each pull request at its ready head.** Start one independent
    verifier per pull request, as step 1 of
    [the shipping playbook](shipping.md) describes. It reruns the checks,

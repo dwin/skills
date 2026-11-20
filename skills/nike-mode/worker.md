@@ -24,8 +24,9 @@ overrides one only when it says so explicitly.
   has in one line. A reviewer whose kickoff gives a rubric uses that rubric.
 - Never call a tool that shows a person a question. Make any choice you can
   undo, then say what you chose and why.
-- Stop and report `BLOCKED`, with the reason, to whoever started you for a
-  deploy, deleted data, a force-push to a shared branch, a merge your kickoff
+- Stop and report `BLOCKED`, with the reason, to whoever started you for any
+  write that cannot be undone (such as a deploy, deleted data, or a force-push
+  to a shared branch), a merge your kickoff
   did not authorize, a message your kickoff and its skill do not cover (such
   as one to a customer), or a safety, privacy, or approval gate the skill you
   follow reserves for the user (such as an Ask finding in `autopilot`).

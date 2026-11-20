@@ -42,8 +42,8 @@ untested changes, and never claim a win from reading code.
    - Measure before and after with the frozen harness, and run the tests.
    - Keep the change only when the tests pass and the metric improves past
      the noise, or when it simplifies the code and holds the number.
-     Otherwise revert all of it. A change that "might help" is not
-     kept.
+     Otherwise save the diff as a patch beside the work log, then revert
+     all of it. A change that "might help" is not kept.
    - Make one commit per kept change, staging only the files you changed.
      Log the row either way.
 6. **Push past the first plateau.** After several rejections in a row, change

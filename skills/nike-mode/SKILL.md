@@ -27,9 +27,9 @@ Each rule is a trigger and what it calls for.
   which gets only its task. The first line of its kickoff is
   `Read <path>/worker.md before anything else.`, with `<path>` the absolute
   path of this skill's folder, and the goal comes next. This mode loads only
-  when typed, so its rules reach a worker no other way. When the worker cannot read
-  that path, such as a worker on another machine, paste the rules from
-  `worker.md` into the kickoff in place of that line. When no routed skill
+  when typed, so its rules reach a worker no other way. When the worker
+  cannot read that path, such as a worker on another machine, paste the rules
+  from `worker.md` into the kickoff in place of that line. When no routed skill
   sets the brief, `swarm` writes the rest of the kickoff.
 - **Before a commit.** Delete code the task did not need and comments that
   narrate.
@@ -203,7 +203,7 @@ reachable from `figure-it-out` when the row gives none.
 | ----------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
 | A read-only question about how code works       | `how`, and `why` for the reason behind it                                                                                                     |
 | A bug                                           | `diagnosing-bugs`                                                                                                                             |
-| A measured slowness to fix once                 | [playbooks/perf-issue.md](playbooks/perf-issue.md)                                                                                            |
+| Slowness to measure and fix once                | [playbooks/perf-issue.md](playbooks/perf-issue.md)                                                                                            |
 | One metric to improve over many attempts        | [playbooks/hillclimb.md](playbooks/hillclimb.md)                                                                                              |
 | A cause to find in a live process or a capture  | [the forensics playbook](../whats-next/playbooks/forensics.md)                                                                                |
 | A feature                                       | `design` for the shape, `arena` when one attempt could lock in the wrong shape, `tdd` to build it, then `code-review`                         |
@@ -215,8 +215,8 @@ reachable from `figure-it-out` when the row gives none.
 | A pull request to open or update                | `file-pr`                                                                                                                                     |
 | A pull request to watch                         | `babysit`                                                                                                                                     |
 | A branch to take to a ready pull request        | `autopilot`, with `merge` only on the user's word                                                                                             |
-| Several pull requests to take to merge-ready    | [playbooks/pr-program.md](playbooks/pr-program.md)                                                                                            |
-| Pull requests or a stack to verify and land     | [playbooks/shipping.md](playbooks/shipping.md)                                                                                                |
+| Several pull requests to build, ready, and land | [playbooks/pr-program.md](playbooks/pr-program.md)                                                                                            |
+| Ready pull requests or a stack to verify, land  | [playbooks/shipping.md](playbooks/shipping.md)                                                                                                |
 | A merged change to follow until it is live      | `rollout`                                                                                                                                     |
 | Several pull requests to plan before any code   | `to-spec`, then `to-tickets`, with a unit check and a live check in each ticket, and a perf check where speed matters. Build on the user's go |
 | Work to resume from an earlier session          | `recall`                                                                                                                                      |

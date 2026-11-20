@@ -10,10 +10,10 @@ request's **base** is the branch it targets now: the trunk, or its parent's
 branch in a stack.
 
 1. **Get a verdict for each pull request.** One verifier per pull request,
-   started through `swarm`, runs the change the way a user would, the pull
-   request's base against its head, and reports `PASS`, `PASS+NOTES`, or
-   `FAIL` with the base and head SHAs it ran. Only an agent that did not write
-   the code gives a verdict. Green CI and an approving bot review are not
+   started through `swarm`, runs the change the way a user would, verifying
+   the pull request's head against its base, and reports `PASS`, `PASS+NOTES`,
+   or `FAIL` with the base and head SHAs. Only an agent that did not write the
+   code gives a verdict. Green CI and an approving bot review are not
    verdicts, because neither exercises the change the way a user would.
 2. **Find what can land.** A standalone pull request with `PASS` or
    `PASS+NOTES` lands on its own. For a stack, walk up from the lowest
@@ -27,7 +27,8 @@ branch in a stack.
    `git diff <base>...<head> | git patch-id --stable` at the verdict's SHAs
    with the same command at the pull request's current base and head. The
    same patch keeps its verdict. A patch that differs only in tests, docs, or
-   lint config keeps it when the same checks pass on both heads. Any other
+   lint config keeps it when those files are not what the pull request
+   delivers and the same checks pass on both heads. Any other
    change gets a new verdict.
 4. **Land one at a time, from the bottom, and leave the stack alone.** The
    retarget and branch update below are the only changes to a branch or a
