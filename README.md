@@ -225,7 +225,8 @@ names, `verifier` from its `create-verification-skill` and
 `maintain-verification-skill` skills, `lookback` from its `automate-me` skill,
 and the worktree audit script in `managing-workspaces` from its
 `worktree-audit.sh`. `nike-mode` is adapted from its `poteto-mode` skill,
-including the worker rules and the `perf-issue` and `hillclimb` playbooks.
+including the worker rules and its `perf-issue`, `hillclimb`, `shipping`,
+`autopilot-full`, and `autopilot-stack` playbooks.
 The upstream project is MIT licensed; see
 [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) for its license text.
 

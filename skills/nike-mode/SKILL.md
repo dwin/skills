@@ -187,24 +187,26 @@ Match the task to a row and follow it. A playbook is a file of steps: copy
 them into your task list before the first one. A task that is large,
 cross-cutting, or unattended, or that fits no row, goes to `figure-it-out`.
 
-| The task                                        | Route                                                                  |
-| ----------------------------------------------- | ---------------------------------------------------------------------- |
-| A read-only question about how code works       | `how`, and `why` for the reason behind it                              |
-| A bug                                           | `diagnosing-bugs`                                                      |
-| A measured slowness to fix once                 | [playbooks/perf-issue.md](playbooks/perf-issue.md)                     |
-| One metric to improve over many attempts        | [playbooks/hillclimb.md](playbooks/hillclimb.md)                       |
-| A cause to find in a live process or a capture  | [the forensics playbook](../whats-next/playbooks/forensics.md)         |
-| A feature                                       | `design` for the shape, `tdd` to build it, then `code-review`          |
-| A change of structure with behavior held        | `refactor`                                                             |
-| A design question that running code can answer  | `prototype`                                                            |
-| One rendering to match to another               | [the visual parity playbook](../whats-next/playbooks/visual-parity.md) |
-| A skill, or instructions for an agent           | `writing-for-agents`                                                   |
-| A skill or a model to compare on a set of tasks | `eval`                                                                 |
-| A pull request to open or update                | `file-pr`                                                              |
-| A pull request to watch                         | `babysit`                                                              |
-| A branch to take to a ready pull request        | `autopilot`, with `merge` only on the user's word                      |
-| A merged change to follow until it is live      | `rollout`                                                              |
-| Several pull requests to plan before any code   | `to-spec`, then `to-tickets`                                           |
-| Work to resume from an earlier session          | `recall`                                                               |
-| A stop that a later session can resume from     | `handoff`                                                              |
-| Worktrees and disk to reclaim                   | `managing-workspaces`                                                  |
+| The task                                        | Route                                                                                                               |
+| ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| A read-only question about how code works       | `how`, and `why` for the reason behind it                                                                           |
+| A bug                                           | `diagnosing-bugs`                                                                                                   |
+| A measured slowness to fix once                 | [playbooks/perf-issue.md](playbooks/perf-issue.md)                                                                  |
+| One metric to improve over many attempts        | [playbooks/hillclimb.md](playbooks/hillclimb.md)                                                                    |
+| A cause to find in a live process or a capture  | [the forensics playbook](../whats-next/playbooks/forensics.md)                                                      |
+| A feature                                       | `design` for the shape, `arena` when more than one shape is valid, `tdd` to build it, then `code-review`            |
+| A change of structure with behavior held        | `refactor`                                                                                                          |
+| A design question that running code can answer  | `prototype`, or the smallest script that answers a timing or behavior question                                      |
+| One rendering to match to another               | [the visual parity playbook](../whats-next/playbooks/visual-parity.md)                                              |
+| A skill, or instructions for an agent           | `writing-for-agents`                                                                                                |
+| A skill or a model to compare on a set of tasks | `eval`                                                                                                              |
+| A pull request to open or update                | `file-pr`                                                                                                           |
+| A pull request to watch                         | `babysit`                                                                                                           |
+| A branch to take to a ready pull request        | `autopilot`, with `merge` only on the user's word                                                                   |
+| Several pull requests to take to merge-ready    | [playbooks/pr-program.md](playbooks/pr-program.md)                                                                  |
+| Verified pull requests or a stack to land       | [playbooks/shipping.md](playbooks/shipping.md)                                                                      |
+| A merged change to follow until it is live      | `rollout`                                                                                                           |
+| Several pull requests to plan before any code   | `to-spec`, then `to-tickets`, with a unit, a live, and a perf check in each ticket. Start building on the user's go |
+| Work to resume from an earlier session          | `recall`                                                                                                            |
+| A stop that a later session can resume from     | a `wip:` commit of uncommitted work, then `handoff`                                                                 |
+| Worktrees and disk to reclaim                   | `managing-workspaces`                                                                                               |
