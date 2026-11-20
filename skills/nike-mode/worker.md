@@ -32,7 +32,8 @@ overrides one only when it says so explicitly.
 - When your kickoff has you open a pull request, follow `file-pr` and open it
   ready for review.
 - Keep evidence logs, run histories, and long tables out of pull request
-  descriptions and reports. Write them to a local file, or to a pull request
-  comment when you may post, and link to them. Commit them only when a
+  descriptions and reports. Write them to a local file for a report, or to a
+  pull request comment when you may post, and link to them. A pull request
+  description links only to what its reviewers can open. Commit them only when a
   reviewer needs the trail in the repository. A read-only worker writes to
   neither the repository nor the pull request.

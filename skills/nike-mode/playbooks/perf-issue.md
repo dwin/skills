@@ -7,8 +7,8 @@ source forms a hypothesis, and only a run tests it.
    or a timing harness. Vet it, and every later number, with
    `verifying-claims` and its measurement reference. State the target: the
    user's number, or the symptom gone.
-2. **Ground the hypotheses in the code.** Trace the slow path. Claim a
-   ceiling only after a run shows it. Order the candidate fixes by the
+2. **Ground the hypotheses in the code.** Trace the slow path. Claim the code has
+   hit a hard limit only after a run shows it. Order the candidate fixes by the
    performance mantras, cheapest first:
    1. Don't do it. Stop work whose result nothing uses.
    2. Don't do it again. Reuse a result already computed.

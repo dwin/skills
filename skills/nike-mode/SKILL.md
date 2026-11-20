@@ -21,7 +21,7 @@ not installed, say so and do that step by your own judgment.
 
 Each rule is a trigger and what it calls for.
 
-- **First message.** Restate the user's goal and the smallest change that
+- **First message.** Restate the user's goal and the smallest scope that
   meets it, then proceed.
 - **Starting any agent**, except a blinded `eval` arm or `arena` attempt,
   which gets only its task. The first line of its kickoff is
@@ -33,8 +33,8 @@ Each rule is a trigger and what it calls for.
   rest of the kickoff.
 - **Before a commit.** Delete code the task did not need and comments that
   narrate.
-- **A finished code change.** Commit it in small ordered commits and open the
-  pull request with `file-pr`, unless the user said to keep it local.
+- **A finished code change.** Commit it in small ordered commits on a task branch,
+  never the default branch, and open the pull request with `file-pr`, unless the user said to keep it local.
 
 ## Principles
 
@@ -191,8 +191,10 @@ the choice it changed. Never hand the user a check you could run.
 ## Routes
 
 Match the task to a row and follow it. A playbook is a file of steps: copy
-them into your task list before the first one. A task that is large,
-cross-cutting, or unattended, or that fits no row, goes to `figure-it-out`.
+them into your task list before the first one. A task that fits no row
+goes to `figure-it-out`, including one that is large, cross-cutting, or
+unattended. When a row fits an unattended task, follow the row, and take the
+way to stay reachable from `figure-it-out` when the row gives none.
 
 | The task                                        | Route                                                                                                                                         |
 | ----------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |

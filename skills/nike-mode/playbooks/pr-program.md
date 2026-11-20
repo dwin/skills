@@ -30,7 +30,7 @@ wrote the code has proven it, and the landing follows
    pull request's goal. When a branch changes after its verdict, step 3 of
    the shipping playbook decides whether the verdict holds or the pull
    request needs a new verifier. Block a pull request only on the bar in
-   `worker.md`, and put anything else in a follow-up.
+   [worker.md](../worker.md), and put anything else in a follow-up.
 5. **Land, or stop at verified.** For the pull requests the user authorized,
    follow [the shipping playbook](shipping.md) from step 2. Stop the rest
    when each is verified and green at its head. Hand that list to the user,
@@ -40,8 +40,9 @@ wrote the code has proven it, and the landing follows
 
 `swarm`'s audit tick judges each owner by its pushes and pull request
 activity. Replace a stuck owner with a fresh one briefed with the branch and
-the ledger rows. Stay quiet when nothing changed. On the user's stop, every
-owner stops writing and reports where it stands.
+the ledger rows. Stay quiet when nothing changed. On the user's stop, follow
+`swarm`'s Stop rule: cancel every owner and the audit tick, make no further
+writes, and report where each pull request stands.
 
 Reply with each pull request's state and verdict, what landed, the gates
 still waiting on the user, and the follow-ups parked, with links to each pull

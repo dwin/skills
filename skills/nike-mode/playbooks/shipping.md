@@ -18,16 +18,17 @@ Nothing else is.
    pull request in the run is the ceiling. A verified pull request above an
    unverified one waits. One that does not need the code below it can move
    onto the base and land alone, after a fresh verdict there.
-3. **Check that each verdict still describes the code.** A rebase gives every
-   pull request above it a new SHA without failing any check. Compare
+3. **Check that each verdict still describes the code.** Rebasing a pull
+   request gives it a new SHA even when its patch did not change. Compare
    `git diff <base>...<head> | git patch-id --stable` at the verdict's SHAs
    with the same command at the current base and head. The same patch keeps
    its verdict. A patch that differs only in tests, docs, or lint config keeps
    it when the same checks pass on both heads. Any other change gets a new
    verdict.
 4. **Land one at a time, from the bottom, and leave the stack alone.** The
-   retarget below is the only change to a branch or a base while the run
-   lands, because a merge lands whatever its branch holds at that moment.
+   retarget and branch update below are the only changes to a branch or a
+   base while the run lands, because a merge lands whatever its branch holds
+   at that moment.
    Before each merge, confirm the pull request targets the base branch, its
    checks pass at its head, and no request for changes stands. Merge with a
    guard on the head, such as
@@ -36,8 +37,9 @@ Nothing else is.
    merge or enabled auto-merge is not a merge. For a stack, retarget the next
    pull request to the base, move its patch onto the merge result, and push
    with `--force-with-lease`. Step 3 decides whether its verdict survives.
-   Merge it once its checks pass. `babysit` watches each pull request, watch
-   only. When a merge stalls, find out why before changing anything.
+   When it does not, stop and get a new verdict at step 1. When it does, run
+   the checks before a merge on the new head, and merge it once they pass.
+   `babysit` watches each pull request, watch only. When a merge stalls, find out why before changing anything.
 5. **Stop at the ceiling.** Landing more takes new verdicts, which is a new
    pass through step 1.
 
