@@ -26,9 +26,9 @@ untested changes, and never claim a win from reading code.
    before any change.
 3. **Open a work log** in the format of
    [the work log reference](../../figure-it-out/references/work-log.md), one
-   row per attempt: the hypothesis in `why`, the commit or reverted diff in
-   `evidence`, and the metric before and after with kept or reverted in
-   `result`. Read it before each attempt.
+   row per attempt: the hypothesis in `why`, the commit SHA or the path of a
+   saved patch for a reverted attempt in `evidence`, and the metric before
+   and after with kept or reverted in `result`. Read it before each attempt.
 4. **Ground each hypothesis in the architecture** from step 1, so it names a
    mechanism: "defer X off the boot path because it blocks first paint", not
    "try memoizing something". For a performance metric, order the hypotheses
@@ -37,7 +37,8 @@ untested changes, and never claim a win from reading code.
 5. **Loop, one hypothesis per iteration.**
    - Make the change with a tight scope. When you delegate it, review the
      diff yourself. Several independent hypotheses can run in parallel, each
-     in its own checkout, through `swarm`.
+     in its own checkout, through `swarm`. When more than one wins, commit one
+     and measure the next again on top of it.
    - Measure before and after with the frozen harness, and run the tests.
    - Keep the change only when the metric moves past the noise and the tests
      pass. Otherwise revert all of it. A change that "might help" is not
@@ -50,8 +51,9 @@ untested changes, and never claim a win from reading code.
    outrank the number: revert a win that breaks behavior, and keep a
    simplification that holds the number.
 7. **Stop when the predicate is met,** or when the ideas left are marginal
-   and not worth their cost. Hold the predicate fixed. Keep going while cheap
-   untried hypotheses remain, and report a real dead end with what you tried.
+   and not worth their cost. Hold the predicate fixed. Until it is met, keep
+   going while cheap untried hypotheses remain, and report a real dead end
+   with what you tried.
 8. **Open the pull request** with `file-pr`, with the kept commits in the
    order they landed.
 

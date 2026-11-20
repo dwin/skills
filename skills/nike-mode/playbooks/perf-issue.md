@@ -5,17 +5,18 @@ source forms a hypothesis, and only a run tests it.
 
 1. **Capture a baseline** on the path the user waits on: a trace, a profile,
    or a timing harness. Vet it, and every later number, with
-   `verifying-claims` and its measurement reference.
+   `verifying-claims` and its measurement reference. State the target: the
+   user's number, or the symptom gone.
 2. **Ground the hypotheses in the code.** Trace the slow path. Claim a
    ceiling only after a run shows it. Try the performance mantras in order,
    cheapest first, and stop at the first one that meets the target:
    1. Don't do it. Stop work whose result nothing uses.
-   2. Do it, but don't do it again.
-   3. Do it less.
-   4. Do it later.
-   5. Do it when they're not looking.
-   6. Do it concurrently.
-   7. Do it cheaper.
+   2. Don't do it again. Reuse a result already computed.
+   3. Do it less. Shrink the input, the batch, or how often it runs.
+   4. Do it later. Defer the work until its result is needed.
+   5. Do it off the user's path. Move it to idle time or the background.
+   6. Do it concurrently. Overlap independent work.
+   7. Do it cheaper. Use a faster algorithm, data structure, or call.
 3. **Plan the fix from the trace.** A fix that crosses a module's interface
    gets `design` first. Make one attempt at a time, and measure each before
    the next.
