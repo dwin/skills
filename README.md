@@ -40,6 +40,8 @@ User-invoked entry points:
   or automations.
 - `how` explains how a subsystem works from reading its code, and `recall`
   rebuilds what earlier sessions decided and left open on a piece of work.
+- `panel` brings three independent reviewers to the same change. Use
+  `panel 9.5` to require that score from each reviewer.
 - `arena` has several agents attempt one task, then merges the best of their
   attempts into one result.
 - `sharpen` rewrites a prompt into a deeper version of the same task before
