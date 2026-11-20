@@ -25,26 +25,35 @@ branch in a stack.
 3. **Check that each verdict still describes the code.** Rebasing a pull
    request gives it a new SHA even when its patch did not change. Compare
    `git diff <base>...<head> | git patch-id --stable` at the verdict's SHAs
-   with the same command at the pull request's current base and head. The
-   same patch keeps its verdict. A patch that differs only in tests, docs, or
-   lint config keeps it when those files are not what the pull request
-   delivers and the same checks pass on both heads. Any other
+   with the same command at the pull request's current base and head. A
+   verdict survives only when the patch is the same and the base gained
+   nothing but the verified layers below it, which the verifier already ran
+   beneath it. New base commits from anywhere else get a fresh verdict,
+   because they can change code the patch calls. A patch that differs only in
+   tests, docs, or lint config keeps its verdict when those files are not what
+   the pull request delivers and the same checks pass on both heads. Any other
    change gets a new verdict.
 4. **Land one at a time, from the bottom, and leave the stack alone.** The
    retarget and branch update below are the only changes to a branch or a
    base while the run lands, because a merge lands whatever its branch holds
    at that moment.
-   - **Before each merge,** confirm the pull request targets the trunk, its
-     CI checks pass at its head, and no request for changes stands.
+   - **Before each merge,** the pull request targets the trunk, its verdict
+     holds by step 3, `babysit`'s Ready check holds on its head, and the
+     repository's conversation-resolution rules are met.
    - **Merge** with a guard on the head, such as
      `gh pr merge <number> --squash --match-head-commit <sha>`, and read the
      pull request back. It must show merged into the trunk. A queued merge or
      enabled auto-merge is not a merge.
-   - **For a stack,** retarget the next pull request to the trunk, move its
-     patch onto the merge result, and push with `--force-with-lease`. Step 3
-     decides whether its verdict survives. When it does not, stop and get a
-     new verdict at step 1. When it does, confirm the before-merge checks
-     above on the new head, then merge it.
+   - **For a stack built by hand,** retarget the next pull request to the
+     trunk, move its patch onto the merge result, and push with
+     `--force-with-lease`. When step 3 voids its verdict, stop and get a new
+     one at step 1. Otherwise run the before-merge checks on the new head,
+     then merge it.
+   - **For a native GitHub stack,** follow the merge rules in `file-pr`'s
+     stack reference. Its stack-aware merge lands every layer below the one
+     you select, so select the ceiling only after the before-merge checks hold
+     for every layer in the run. Then sync the stack and read each pull
+     request back.
    - `babysit` watches each pull request, watch only. When a merge stalls,
      find out why before changing anything.
 5. **Stop at the ceiling.** Landing more takes new verdicts, which is a new
