@@ -32,6 +32,9 @@ User-invoked entry points:
 - `setup-dwin-skills` configures a repository's tracker and domain docs.
 - `grill-me` explicitly starts a rigorous decision interview before action.
 - `focus-output` keeps session responses action-first and low-distraction.
+- `nike-mode` is just-do-it mode. It restates the goal, routes the task to
+  the skill or playbook that fits, acts on reversible work without asking,
+  and reports only what it verified.
 - `autopilot` drives a branch to a reviewed, ready PR, and with `merge`
   merges it.
 - `retro` reviews a session for fixes to the agent's environment, and
@@ -221,8 +224,9 @@ Lauren Tan's [pstack](https://github.com/cursor/plugins/tree/main/pstack), and
 names, `verifier` from its `create-verification-skill` and
 `maintain-verification-skill` skills, `lookback` from its `automate-me` skill,
 and the worktree audit script in `managing-workspaces` from its
-`worktree-audit.sh`. The
-upstream project is MIT licensed; see
+`worktree-audit.sh`. `nike-mode` is adapted from its `poteto-mode` skill,
+including the worker rules and the `perf-issue` and `hillclimb` playbooks.
+The upstream project is MIT licensed; see
 [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) for its license text.
 
 `unslop` also adapts Siqi Chen's

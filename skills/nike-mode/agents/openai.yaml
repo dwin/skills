@@ -1,0 +1,6 @@
+interface:
+  display_name: "Nike Mode"
+  short_description: "Just do it: take a task to a verified finish without asking"
+  default_prompt: "Use $nike-mode to take this task to a verified finish without waiting on me."
+policy:
+  allow_implicit_invocation: false
