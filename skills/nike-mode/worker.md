@@ -29,8 +29,7 @@ overrides one only when it says so explicitly.
   did not authorize, a message your kickoff and its skill do not cover (such
   as one to a customer), or a safety, privacy, or approval gate the skill you
   follow reserves for the user (such as an Ask finding in `autopilot`).
-- When your kickoff has you open a pull request, follow `file-pr` and open it
-  ready for review.
+- When your kickoff has you open a pull request, follow `file-pr`.
 - Keep evidence logs, run histories, and long tables out of pull request
   descriptions and reports. Write them to a local file for a report, or to a
   pull request comment when you may post, and link to them. A pull request

@@ -27,14 +27,15 @@ Each rule is a trigger and what it calls for.
   which gets only its task. The first line of its kickoff is
   `Read <path>/worker.md before anything else.`, with `<path>` the absolute
   path of this skill's folder, and the goal comes next. This mode loads only
-  when typed, so its rules reach a worker no other way. When the worker
-  cannot read that path, such as a worker on another machine, paste the rules
-  from `worker.md` into the kickoff in place of that line. `swarm` writes the
-  rest of the kickoff.
+  when typed, so its rules reach a worker no other way. When the worker cannot read
+  that path, such as a worker on another machine, paste the rules from
+  `worker.md` into the kickoff in place of that line. When no routed skill
+  sets the brief, `swarm` writes the rest of the kickoff.
 - **Before a commit.** Delete code the task did not need and comments that
   narrate.
-- **A finished code change.** Commit it in small ordered commits on a task branch,
-  never the default branch, and open the pull request with `file-pr`, unless the user said to keep it local.
+- **A finished code change.** Commit it in small ordered commits on a task
+  branch, never the default branch, and open the pull request with `file-pr`,
+  unless the user said to keep it local.
 
 ## Principles
 
@@ -96,8 +97,8 @@ principle.
   `engineering-principles`.
 - **Migrate Callers Then Delete Legacy APIs.** A new internal API while old
   callers exist. When every caller is in this repository and nothing stored,
-  sent, or deployed in stages depends on the old shape, propose migrating and
-  deleting in one change. Otherwise migrate in stages. `refactor`.
+  sent, or deployed in stages depends on the old shape, state that choice and
+  migrate and delete in one change. Otherwise migrate in stages. `refactor`.
 - **Separate Before Serializing Shared State.** Concurrent actors might write
   the same file, branch, key, or object. Remove the sharing first. `swarm`
   for agent lanes, `engineering-principles` for application state.
@@ -115,7 +116,8 @@ principle.
 - **Sequence Work into Verifiable Units.** Multi-step work, and how you stack
   commits and pull requests. Break the work into small units that each end in
   a check, verify each before the next, and order delivery so the sequence
-  proves itself. `figure-it-out`.
+  proves itself. `figure-it-out` for a run of units, `file-pr` for stacked
+  pull requests.
 - **Test Behavior, Not Implementation.** Writing, changing, or keeping a
   test. Assert what the code's users can observe, so the test fails when that
   behavior breaks and passes when only the internals change. `tdd`.
@@ -151,9 +153,9 @@ user's word for that pull request.
 **Routed checkpoints.** When a routed skill asks you to confirm a reversible
 choice with the user, such as the seams in `tdd`, the breakdown in
 `to-tickets`, or the frame in `arena` or `eval`, state your choice and
-proceed. A gate that guards safety, privacy, or approval still holds: the
-pauses above, an Ask finding in `autopilot`, a finding `babysit` forbids
-dismissing on your judgment alone, the redaction and consent rules in
+proceed. A gate that guards safety, privacy, or approval still holds,
+including the pauses above, an Ask finding in `autopilot`, a finding `babysit`
+forbids dismissing on your judgment alone, the redaction and consent rules in
 `recall`, and asking before a capture from a process that serves users in the
 forensics playbook.
 
@@ -191,10 +193,11 @@ the choice it changed. Never hand the user a check you could run.
 ## Routes
 
 Match the task to a row and follow it. A playbook is a file of steps: copy
-them into your task list before the first one. A task that fits no row
-goes to `figure-it-out`, including one that is large, cross-cutting, or
-unattended. When a row fits an unattended task, follow the row, and take the
-way to stay reachable from `figure-it-out` when the row gives none.
+them into your task list before the first one. When a task fits no row, load
+another installed skill that fits, do a small clear task directly, or use
+`figure-it-out` for a large, unclear, cross-cutting, or unattended one. When a
+row fits an unattended task, follow the row, and take the way to stay
+reachable from `figure-it-out` when the row gives none.
 
 | The task                                        | Route                                                                                                                                         |
 | ----------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -203,7 +206,7 @@ way to stay reachable from `figure-it-out` when the row gives none.
 | A measured slowness to fix once                 | [playbooks/perf-issue.md](playbooks/perf-issue.md)                                                                                            |
 | One metric to improve over many attempts        | [playbooks/hillclimb.md](playbooks/hillclimb.md)                                                                                              |
 | A cause to find in a live process or a capture  | [the forensics playbook](../whats-next/playbooks/forensics.md)                                                                                |
-| A feature                                       | `design` for the shape, `arena` when more than one shape is valid, `tdd` to build it, then `code-review`                                      |
+| A feature                                       | `design` for the shape, `arena` when one attempt could lock in the wrong shape, `tdd` to build it, then `code-review`                         |
 | A change of structure with behavior held        | `refactor`                                                                                                                                    |
 | A fork that running code can settle             | `prototype`, or the smallest script that answers a timing or behavior question, in place of asking                                            |
 | One rendering to match to another               | [the visual parity playbook](../whats-next/playbooks/visual-parity.md)                                                                        |

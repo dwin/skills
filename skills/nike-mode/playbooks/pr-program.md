@@ -41,8 +41,7 @@ wrote the code has proven it, and the landing follows
 `swarm`'s audit tick judges each owner by its pushes and pull request
 activity. Replace a stuck owner with a fresh one briefed with the branch and
 the ledger rows. Stay quiet when nothing changed. On the user's stop, follow
-`swarm`'s Stop rule: cancel every owner and the audit tick, make no further
-writes, and report where each pull request stands.
+`swarm`'s Stop rule in full, then report where each pull request stands.
 
 Reply with each pull request's state and verdict, what landed, the gates
 still waiting on the user, and the follow-ups parked, with links to each pull

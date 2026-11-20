@@ -21,9 +21,9 @@ untested changes, and never claim a win from reading code.
    harness cannot tell them apart, revise the workload or the metric. Vet the
    harness with `verifying-claims` and its measurement reference, and make it
    print its error count and a count of the work done. Once frozen, one
-   repeatable command emits the metric as a median of several runs. Record
-   the baseline, and a passing run of the tests that must keep passing,
-   before any change.
+   repeatable command emits the metric as the median and range of several
+   runs. Record the baseline, and a passing run of the tests that must keep
+   passing, before any change.
 3. **Open a work log** in the format of
    [the work log reference](../../figure-it-out/references/work-log.md), one
    row per attempt: the hypothesis in `why`, the commit SHA or the path of a
