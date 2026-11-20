@@ -10,14 +10,14 @@ Nothing else is.
    against head, and reports `PASS`, `PASS+NOTES`, or `FAIL` with the base
    and head SHAs it ran. Only an agent that did not write the code gives a
    verdict. Green CI and an approving bot review are not verdicts, because
-   neither runs the change.
+   neither exercises the change the way a user would.
 2. **Find what can land.** A standalone pull request with `PASS` or
    `PASS+NOTES` lands on its own. For a stack, walk up from the lowest
    unmerged pull request and stop at the first one without `PASS` or
-   `PASS+NOTES`. The pull requests below it are the run, and the top one is
-   the ceiling. A verified pull request above an unverified one waits. One
-   that does not need the code below it can move onto the base and land
-   alone, after a fresh verdict there.
+   `PASS+NOTES`. The pull requests below it are the run, and the highest
+   pull request in the run is the ceiling. A verified pull request above an
+   unverified one waits. One that does not need the code below it can move
+   onto the base and land alone, after a fresh verdict there.
 3. **Check that each verdict still describes the code.** A rebase gives every
    pull request above it a new SHA without failing any check. Compare
    `git diff <base>...<head> | git patch-id --stable` at the verdict's SHAs
@@ -25,20 +25,20 @@ Nothing else is.
    its verdict. A patch that differs only in tests, docs, or lint config keeps
    it when the same checks pass on both heads. Any other change gets a new
    verdict.
-4. **Land one at a time, from the bottom.** Before each merge, confirm the
-   pull request targets the base branch, its checks pass at its head, and no
-   request for changes stands. Merge with a guard on the head, such as
+4. **Land one at a time, from the bottom, and leave the stack alone.** The
+   retarget below is the only change to a branch or a base while the run
+   lands, because a merge lands whatever its branch holds at that moment.
+   Before each merge, confirm the pull request targets the base branch, its
+   checks pass at its head, and no request for changes stands. Merge with a
+   guard on the head, such as
    `gh pr merge <number> --squash --match-head-commit <sha>`, and read the
    pull request back. It must show merged into the base branch. A queued
    merge or enabled auto-merge is not a merge. For a stack, retarget the next
    pull request to the base, move its patch onto the merge result, and push
    with `--force-with-lease`. Step 3 decides whether its verdict survives.
-   Merge it once its checks pass.
-5. **Leave the stack alone while it lands.** The move in step 4 is the only
-   change to a branch or a base, because a merge lands whatever its branch
-   holds at that moment. `babysit` watches each pull request. When a merge
-   stalls, find out why before changing anything.
-6. **Stop at the ceiling.** Landing more takes new verdicts, which is a new
+   Merge it once its checks pass. `babysit` watches each pull request, watch
+   only. When a merge stalls, find out why before changing anything.
+5. **Stop at the ceiling.** Landing more takes new verdicts, which is a new
    pass through step 1.
 
 Reply with what landed and the ceiling, each pull request's verdict and who

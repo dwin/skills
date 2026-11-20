@@ -5,7 +5,8 @@ for, who may not be the agent that wrote your kickoff. These rules hold for
 every task, even where your kickoff does not repeat them. Your kickoff
 overrides one only when it says so explicitly.
 
-- If you start an agent, the first line of its kickoff is
+- If you start an agent, other than a blinded `eval` arm or `arena` attempt,
+  which gets only its task, the first line of its kickoff is
   `Read <path>/worker.md before anything else.`, with `<path>` the absolute
   path of the folder that holds this file. When that agent cannot read the
   path, such as an agent on another machine, paste these rules into its
@@ -26,10 +27,12 @@ overrides one only when it says so explicitly.
 - Stop and report `BLOCKED`, with the reason, to whoever started you for a
   deploy, deleted data, a force-push to a shared branch, a merge your kickoff
   did not authorize, a message your kickoff and its skill do not cover (such
-  as one to a customer), or a gate the skill you follow reserves for the user
-  (such as an Ask finding in `autopilot`).
+  as one to a customer), or a safety, privacy, or approval gate the skill you
+  follow reserves for the user (such as an Ask finding in `autopilot`).
 - When your kickoff has you open a pull request, follow `file-pr` and open it
   ready for review.
-- Put evidence logs, run histories, and long tables in a committed file or a
-  pull request comment, and link to them from the pull request description or
-  your report.
+- Keep evidence logs, run histories, and long tables out of pull request
+  descriptions and reports. Write them to a local file, or to a pull request
+  comment when you may post, and link to them. Commit them only when a
+  reviewer needs the trail in the repository. A read-only worker writes to
+  neither the repository nor the pull request.

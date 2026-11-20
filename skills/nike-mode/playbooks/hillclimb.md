@@ -11,7 +11,7 @@ untested changes, and never claim a win from reading code.
    Name the workload dimensions that can move the result: data size, history,
    state, concurrency. Select a case that reproduces the user's complaint.
    When no case reproduces it, fix the reproduction before you climb. Then
-   fix one metric, the direction that counts as better, and a stop predicate
+   set one metric, the direction that counts as better, and a stop predicate
    a command can check. Pair the target with a floor on attempts, such as "at
    least 50% better than baseline and at least 10 iterations", so a lucky
    early win cannot end the run. Use the user's numbers when they gave them.
@@ -40,16 +40,16 @@ untested changes, and never claim a win from reading code.
      in its own checkout, through `swarm`. When more than one wins, commit one
      and measure the next again on top of it.
    - Measure before and after with the frozen harness, and run the tests.
-   - Keep the change only when the metric moves past the noise and the tests
-     pass. Otherwise revert all of it. A change that "might help" is not
+   - Keep the change only when the tests pass and the metric improves past
+     the noise, or when it simplifies the code and holds the number.
+     Otherwise revert all of it. A change that "might help" is not
      kept.
    - Make one commit per kept change, staging only the files you changed.
      Log the row either way.
 6. **Push past the first plateau.** After several rejections in a row, change
    category, combine near-misses, re-read the source, or try something more
    radical before concluding the hill is climbed. Correctness and simplicity
-   outrank the number: revert a win that breaks behavior, and keep a
-   simplification that holds the number.
+   outrank the number: revert a win that breaks behavior.
 7. **Stop when the predicate is met,** or when the ideas left are marginal
    and not worth their cost. Hold the predicate fixed. Until it is met, keep
    going while cheap untried hypotheses remain, and report a real dead end

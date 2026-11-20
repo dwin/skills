@@ -8,8 +8,8 @@ source forms a hypothesis, and only a run tests it.
    `verifying-claims` and its measurement reference. State the target: the
    user's number, or the symptom gone.
 2. **Ground the hypotheses in the code.** Trace the slow path. Claim a
-   ceiling only after a run shows it. Try the performance mantras in order,
-   cheapest first, and stop at the first one that meets the target:
+   ceiling only after a run shows it. Order the candidate fixes by the
+   performance mantras, cheapest first:
    1. Don't do it. Stop work whose result nothing uses.
    2. Don't do it again. Reuse a result already computed.
    3. Do it less. Shrink the input, the batch, or how often it runs.
@@ -18,8 +18,9 @@ source forms a hypothesis, and only a run tests it.
    6. Do it concurrently. Overlap independent work.
    7. Do it cheaper. Use a faster algorithm, data structure, or call.
 3. **Plan the fix from the trace.** A fix that crosses a module's interface
-   gets `design` first. Make one attempt at a time, and measure each before
-   the next.
+   gets `design` first. Try the candidates in that order, one at a time.
+   Measure each, revert a failed one before the next, and stop at the first
+   that meets the target.
 4. **Capture the same measurement after the fix** and compare the two
    artifacts. An inconclusive result is not a pass, and neither is a number
    from a different surface. Report either as what it is.
