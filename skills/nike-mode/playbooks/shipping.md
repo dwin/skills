@@ -37,9 +37,11 @@ branch in a stack.
    retarget and branch update below are the only changes to a branch or a
    base while the run lands, because a merge lands whatever its branch holds
    at that moment.
-   - **Before each merge,** the pull request targets the trunk, its verdict
-     holds by step 3, `babysit`'s Ready check holds on its head, and the
-     repository's conversation-resolution rules are met.
+   - **Before each merge,** the pull request targets the trunk (in a native
+     stack, the bottom layer targets the trunk and each layer above targets
+     the one below it), its verdict holds by step 3, `babysit`'s Ready check
+     holds on its head, and the repository's conversation-resolution rules are
+     met.
    - **Merge** with a guard on the head, such as
      `gh pr merge <number> --squash --match-head-commit <sha>`, and read the
      pull request back. It must show merged into the trunk. A queued merge or
