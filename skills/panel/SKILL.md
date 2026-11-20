@@ -28,7 +28,7 @@ first available family in this order:
    providers. Select the newest available Pro release across them, preferring
    Cursor when it offers that release. Use `max` when advertised, otherwise
    the provider default.
-2. Gemini Carbon at `high`.
+2. Gemini Neon at `high`.
 3. Codex GPT Astra at `xhigh`.
 
 Record each reviewer's actual model, provider and effort (or `provider default`).
@@ -58,9 +58,9 @@ Use these priorities from left to right:
 
 - **Claude:** latest stable Opus, then Fable.
 - **ChatGPT / Codex:** latest stable Sol, then Astra.
-- **Cursor:** latest stable Grok, Gemini Carbon, then Opus.
+- **Cursor:** latest stable Grok, Gemini Neon, then Opus.
 - **Copilot:** latest stable Sol (use Astra if Sol is unavailable), Gemini
-  Carbon, then Opus. If a seat is still open, consider the unused Astra.
+  Neon, then Opus. If a seat is still open, consider the unused Astra.
 - **Other harnesses:** start with the active model, then other distinct
   native models available for code review in the host's recommended order.
 
